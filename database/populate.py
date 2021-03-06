@@ -14,4 +14,5 @@ session.add_all([
      User(name='Mariola')
      ])
 
+#Zapisz do bazy
 session.commit()
