@@ -1,10 +1,10 @@
-###1. Zainstaluj SQLAlchemy
+## 1. Zainstaluj SQLAlchemy
 
 pip install SQLAlchemy
 
-###2. Wyjaśnienia plików w katalogu database:
+## 2. Wyjaśnienia plików w katalogu database:
 
-###- mydatabase.py
+### mydatabase.py
 plik database/mydatabase.py definiuje połączenie z bazą SQLite o nazwie foo.db - ale jeszcze nic z nią nie robi
 
 ### models.py
