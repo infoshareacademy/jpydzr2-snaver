@@ -1,4 +1,4 @@
 from sqlalchemy import create_engine
 
-##connect to the sqlite database
+##connect to the sqlite database (or create it)
 engine = create_engine('sqlite:///foo.db')
