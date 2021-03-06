@@ -1,6 +1,10 @@
 ## 1. Zainstaluj SQLAlchemy
 
-pip install SQLAlchemy
+`pip install SQLAlchemy`
+
+ewentualnie:
+
+`pip install -r src/requirements.txt`
 
 ## 2. Wyjaśnienia plików w katalogu database:
 
