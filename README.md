@@ -2,7 +2,7 @@
 
 ## Half snake, half saver, all money
 
-![Snaver](images/logo.png)
+![Snaver](docs/images/logo.png)
 
 
 
