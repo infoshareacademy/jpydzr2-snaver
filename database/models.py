@@ -1,8 +1,7 @@
 #Import database connection
-from mydatabase import *
+from mydatabase import engine
 
-#import
-from sqlalchemy import Column, Integer, String, ForeignKey, Table
+from sqlalchemy import Column, Integer, String, ForeignKey, Table, Numeric
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -10,15 +9,43 @@ from sqlalchemy.ext.declarative import declarative_base
 #Create default Base class
 Base = declarative_base()
 
-#Start defying models
+#Create your models here
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
+    budgets = relationship("Budget")
 
     def __repr__(self):
-        return "<User(name='%s')>" % (self.name)
+        return "Moje imię to: '%s'" % (self.name)
+
+class Budget(Base):
+    __tablename__ = 'budget'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    user_id = Column(Integer, ForeignKey("user.id")) #Creates relationship between the budget and the user
+    parent_categories = relationship("ParentCategory")
+
+class ParentCategory(Base):
+    __tablename__ = 'parent_category'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    budget_id = Column(Integer, ForeignKey("budget.id"))
+    categories = relationship("Category")
 
 
+class Category(Base):
+    __tablename__ = 'parent_categories'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    budgeted_amount = Column(Numeric)
+    available_amount = Column(Numeric)
+    parent_id = Column(Integer, ForeignKey("parent_category.id"))
+
+
+#create tables
 Base.metadata.create_all(engine)
