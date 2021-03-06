@@ -22,3 +22,7 @@ Przykładowe pozyskanie instancji klasy User z bazy danych
 
 ## 3. Uruchomienie i przetestowanie co i jak
 Wystarczy odpalic pliki models, populate i get w tej kolejności
+
+## 4. Materiały
+
+* [SQLAlchemy tutorial](https://docs.sqlalchemy.org/en/14/orm/tutorial.html)
