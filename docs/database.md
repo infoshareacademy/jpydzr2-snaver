@@ -6,16 +6,16 @@ ewentualnie:
 
 `pip install -r src/requirements.txt`
 
-## 2. Wyjaśnienia plików w katalogu database:
+## 2. Wyjaśnienie plików w katalogu database:
 
 ### mydatabase.py
-plik database/mydatabase.py definiuje połączenie z bazą SQLite o nazwie foo.db - ale jeszcze nic z nią nie robi
+plik mydatabase.py definiuje połączenie z bazą SQLite o nazwie foo.db - ale jeszcze nic z nią nie robi
 
 ### models.py
-odpalenie pliku database/models.py tworzy nową bazę danych w katalogu /database o nazwie "foo.db" (jeśli wcześniej takiej nie było) ze schematem (tabelami) na podstawie klas zawartych w tym pliku
+odpalenie pliku models.py tworzy nową bazę danych w katalogu database o nazwie "foo.db" (jeśli wcześniej takiej nie było) ze schematem (tabelami) na podstawie klas zawartych w tym pliku
 
 ### populate.py
-odpalenie pliku tworzy kilka instancji klasy User i wkleja je do bazy danych
+odpalenie pliku tworzy kilka przykładowych instancji klasy User i wkleja je do bazy danych
 
 ### get.py
 Przykładowe pozyskanie instancji klasy User z bazy danych
