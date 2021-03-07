@@ -8,6 +8,8 @@
 
 * [Database setup](/docs/database.md)
 
+* [Class names](/docs/glossary.md)
+
 ### External Links
 
 * [Miro board](https://miro.com/app/board/o9J_lTRAVVw=/)
