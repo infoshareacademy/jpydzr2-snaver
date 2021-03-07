@@ -1,3 +1,9 @@
+"""Script that populates the database with fake data
+
+Feel free to add your own generators :-)
+"""
+
+#impoprt modules
 from database import engine
 from session import session
 
@@ -5,7 +11,7 @@ from models.User import User
 from models.Budget import Budget
 from models.ParentCategory import ParentCategory
 
-from random import randint
+#from random import randint
 
 
 #ADD USERS = ===========================================

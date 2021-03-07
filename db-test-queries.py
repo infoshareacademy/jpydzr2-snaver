@@ -1,3 +1,9 @@
+"""Test SQL queries, relations and debug it here
+
+Feel free to add your own queries :-)
+Don't forget to import the modules
+"""
+
 from database import engine
 from session import session
 from models.User import User

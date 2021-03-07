@@ -1,3 +1,8 @@
+"""Script that creates the database based on imported models
+
+Don't forget to import the modules :-)
+"""
+
 #Import database connection
 from database import engine
 
