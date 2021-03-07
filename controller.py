@@ -6,6 +6,7 @@ from models.ParentCategory import ParentCategory
 from session import session
 
 global_user_id = None
+global_user_name = None
 
 #Define the logic
 
@@ -18,8 +19,8 @@ def get_user(username):
     if user_instance is None:
         create_account(username)
     else:
-        print("\n{}, Twoje ID w bazie danych to {}. Twój budżet to: [TODO]\n".format(user_instance.name, user_instance.id))
         global_user_id = user_instance.id
+        global_user_name = user.instance.name
         show_budget(global_user_id)
 
 def create_account(username):
@@ -29,6 +30,7 @@ def create_account(username):
     session.commit()
     get_user(username)
 
-def show_budget(global_user_id):
-    print("Pokazuję budżety dla usera o ID {}".format(global_user_id))
+def show_budget(global_user_id, global_user_name):
+    print("Hej, {}, oto Twój budżet!".format(global_user_name))
     #TODO
+    #budget = session.query(User).filter_by(user_id=global_user_id).first()
