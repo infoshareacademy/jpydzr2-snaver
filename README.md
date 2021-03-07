@@ -4,13 +4,17 @@
 
 ![Snaver](docs/images/logo.png)
 
+## Components
+
+* [Database setup](/docs/database.md)
+
+* [Class names](/docs/glossary.md)
+
+### External Links
+
+* [Miro board](https://miro.com/app/board/o9J_lTRAVVw=/)
+
+* [Jira](https://jira.is-academy.pl/secure/RapidBoard.jspa?rapidView=423&projectKey=JPYDZR2SN)
 
 
 
-### Links
-
-[Miro board](https://miro.com/app/board/o9J_lTRAVVw=/)
-
-[Jira](https://jira.is-academy.pl/secure/RapidBoard.jspa?rapidView=423&projectKey=JPYDZR2SN)
-
-[Names](/docs/glossary.md)
