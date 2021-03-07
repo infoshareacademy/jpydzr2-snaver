@@ -1,8 +1,8 @@
 #Import database connection
 from .mydatabase import engine
 
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, Numeric
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 

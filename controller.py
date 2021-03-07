@@ -23,9 +23,5 @@ def login():
     get_user(username)
 
 def get_user(username):
-    myobject = User(name='Bartek')
-    session.add(myobject)
-    session.commit()
-    user_instance = session.query(User).all()
+    user_instance = session.query(User).filter_by(name=username).first()
     print(user_instance)
-
