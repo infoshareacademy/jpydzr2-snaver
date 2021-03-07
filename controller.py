@@ -5,11 +5,11 @@ from models.Budget import Budget
 from models.ParentCategory import ParentCategory
 from session import session
 
+#GLOBAL VARIABLES
 global_user_id = None
 global_user_name = None
 
-#Define the logic here
-
+#DEFINE LOGIC HERE
 
 #Display login form
 def login():
