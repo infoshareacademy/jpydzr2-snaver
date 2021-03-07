@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 # from .database.mydatabase import engine as engine
 from database.models import User
 # from database.models import 
-
+from database.populate import populate
 from database.mydatabase import engine
 
 
@@ -14,6 +14,7 @@ Session = sessionmaker(bind=engine)
 
 session = Session()
 
+populate()
 
 #W tym pliku jest definiowana logika programu
 
@@ -22,6 +23,9 @@ def login():
     get_user(username)
 
 def get_user(username):
-    user_instance = session.query(User).filter_by(id=1).first()
+    myobject = User(name='Bartek')
+    session.add(myobject)
+    session.commit()
+    user_instance = session.query(User).all()
     print(user_instance)
 
