@@ -1,4 +1,4 @@
-from controller import login, create_tables
+from controller import login
 
 
 login()
