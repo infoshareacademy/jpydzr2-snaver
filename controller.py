@@ -1,4 +1,4 @@
-# from models.*import User, Budget, Category, ParentCategory
+#Import models
 from models.Base import Base
 from models.User import User
 # from models.Budget import Budget
