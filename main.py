@@ -1,6 +1,4 @@
-from controller import *
+from controller import login, create_tables
 
-print(session)
-print(session.query(User).filter_by(id=1).first())
 
 login()
