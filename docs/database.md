@@ -12,7 +12,7 @@ ewentualnie:
 plik mydatabase.py definiuje połączenie z bazą SQLite o nazwie foo.db - ale jeszcze nic z nią nie robi
 
 #### models.py
-odpalenie pliku models.py tworzy nową bazę danych w katalogu database (jeśli wcześniej takiej nie było) ze schematem (tabelami) na podstawie klas zawartych w tym pliku
+odpalenie pliku models.py tworzy nową bazę danych w katalogu database (zdefiniowaną w piku mydatabase.py) ze schematem (tabelami) na podstawie klas zawartych w tym pliku
 
 #### populate.py
 odpalenie pliku tworzy kilka przykładowych instancji klasy User i wkleja je do bazy danych
