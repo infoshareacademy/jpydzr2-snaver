@@ -9,5 +9,4 @@ class ParentCategory(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    # budget_id = Column(Integer, ForeignKey("budget.id"))
-    categories = relationship("Category")
+    budget_id = Column(Integer, ForeignKey("budget.id"))

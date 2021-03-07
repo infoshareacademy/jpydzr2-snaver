@@ -8,10 +8,9 @@ class Transaction(Base):
     __tablename__ = 'transaction'
 
     id = Column(Integer, primary_key=True)
-    # account_id = Column(Integer, ForeignKey)
     name = Column(String)
     payee_name = Column(String)
-    # payee_date = Column(Date)
     amount_inflow = Column(Numeric)
     amount_outflow = Column(Numeric)
-    # parent_id = Column(Integer, ForeignKey("category_budget.id"))
+    category_id = Column(Integer, ForeignKey("category.id"))
+    payee_date = Column(Date)
