@@ -10,3 +10,6 @@ class ParentCategory(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     budget_id = Column(Integer, ForeignKey("budget.id"))
+
+    def __repr__(self):
+        return "ParentCategory o nazwie: '%s', w ramach budżetu o ID '%i'" % (self.name, self.budget_id)
