@@ -19,7 +19,8 @@ def get_user(username):
         create_account(username)
     else:
         print("\n{}, Twoje ID w bazie danych to {}. Twój budżet to: [TODO]\n".format(user_instance.name, user_instance.id))
-        show_budget()
+        global_user_id = user_instance.id
+        show_budget(global_user_id)
 
 def create_account(username):
     print("\nHi, {}, seems like you don't have an account. Worry not! We've just created one for you! :-)".format(username))
@@ -28,5 +29,6 @@ def create_account(username):
     session.commit()
     get_user(username)
 
-def show_budget():
-    pass
+def show_budget(global_user_id):
+    print("Pokazuję budżety dla usera o ID {}".format(global_user_id))
+    #TODO
