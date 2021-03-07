@@ -1,5 +1,5 @@
 #Import database connection
-from mydatabase import engine
+from .mydatabase import engine
 
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, Numeric
 from sqlalchemy.orm import relationship, backref

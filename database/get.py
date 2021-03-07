@@ -1,12 +1,12 @@
 from sqlalchemy.orm import sessionmaker
-from mydatabase import engine
+from .mydatabase import engine
 from models import User
 
 Session = sessionmaker(bind=engine)
 
 session = Session()
 
-#Retrive a User object with a name 'Krzysiek'
+#Retrive gita User object with a name 'Krzysiek'
 get_user = session.query(User).filter_by(name='Krzysiek').first()
 
 #Does it work?
