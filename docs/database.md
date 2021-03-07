@@ -15,7 +15,7 @@ pliki definiujące bazę danych i ustanawiające sesję
 Modele klas
 
 #### create-tables.py w katalogu głównym
-odpalenie pliku tabele na podstawie zaimportowanych modeli
+odpalenie pliku tworzy tabele na podstawie zaimportowanych modeli
 
 #### populate.py
 Plik (docelowo) wypełniający bazę danych testowymi rekordami
