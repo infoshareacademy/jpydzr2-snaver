@@ -1,3 +1,8 @@
+"""Package that is responsible for application's internal logic
+
+It is induced by main.py
+"""
+
 #Import models
 from models.Base import Base
 from models.User import User
