@@ -20,7 +20,7 @@ def get_user(username):
         create_account(username)
     else:
         global_user_id = user_instance.id
-        global_user_name = user.instance.name
+        global_user_name = user_instance.name
         show_budget(global_user_id)
 
 def create_account(username):
