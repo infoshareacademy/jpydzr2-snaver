@@ -21,7 +21,7 @@ def get_user(username):
     else:
         global_user_id = user_instance.id
         global_user_name = user_instance.name
-        show_budget(global_user_id)
+        show_budget(global_user_id, global_user_name)
 
 def create_account(username):
     print("\nHi, {}, seems like you don't have an account. Worry not! We've just created one for you! :-)".format(username))
