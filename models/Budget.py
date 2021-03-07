@@ -10,6 +10,7 @@ Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
 
+
 class Budget(Base):
     __tablename__ = 'budget'
 

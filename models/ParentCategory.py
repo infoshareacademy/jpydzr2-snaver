@@ -20,7 +20,7 @@ class ParentCategory(Base):
     categories = relationship("Category")
 
     def get_categories(self):
-        return ParentCategory.query.filter((ParentCategory.budget_id == self.id)).all()
+        return ParentCategory.query.filter((Category.budget_id == self.id)).all()
 
     @property
     def available_amount(self):
