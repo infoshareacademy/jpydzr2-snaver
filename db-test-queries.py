@@ -26,16 +26,16 @@ for instance in session.query(User).order_by(User.id):
 for instance in session.query(Budget).order_by(Budget.id):
     print(instance)
 
-#Loop through first 10 parent categories
-for instance in session.query(ParentCategory).order_by(ParentCategory.id).limit(10):
+#Loop through first 5 parent categories
+for instance in session.query(ParentCategory).order_by(ParentCategory.id).limit(5):
     print(instance)
 
-#Loop through first 10 categories
-for instance in session.query(Category).order_by(Category.id).limit(10):
+#Loop through first 5 categories
+for instance in session.query(Category).order_by(Category.id).limit(5):
     print(instance)
 
-#Loop through first 10 transactions
-for instance in session.query(Transaction).order_by(Transaction.id).limit(10):
+#Loop through first 5 transactions
+for instance in session.query(Transaction).order_by(Transaction.id).limit(5):
     print(instance)
 
 #Count categories
@@ -44,4 +44,4 @@ print("Number of categories: {}.".format(number_of_categories))
 
 #Count Transactions
 number_of_transactions = session.query(Transaction).count()
-print("Number of categories: {}.".format(number_of_transactions))
+print("Number of transactions: {}.".format(number_of_transactions))
