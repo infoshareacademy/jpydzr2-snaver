@@ -6,17 +6,16 @@ Feel free to add your own generators :-)
 #impoprt modules
 from database import engine
 from session import session
+# from decimal import Decimal
+from random import uniform
+from datetime import datetime
 
+#import models
 from models.User import User
 from models.Budget import Budget
 from models.ParentCategory import ParentCategory
 from models.Category import Category
 from models.Transaction import Transaction
-
-from decimal import Decimal
-from random import uniform, randint
-from datetime import datetime
-
 
 #ADD USERS
 #------------------------------
