@@ -4,7 +4,7 @@ It is induced by main.py
 """
 
 #Import models
-from models.Base import Base
+# from models.Base import Base
 from models.User import User
 from models.Budget import Budget
 from models.ParentCategory import ParentCategory

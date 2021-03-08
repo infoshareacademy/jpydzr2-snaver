@@ -11,12 +11,16 @@ from models.User import User
 from models.Budget import Budget
 from models.ParentCategory import ParentCategory
 from models.Category import Category
+from models.Transaction import Transaction
 
 from decimal import Decimal
-from random import uniform
+from random import uniform, randint
+from datetime import datetime
 
 
-#ADD USERS = ===========================================
+#ADD USERS
+#------------------------------
+
 session.add_all([
      User(name='Zbyszek'),
      User(name='Krzysiek'),
@@ -39,6 +43,7 @@ session.add_all(budget_list)
 session.commit()
 
 #ADD PARENT CATEGORIES
+#------------------------------
 
 parent_category_list = []
 
@@ -56,6 +61,7 @@ session.add_all(parent_category_list)
 session.commit()
 
 #ADD CATEGORIES
+#------------------------------
 
 category_list = []
 
@@ -68,21 +74,37 @@ category_names = [
      ["Restauracja", "Kino"]
 ]
 
-# loop through users
-for u in range(3):
-     #loop through budgets
-     for b in range(3):
-          #loop through parent categories
-          for instance in session.query(ParentCategory).order_by(ParentCategory.id):
-               #create categories based on list of names
-               index = parent_category_names.index(instance.name)
-               for c in range(len(category_names[index])):
-                    category_list.append(Category(
-                         name = category_names[index][c],
-                         budgeted_amount = round(uniform(30.0, 2500.0), 2),
-                         available_amount = round(uniform(0.0, 1300.0), 2),
-                         parent_id = instance.id
-                    ))
+
+#loop through parent categories
+for parent_instance in session.query(ParentCategory).order_by(ParentCategory.id):
+     #create categories based on list of names
+     index = parent_category_names.index(parent_instance.name)
+     for c in range(len(category_names[index])):
+          category_list.append(Category(
+               name = category_names[index][c],
+               budgeted_amount = round(uniform(30.0, 2500.0), 2),
+               available_amount = round(uniform(0.0, 1300.0), 2),
+               parent_id = parent_instance.id
+          ))
 
 session.add_all(category_list)
+session.commit()
+
+#ADD TRANSACTIONS
+#------------------------------
+
+transaction_list = []
+#loop through parent categories
+for category_instance in session.query(Category).order_by(Category.id):
+     for i in range(randint(1, 10)):
+          transaction_list.append(Transaction(
+               name="Transakcja",
+               payee_name = "Nazwa sklepu / płatnika",
+               amount_inflow = 0.00,
+               amount_outflow = round(uniform(0.0, 800.0), 2),
+               category_id = category_instance.id,
+               date = datetime.now()
+          ))
+
+session.add_all(transaction_list)
 session.commit()

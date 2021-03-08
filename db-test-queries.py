@@ -10,6 +10,7 @@ from models.User import User
 from models.Budget import Budget
 from models.ParentCategory import ParentCategory
 from models.Category import Category
+from models.Transaction import Transaction
 
 #Retrive a User object with a name 'Krzysiek'
 get_user = session.query(User).filter_by(name='Krzysiek').first()
@@ -33,6 +34,14 @@ for instance in session.query(ParentCategory).order_by(ParentCategory.id):
 for instance in session.query(Category).order_by(Category.id):
     print(instance)
 
-#Count parent categories
-number_of_parent_categories = session.query(ParentCategory).count()
-print("Number of parent categories: {}.".format(number_of_parent_categories))
+#Loop through all transactions
+for instance in session.query(Transaction).order_by(Transaction.id):
+    print(instance)
+
+#Count categories
+number_of_categories = session.query(Category).count()
+print("Number of categories: {}.".format(number_of_categories))
+
+#Count Transactions
+number_of_transactions = session.query(Transaction).count()
+print("Number of categories: {}.".format(number_of_transactions))

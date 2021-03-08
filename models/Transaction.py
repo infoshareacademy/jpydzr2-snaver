@@ -1,8 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Date
-# from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, DateTime
 
-Base = declarative_base()
+from .Base import Base
 
 class Transaction(Base):
     __tablename__ = 'transaction'
@@ -13,4 +11,8 @@ class Transaction(Base):
     amount_inflow = Column(Numeric)
     amount_outflow = Column(Numeric)
     category_id = Column(Integer, ForeignKey("category.id"))
-    payee_date = Column(Date)
+    date = Column(DateTime)
+
+    def __repr__(self):
+        formatted_outflow = "{:.2f} zł".format(self.amount_outflow)
+        return "Transakcja o ID '%i' na kwotę: '%s'. ID kategorii: '%i'" % (self.id, formatted_outflow, self.category_id)
