@@ -11,4 +11,4 @@ class User(Base):
     name = Column(String)
 
     def __repr__(self):
-        return "Moje imię to: '%s'" % (self.name)
+        return "Moje imię to %s, a moje id to %i" % (self.name, self.id)

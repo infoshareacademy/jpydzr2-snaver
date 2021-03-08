@@ -15,4 +15,4 @@ class Transaction(Base):
 
     def __repr__(self):
         formatted_outflow = "{:.2f} zł".format(self.amount_outflow)
-        return "Transakcja o ID '%i' na kwotę: '%s'. ID kategorii: '%i'" % (self.id, formatted_outflow, self.category_id)
+        return "Transakcja o ID %i na kwotę %s. ID kategorii: %i" % (self.id, formatted_outflow, self.category_id)

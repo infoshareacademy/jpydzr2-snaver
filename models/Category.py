@@ -14,6 +14,6 @@ class Category(Base): #Prąd
 
     def __repr__(self):
         formatted_available = "{:.2f} zł".format(self.available_amount)
-        return "Kagtegoria: '%s'. Dostępna kwota: '%s'. ID rodzica: '%i'" % (self.name, formatted_available, self.parent_id)
+        return "Kategoria '%s',  dostępna kwota: %s, ID rodzica: %i" % (self.name, formatted_available, self.parent_id)
 
 
