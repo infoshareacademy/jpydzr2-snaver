@@ -5,5 +5,4 @@ Induces controller.py
 
 from controller import login
 
-
 login()

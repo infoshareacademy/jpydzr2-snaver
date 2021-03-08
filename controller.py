@@ -3,25 +3,26 @@
 It is induced by main.py
 """
 
-#Import models
+from models.Budget import Budget
+# Import models
 # from models.Base import Base
 from models.User import User
-from models.Budget import Budget
-from models.ParentCategory import ParentCategory
 from session import session
 
-#GLOBAL VARIABLES
+# GLOBAL VARIABLES
 global_user_id = None
 global_user_name = None
 
-#DEFINE LOGIC HERE
 
-#Display login form
+# DEFINE LOGIC HERE
+
+# Display login form
 def login():
     username = input("Hello, what's your name?\n")
     get_user(username)
 
-#Check if user exists, set global variables, redirect
+
+# Check if user exists, set global variables, redirect
 def get_user(username):
     # refer to global variables inside function
     global global_user_id
@@ -35,17 +36,20 @@ def get_user(username):
         global_user_name = user_instance.name
         show_budget()
 
-#Create account
+
+# Create account
 def create_account(username):
-    print("\nHi, {}, seems like you don't have an account. Worry not! We've just created one for you! :-)".format(username))
+    print("\nHi, {}, seems like you don't have an account. Worry not! We've just created one for you! :-)".format(
+        username))
     user = User(name=username)
     session.add(user)
     session.commit()
 
-    #set global variables through get_user function
+    # set global variables through get_user function
     get_user(username)
 
-#Show user's budget
+
+# Show user's budget
 def show_budget():
     # refer to global variables inside function
     global global_user_id
@@ -55,4 +59,4 @@ def show_budget():
     budget_instance = session.query(Budget).filter_by(user_id=global_user_id).first()
     print(budget_instance)
 
-    #TODO
+    # TODO

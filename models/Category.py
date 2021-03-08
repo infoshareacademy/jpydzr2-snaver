@@ -1,7 +1,9 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric
-# from sqlalchemy.orm import relationship
 
-from .Base import Base
+from Base import Base
+
+
+# from sqlalchemy.orm import relationship
 
 
 class Category(Base):

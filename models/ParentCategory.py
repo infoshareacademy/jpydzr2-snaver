@@ -1,7 +1,9 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-# from sqlalchemy.orm import relationship
 
-from .Base import Base
+from Base import Base
+
+
+# from sqlalchemy.orm import relationship
 
 
 class ParentCategory(Base):

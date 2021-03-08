@@ -1,7 +1,8 @@
-#import engine and sessionmaker
-from database import engine
+# import engine and sessionmaker
 from sqlalchemy.orm import sessionmaker
 
-#create and export session
+from database import engine
+
+# create and export session
 Session = sessionmaker(bind=engine)
 session = Session()
