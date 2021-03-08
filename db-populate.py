@@ -31,13 +31,12 @@ session.add_all([
 session.commit()
 
 #ADD BUDGETS
+#------------------------------
 
 budget_list = []
 
-x = 1
-for n in range(3):
-     budget_list.append(Budget(name="Mój budżet", user_id=x))
-     x += 1
+for user_instance in session.query(User).order_by(User.id):
+     budget_list.append(Budget(name="Budżet użytkownika {}".format(user_instance.name), user_id=user_instance.id))
 
 session.add_all(budget_list)
 session.commit()
@@ -46,16 +45,11 @@ session.commit()
 #------------------------------
 
 parent_category_list = []
-
 parent_category_names = ["Rachunki", "Kredyty", "Wydatki na życie", "Odkładanie", "Rozrywki"]
 
-u = 1
-for i in range(3):
-     x = 0
-     for j in range(5):
-          parent_category_list.append(ParentCategory(name=parent_category_names[x], budget_id=u))
-          x += 1
-     u += 1
+for budget_instance in session.query(Budget).order_by(Budget.id):
+     for i in range(len(parent_category_names)):
+          parent_category_list.append(ParentCategory(name=parent_category_names[i], budget_id=budget_instance.id))
 
 session.add_all(parent_category_list)
 session.commit()
@@ -64,8 +58,6 @@ session.commit()
 #------------------------------
 
 category_list = []
-
-# parent_category_names = ["Rachunki", "Kredyty", "Wydatki na życie", "Odkładanie", "Rozrywki"]
 category_names = [
      ["Prąd", "Internet", "Telefon", "Telewizja", "Woda", "Czynsz", "Gaz"],
      ["Kredyt studencki", "Kredyt w baku", "Kredyt hipoteczny", "Samochód"],
@@ -74,7 +66,6 @@ category_names = [
      ["Restauracja", "Kino"]
 ]
 
-
 #loop through parent categories
 for parent_instance in session.query(ParentCategory).order_by(ParentCategory.id):
      #create categories based on list of names
@@ -82,7 +73,7 @@ for parent_instance in session.query(ParentCategory).order_by(ParentCategory.id)
      for c in range(len(category_names[index])):
           category_list.append(Category(
                name = category_names[index][c],
-               budgeted_amount = round(uniform(30.0, 2500.0), 2),
+               budgeted_amount = round(uniform(30.0, 2500.0), 2), #TODO - żeby się wyliczało w locie, na razie jest na twardo zakodowane :-(
                available_amount = round(uniform(0.0, 1300.0), 2),
                parent_id = parent_instance.id
           ))
@@ -94,14 +85,14 @@ session.commit()
 #------------------------------
 
 transaction_list = []
-#loop through parent categories
+#loop through categories
 for category_instance in session.query(Category).order_by(Category.id):
      for i in range(randint(1, 10)):
           transaction_list.append(Transaction(
                name="Transakcja",
                payee_name = "Nazwa sklepu / płatnika",
                amount_inflow = 0.00,
-               amount_outflow = round(uniform(0.0, 800.0), 2),
+               amount_outflow = round(uniform(0.0, 800.0), 2), #TODO trzeba wykminić, czy korzystamy z Decimal czy z czego
                category_id = category_instance.id,
                date = datetime.now()
           ))

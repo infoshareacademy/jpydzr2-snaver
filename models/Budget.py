@@ -12,4 +12,4 @@ class Budget(Base):
     user_id = Column(Integer, ForeignKey("user.id")) #Creates relationship between the budget and the user
 
     def __repr__(self):
-        return "Budżet o nazwie: '%s', użytkownika o ID '%i'" % (self.name, self.user_id)
+        return "Budżet '%s', ID właściciela: '%i'" % (self.name, self.user_id)
