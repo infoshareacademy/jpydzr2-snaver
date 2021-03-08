@@ -1,4 +1,4 @@
-## 1. Zainstaluj SQLAlchemy
+## 1. Wymagania
 
 `pip install SQLAlchemy`
 
@@ -6,22 +6,28 @@ ewentualnie:
 
 `pip install -r src/requirements.txt`
 
-## 2. Wyjaśnienie plików w katalogu database:
+## 2. Wyjaśnienie plików związanych z bazą danych
 
-#### mydatabase.py
-plik mydatabase.py definiuje połączenie z bazą SQLite o nazwie foo.db - ale jeszcze nic z nią nie robi
+#### database.py, session.py
+pliki definiujące bazę danych i ustanawiające sesję - można o nich na razie zapomnieć
 
-#### models.py
-odpalenie pliku models.py tworzy nową bazę danych w katalogu database (zdefiniowaną w piku mydatabase.py) ze schematem (tabelami) na podstawie klas zawartych w tym pliku
+#### models/models.py
+Modele klas
 
-#### populate.py
-odpalenie pliku tworzy kilka przykładowych instancji klasy User i wkleja je do bazy danych
+#### db-create-tables.py
+odpalenie pliku tworzy tabele na podstawie zaimportowanych modeli
 
-#### get.py
-Przykładowe pozyskanie instancji klasy User z bazy danych
+#### db-populate.py
+Plik wypełniający bazę danych testowymi rekordami
 
-## 3. Uruchomienie i przetestowanie co i jak
-Wystarczy odpalic pliki models, populate i get w tej kolejności
+#### db-test-queries.py
+Plik, w którym możemy testować zapytania do bazy
+
+## 3. Postawienie bazy
+Odpalenie db-create-tables, potem db-populate (jeśli chcemy mieć testowe dane)
+Ew. później db-test-queries do debugowania
+
+Baza teraz ma rozszerzenie .sqlite - działa o wiele lepiej niż wcześniej, gdy miała rozszerzenie .db
 
 ## 4. Materiały
 

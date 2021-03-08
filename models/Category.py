@@ -1,18 +1,20 @@
-from .mydatabase import engine
-
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+
+from Base import Base
 
 
-Base = declarative_base()
+# from sqlalchemy.orm import relationship
 
 
 class Category(Base):
-    __tablename__ = 'parent_categories'
+    __tablename__ = 'category'
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    budgeted_amount = Column(Numeric) #Jeśli nie chcemy miesięcy na początku, to ten atrybut jest chyba zbędny
+    budgeted_amount = Column(Numeric)  # Jeśli nie chcemy miesięcy na początku, to ten atrybut jest chyba zbędny
     available_amount = Column(Numeric)
     parent_id = Column(Integer, ForeignKey("parent_category.id"))
+
+    def __repr__(self):
+        formatted_available = "{:.2f} zł".format(self.available_amount)
+        return "Kategoria '%s',  dostępna kwota: %s, ID rodzica: %i" % (self.name, formatted_available, self.parent_id)

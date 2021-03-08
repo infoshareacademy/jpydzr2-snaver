@@ -1,6 +1,8 @@
-from controller import *
+"""File that starts the program
 
-print(session)
-print(session.query(User).filter_by(id=1).first())
+Induces controller.py
+"""
+
+from controller import login
 
 login()

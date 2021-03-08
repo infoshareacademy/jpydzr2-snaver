@@ -1,10 +1,9 @@
-from .mydatabase import engine
+from sqlalchemy import Column, Integer, String, ForeignKey
 
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from Base import Base
 
-Base = declarative_base()
+
+# from sqlalchemy.orm import relationship
 
 
 class Budget(Base):
@@ -12,5 +11,7 @@ class Budget(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    user_id = Column(Integer, ForeignKey("user.id")) #Creates relationship between the budget and the user
-    parent_categories = relationship("ParentCategory")
+    user_id = Column(Integer, ForeignKey("user.id"))  # Creates relationship between the budget and the user
+
+    def __repr__(self):
+        return "Nazwa: '%s', ID właściciela: %i" % (self.name, self.user_id)
