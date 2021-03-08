@@ -4,10 +4,9 @@ Feel free to add your own generators :-)
 """
 
 #impoprt modules
-from database import engine
 from session import session
 # from decimal import Decimal
-from random import uniform
+from random import uniform, randint
 from datetime import datetime
 
 #import models
