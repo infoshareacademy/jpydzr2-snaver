@@ -12,4 +12,7 @@ class Category(Base): #Prąd
     available_amount = Column(Numeric)
     parent_id = Column(Integer, ForeignKey("parent_category.id"))
 
+    def __repr__(self):
+        return "Kagtegoria o nazwie: '%s', podczepiona pod rodzcia o ID '%i'" % (self.name, self.parent_id)
+
 

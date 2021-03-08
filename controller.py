@@ -23,13 +23,17 @@ def login():
 
 #Check if user exists, set global variables, redirect
 def get_user(username):
+    # refer to global variables inside function
+    global global_user_id
+    global global_user_name
+
     user_instance = session.query(User).filter_by(name=username).first()
     if user_instance is None:
         create_account(username)
     else:
         global_user_id = user_instance.id
         global_user_name = user_instance.name
-        show_budget(global_user_id, global_user_name)
+        show_budget()
 
 #Create account
 def create_account(username):
@@ -37,11 +41,18 @@ def create_account(username):
     user = User(name=username)
     session.add(user)
     session.commit()
-    #set global variables
+
+    #set global variables through get_user function
     get_user(username)
 
 #Show user's budget
-def show_budget(global_user_id, global_user_name):
+def show_budget():
+    # refer to global variables inside function
+    global global_user_id
+    global global_user_name
+
     print("Hej, {}, oto Twój budżet!".format(global_user_name))
+    budget_instance = session.query(Budget).filter_by(user_id=global_user_id).first()
+    print(budget_instance)
+
     #TODO
-    #budget = session.query(User).filter_by(user_id=global_user_id).first()

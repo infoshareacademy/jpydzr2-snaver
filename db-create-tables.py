@@ -11,6 +11,7 @@ from models.Base import Base
 from models.User import User
 from models.Budget import Budget
 from models.ParentCategory import ParentCategory
+from models.Category import Category
 
 #Create the database
 Base.metadata.create_all(engine)
