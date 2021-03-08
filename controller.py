@@ -3,10 +3,11 @@
 It is induced by main.py
 """
 
-from models.Budget import Budget
-# Import models
-# from models.Base import Base
+from models.Base import Base
 from models.User import User
+from models.Budget import Budget
+from models.ParentCategory import ParentCategory
+
 from session import session
 
 # GLOBAL VARIABLES

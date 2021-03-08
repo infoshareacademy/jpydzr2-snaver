@@ -3,10 +3,9 @@
 Don't forget to import the modules :-)
 """
 
-# Import database connection
 from database import engine
 
-# import models
+# Even "unused" models have to be imported here TODO: Fix this behaviour
 from models.Base import Base
 from models.User import User
 from models.Budget import Budget

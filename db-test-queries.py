@@ -11,7 +11,7 @@ from models.Transaction import Transaction
 from models.User import User
 from session import session
 
-# Retrive a User object with a name 'Krzysiek'
+# Retrieve a User object with a name 'Krzysiek'
 get_user = session.query(User).filter_by(name='Krzysiek').first()
 
 # Does it work?

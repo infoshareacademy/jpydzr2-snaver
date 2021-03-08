@@ -1,6 +1,4 @@
-# import engine and sessionmaker
 from sqlalchemy.orm import sessionmaker
-
 from database import engine
 
 # create and export session

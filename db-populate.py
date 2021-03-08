@@ -11,9 +11,8 @@ from models.Budget import Budget
 from models.Category import Category
 from models.ParentCategory import ParentCategory
 from models.Transaction import Transaction
-# import models
 from models.User import User
-# impoprt modules
+
 from session import session
 
 # ADD USERS
