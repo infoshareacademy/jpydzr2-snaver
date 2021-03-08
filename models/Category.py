@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric
-from sqlalchemy.orm import relationship
+# from sqlalchemy.orm import relationship
 
 from .Base import Base
 
@@ -13,6 +13,6 @@ class Category(Base): #Prąd
     parent_id = Column(Integer, ForeignKey("parent_category.id"))
 
     def __repr__(self):
-        return "Kagtegoria o nazwie: '%s', podczepiona pod rodzcia o ID '%i'" % (self.name, self.parent_id)
+        return "Kagtegoria o nazwie: '%s'. Dostępna kwota: '%f'. Kategoria podczepiona pod rodzcia o ID '%i'" % (self.name, self.available_amount, self.parent_id)
 
 

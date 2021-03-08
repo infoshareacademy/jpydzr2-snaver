@@ -68,8 +68,6 @@ category_names = [
      ["Restauracja", "Kino"]
 ]
 
-number_of_parent_categories = session.query(ParentCategory).count()
-
 # loop through users
 for u in range(3):
      #loop through budgets
@@ -85,7 +83,6 @@ for u in range(3):
                          available_amount = round(uniform(0.0, 1300.0), 2),
                          parent_id = instance.id
                     ))
-
 
 session.add_all(category_list)
 session.commit()
