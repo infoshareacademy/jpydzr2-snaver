@@ -24,7 +24,7 @@ global_user_name = None
 # Display login form
 def login():
     # Ask you user if they have an account
-    answer = input("Do you already have an account?[y/n]: ")
+    answer = input("Do you have an account?[y/n]: ")
 
     # If user does not have an account, redirect them to create_account function
     if answer.lower() == 'n' or answer.lower() == 'no':
@@ -124,7 +124,7 @@ def show_budget():
     print("\n{}, here's your budget!".format(global_user_name))
     budget_instance = session.query(Budget).filter_by(user_id=global_user_id).first()
     if budget_instance is None:
-        print("Whoops, you don't have any budgets yet!")
+        print("Whoops, you don't have any budgets yet. :-(")
     else:
         print(budget_instance)
 
