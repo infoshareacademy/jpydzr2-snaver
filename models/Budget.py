@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from .Base import Base
 
 
-# from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship
 
 
 class Budget(Base):
@@ -12,6 +12,7 @@ class Budget(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     user_id = Column(Integer, ForeignKey("user.id"))  # Creates relationship between the budget and the user
+    parent_categories = relationship("ParentCategory", backref="budget")
 
     def __repr__(self):
         return "Nazwa: '%s', ID właściciela: %i" % (self.name, self.user_id)

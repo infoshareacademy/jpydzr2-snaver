@@ -6,13 +6,17 @@ It is induced by main.py
 # from models.Base import Base
 from models.User import User
 from models.Budget import Budget
-# from models.ParentCategory import ParentCategory
+from models.ParentCategory import ParentCategory
+from models.Category import Category
+from models.Transaction import Transaction
 
 from session import session
 
 from getpass import getpass
 import hashlib
 import os
+
+from sqlalchemy.orm import lazyload
 
 # GLOBAL VARIABLES
 global_user_id = None
@@ -126,6 +130,23 @@ def show_budget():
     if budget_instance is None:
         print("Whoops, you don't have any budgets yet. :-(")
     else:
-        print(budget_instance)
+        # LOAD USER DATA
+        user_data = session.query(User).filter_by(id=global_user_id).options(
+            lazyload(User.budgets).subqueryload(Budget.parent_categories).subqueryload(ParentCategory.categories)).all()
 
-    # TODO
+        # PRINT WHOLE BUDGET
+        print(user_data[0].budgets)
+        for b in user_data[0].budgets:
+            print(b)
+            for p in b.parent_categories:
+                sum = 0.00
+                for c in p.categories:
+                    sum += c.available_amount
+                    formatted_sum = "{:.2f} zł".format(sum)
+                print("\n---------------- {}, dostępna kwota: {} ---------------- \n".format(p.name, formatted_sum))
+                n = 1
+                for c in p.categories:
+                    formatted_available = "{:.2f} zł".format(c.available_amount)
+                    print("{}: {},  dostępne środki: {}".format(n, c.name, formatted_available))
+                    n += 1
+
