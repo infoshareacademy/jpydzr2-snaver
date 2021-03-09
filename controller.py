@@ -134,8 +134,8 @@ def show_budget():
             lazyload(Budget.parent_categories).subqueryload(ParentCategory.categories)).all()
 
         # Zapytanie wyżej zwraca listę budżetów zalogowanego użytkownika, w której są listy pod-dzieci
-        # Wpisanie list_of_user_budgets[0].parent_categories zwraca listę parent kategorii pierwszego budżetu na liście
-        # list_of_user_budgets[0].parent_categories[0].categories zwraca listę kategorii i tak dalej
+        # Wpisanie budgets_list[0].parent_categories zwraca listę parent kategorii pierwszego budżetu na liście
+        # budgets_list[0].parent_categories[0].categories zwraca listę kategorii i tak dalej
 
         # print the name of the firsy budget on the list
         print("\n{}".format(budgets_list[0].name.upper()))  # Print first budget's name
