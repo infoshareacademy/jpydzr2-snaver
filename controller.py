@@ -24,7 +24,7 @@ global_user_name = None
 # Display login form
 def login():
     # Welcome message
-    print("\nWelcome to Snaver!\n")
+    print("\nWelcome to Snaver!")
 
     #Ask you user if they have an account
     answer = input("Do you already have an account?[y/n]: ")
@@ -60,7 +60,7 @@ def validate_login(username, password):
         new_key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
 
         if key != new_key:
-            print("Wrong password / username. Let's try again!")
+            print("\nWrong password / username. Let's try again!")
             login()
         else:
             get_user(user_instance)
@@ -94,10 +94,10 @@ def create_account():
     session.add(user)
     session.commit()
 
-    print("You've sucessfully created the account!")
+    user_instance = session.query(User).filter_by(name=username).first()
 
-    # set global variables through get_user function
-    login()
+    print("You've sucessfully created the account!")
+    get_user(user_instance)
 
 
 # Show user's budget
@@ -106,7 +106,7 @@ def show_budget():
     global global_user_id
     global global_user_name
 
-    print("\nHej, {}, oto Twój budżet!\n".format(global_user_name))
+    print("\n{}, oto Twój budżet!\n".format(global_user_name))
     budget_instance = session.query(Budget).filter_by(user_id=global_user_id).first()
     print(budget_instance)
 
