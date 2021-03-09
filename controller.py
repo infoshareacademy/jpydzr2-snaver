@@ -151,7 +151,7 @@ def show_budget():
             formatted_sum = "{:.2f} zł".format(sum)
             print("\n---------------- {}, dostępna kwota: {} ---------------- \n".format(parent.name, formatted_sum))
 
-            # Loop tgrough ONCE AGAIN to print them
+            # Loop tgrough categories ONCE AGAIN, this time to print them
             n = 1  # Number of category within the parent
             for category in parent.categories:
                 formatted_available = "{:.2f} zł".format(category.available_amount)
