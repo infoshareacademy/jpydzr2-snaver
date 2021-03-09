@@ -23,51 +23,89 @@ global_user_name = None
 
 # Display login form
 def login():
-    # Welcome message
-    print("\nWelcome to Snaver!")
-
     #Ask you user if they have an account
     answer = input("Do you already have an account?[y/n]: ")
 
     # If user does not have an account, redirect them to create_account function
     if answer.lower() == 'n' or answer.lower() == 'no':
-        print("\nSo, let's set up an account for you, then! :-)\n")
+        print("\nSo, let's set up an account for you, then! :-)")
         create_account()
 
-    # If user does have an account, ask him for login credentials
+    # If user does have an account, ask them for login credentials
     elif answer.lower() == 'y' or answer.lower() == 'yes':
-        print("Alright, let's log you in!\n")
+        print("\nAlright, let's log you in!")
         username = input("Username: ")
         password = getpass(prompt="Password: ")
         validate_login(username, password)
 
-    # If user's input is somehow... weird
+    # If user does not cooperate
     else:
-        print("Hmm, let's try again!\n")
+        print("\nHmm, let's try again!")
         login()
+
+
+# Create account
+def create_account():
+    # Prompt user for username
+    username = input("Choose your username: ")
+
+    # Check if username is not taken
+    user_account = session.query(User).filter_by(name=username).first()
+    while user_account is not None:
+        print("\nHmm, that username is already taken! Let'stry something different.")
+        username = input("Choose your username: ")
+        user_account = session.query(User).filter_by(name=username).first()
+
+    # Prompt user for password
+    password = getpass(prompt="Great, choose your password now: ")
+
+    # Hash password
+    salt = os.urandom(32)  # A new salt for this user
+    key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+
+    # Create user
+    user = User(name=username, salt=salt, key=key)
+    session.add(user)
+    session.commit()
+
+    # Get user instance from db
+    user_instance = session.query(User).filter_by(name=username).first()
+    print("\nYou've sucessfully created the account!")
+
+    # Redirect logged user
+    set_global_variables(user_instance)
 
 
 def validate_login(username, password):
-    #get user instance
+    # Get user instance
     user_instance = session.query(User).filter_by(name=username).first()
+
+    # Wrong username
     if user_instance is None:
         print("Wrong password / username. Let's try again!")
         login()
+
+    # Correct username
     else:
-        salt = user_instance.salt  # Get the salt
-        key = user_instance.key  # Get the correct key
+
+        #Retrieve user's salt and key
+        salt = user_instance.salt
+        key = user_instance.key
 
         new_key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
 
+        # Check if the password is correct
         if key != new_key:
             print("\nWrong password / username. Let's try again!")
             login()
+        # Correct password
         else:
-            get_user(user_instance)
+            # Redirect logged user
+            set_global_variables(user_instance)
 
 
 # Set global variables, redirect
-def get_user(user_instance):
+def set_global_variables(user_instance):
     # refer to global variables inside function
     global global_user_id
     global global_user_name
@@ -76,29 +114,6 @@ def get_user(user_instance):
     global_user_name = user_instance.name
     show_budget()
 
-# Create account
-def create_account():
-    username = input("Choose your username: ")
-    does_user_exist = session.query(User).filter_by(name=username).first()
-    while does_user_exist is not None:
-        print("Hmm, that username is already taken! Let'stry something different.\n")
-        username = input("Choose your username: ")
-        does_user_exist = session.query(User).filter_by(name=username).first()
-    password = getpass(prompt="Great, choose your password now: ")
-
-    # Hash password
-    salt = os.urandom(32)  # A new salt for this user
-    key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
-
-    user = User(name=username, salt=salt, key=key)
-    session.add(user)
-    session.commit()
-
-    user_instance = session.query(User).filter_by(name=username).first()
-
-    print("You've sucessfully created the account!")
-    get_user(user_instance)
-
 
 # Show user's budget
 def show_budget():
@@ -106,7 +121,7 @@ def show_budget():
     global global_user_id
     global global_user_name
 
-    print("\n{}, oto Twój budżet!\n".format(global_user_name))
+    print("{}, oto Twój budżet!\n".format(global_user_name))
     budget_instance = session.query(Budget).filter_by(user_id=global_user_id).first()
     print(budget_instance)
 
