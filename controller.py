@@ -130,11 +130,12 @@ def show_budget():
     if budget_instance is None:
         print("Whoops, you don't have any budgets yet. :-(")
     else:
-        # To zapytanie zwraca listę budżetów.
-        # Wpisanie list_of_user_budgets[0].parent_categories zwraca listę parent kategorii pierwszego budżetu na liście
-        # list_of_user_budgets[0].parent_categories[0].categories zwraca listę kategorii i tak dalej
         list_of_user_budgets = session.query(Budget).filter_by(user_id=global_user_id).options(
             lazyload(Budget.parent_categories).subqueryload(ParentCategory.categories)).all()
+
+        # Zapytanie wyżej zwraca listę budżetów.
+        # Wpisanie list_of_user_budgets[0].parent_categories zwraca listę parent kategorii pierwszego budżetu na liście
+        # list_of_user_budgets[0].parent_categories[0].categories zwraca listę kategorii i tak dalej
 
         # LOAD WHOLE BUDGET
         print("\n{}".format(list_of_user_budgets[0].name.upper()))
