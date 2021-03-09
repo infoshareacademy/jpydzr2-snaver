@@ -133,7 +133,7 @@ def show_budget():
         budgets_list = session.query(Budget).filter_by(user_id=global_user_id).options(
             lazyload(Budget.parent_categories).subqueryload(ParentCategory.categories)).all()
 
-        # Zapytanie wyżej zwraca listę budżetów zalogowanego użytkownika
+        # Zapytanie wyżej zwraca listę budżetów zalogowanego użytkownika, w której są listy pod-dzieci
         # Wpisanie list_of_user_budgets[0].parent_categories zwraca listę parent kategorii pierwszego budżetu na liście
         # list_of_user_budgets[0].parent_categories[0].categories zwraca listę kategorii i tak dalej
 
