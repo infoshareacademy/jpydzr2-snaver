@@ -135,18 +135,18 @@ def show_budget():
             lazyload(User.budgets).subqueryload(Budget.parent_categories).subqueryload(ParentCategory.categories)).all()
 
         # PRINT WHOLE BUDGET
-        print(user_data[0].budgets)
+        # print(user_data[0].budgets)
         for budget in user_data[0].budgets:
-            print(budget)
+            print("\n=============== {} ===============\n".format(budget.name))
             for parent in budget.parent_categories:
                 sum = 0.00
                 for category in parent.categories:
                     sum += category.available_amount
-                    formatted_sum = "{:.2f} zł".format(sum)
+                formatted_sum = "{:.2f} zł".format(sum)
                 print("\n---------------- {}, dostępna kwota: {} ---------------- \n".format(parent.name, formatted_sum))
                 n = 1
                 for category in parent.categories:
                     formatted_available = "{:.2f} zł".format(category.available_amount)
-                    print("{}: {},  dostępne środki: {}".format(n, category.name, formatted_available))
+                    print("{}: {}, dostępne środki: {}".format(n, category.name, formatted_available))
                     n += 1
 
