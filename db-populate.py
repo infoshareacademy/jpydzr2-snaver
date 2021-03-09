@@ -15,16 +15,23 @@ from models.User import User
 
 from session import session
 
+import hashlib
+import os
+
 # ADD USERS
 # ------------------------------
 
-session.add_all([
-    User(name='Zbyszek'),
-    User(name='Krzysiek'),
-    User(name='Mariola')
-])
+users = ["Zbyszek", "Krzysiek", "Mariola"]
+users_list = []
+
+for i in range(len(users)):
+    salt = os.urandom(32)  # A new salt for this user
+    key = hashlib.pbkdf2_hmac('sha256', "test".encode('utf-8'), salt, 100000)
+
+    users_list.append(User(name=users[i], salt=salt, key=key))
 
 # Zapisz do bazy
+session.add_all(users_list)
 session.commit()
 
 # ADD BUDGETS
