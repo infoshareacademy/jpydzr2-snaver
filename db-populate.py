@@ -21,17 +21,18 @@ import os
 # ADD USERS
 # ------------------------------
 
-users = ["Zbyszek", "Krzysiek", "Mariola"]
-users_list = []
+user_names = ["Zbyszek", "Krzysiek", "Mariola"]
+user_list = []
 
-for i in range(len(users)):
-    salt = os.urandom(32)  # A new salt for this user
+for i in range(len(user_names)):
+    salt = os.urandom(32)
+    # Test users' passwords == "test"
     key = hashlib.pbkdf2_hmac('sha256', "test".encode('utf-8'), salt, 100000)
-
-    users_list.append(User(name=users[i], salt=salt, key=key))
+    # append user instance
+    user_list.append(User(name=user_names[i], salt=salt, key=key))
 
 # Zapisz do bazy
-session.add_all(users_list)
+session.add_all(user_list)
 session.commit()
 
 # ADD BUDGETS

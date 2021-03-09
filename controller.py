@@ -3,10 +3,10 @@
 It is induced by main.py
 """
 
-from models.Base import Base
+# from models.Base import Base
 from models.User import User
 from models.Budget import Budget
-from models.ParentCategory import ParentCategory
+# from models.ParentCategory import ParentCategory
 
 from session import session
 
@@ -23,7 +23,7 @@ global_user_name = None
 
 # Display login form
 def login():
-    #Ask you user if they have an account
+    # Ask you user if they have an account
     answer = input("Do you already have an account?[y/n]: ")
 
     # If user does not have an account, redirect them to create_account function
@@ -88,7 +88,7 @@ def validate_login(username, password):
     # Correct username
     else:
 
-        #Retrieve user's salt and key
+        # Retrieve user's salt and key
         salt = user_instance.salt
         key = user_instance.key
 
