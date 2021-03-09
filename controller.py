@@ -137,9 +137,10 @@ def show_budget():
         # Wpisanie list_of_user_budgets[0].parent_categories zwraca listę parent kategorii pierwszego budżetu na liście
         # list_of_user_budgets[0].parent_categories[0].categories zwraca listę kategorii i tak dalej
 
-        # LOAD WHOLE BUDGET
+        # print the name of the firsy budget on the list
         print("\n{}".format(budgets_list[0].name.upper()))  # Print first budget's name
 
+        # LOAD WHOLE BUDGET
         # loop through parent categories of the first budget in the list
         for parent in budgets_list[0].parent_categories:
             # Calculate avaialbale amount based on category.avaialable_amount
