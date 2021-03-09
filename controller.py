@@ -121,8 +121,11 @@ def show_budget():
     global global_user_id
     global global_user_name
 
-    print("\n{}, oto Twój budżet!".format(global_user_name))
+    print("\n{}, here's your budget!".format(global_user_name))
     budget_instance = session.query(Budget).filter_by(user_id=global_user_id).first()
-    print(budget_instance)
+    if budget_instance is None:
+        print("Whoops, you don't have any budgets yet!")
+    else:
+        print(budget_instance)
 
     # TODO
