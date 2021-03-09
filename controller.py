@@ -137,7 +137,7 @@ def show_budget():
         # PRINT WHOLE BUDGET
         # print(user_data[0].budgets)
         for budget in user_data[0].budgets:
-            print("\n=============== {} ===============\n".format(budget.name))
+            print("\n{}".format(budget.name.upper()))
             for parent in budget.parent_categories:
                 sum = 0.00
                 for category in parent.categories:
@@ -147,6 +147,7 @@ def show_budget():
                 n = 1
                 for category in parent.categories:
                     formatted_available = "{:.2f} zł".format(category.available_amount)
-                    print("{}: {}, dostępne środki: {}".format(n, category.name, formatted_available))
+                    print("{}. {}, dostępne środki: {}".format(n, category.name, formatted_available))
                     n += 1
 
+        print("\n")
