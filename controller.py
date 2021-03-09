@@ -130,24 +130,30 @@ def show_budget():
     if budget_instance is None:
         print("Whoops, you don't have any budgets yet. :-(")
     else:
-        # LOAD USER DATA
-        user_data = session.query(User).filter_by(id=global_user_id).options(
-            lazyload(User.budgets).subqueryload(Budget.parent_categories).subqueryload(ParentCategory.categories)).all()
+        # To zapytanie zwraca listę budżetów.
+        # Wpisanie list_of_user_budgets[0].parent_categories zwraca listę parent kategorii pierwszego budżetu na liście
+        # list_of_user_budgets[0].parent_categories[0].categories zwraca listę kategorii i tak dalej
+        list_of_user_budgets = session.query(Budget).filter_by(user_id=global_user_id).options(
+            lazyload(Budget.parent_categories).subqueryload(ParentCategory.categories)).all()
 
-        # PRINT WHOLE BUDGET
-        # print(user_data[0].budgets)
-        for budget in user_data[0].budgets:
-            print("\n{}".format(budget.name.upper()))
-            for parent in budget.parent_categories:
-                sum = 0.00
-                for category in parent.categories:
-                    sum += category.available_amount
-                formatted_sum = "{:.2f} zł".format(sum)
-                print("\n---------------- {}, dostępna kwota: {} ---------------- \n".format(parent.name, formatted_sum))
-                n = 1
-                for category in parent.categories:
-                    formatted_available = "{:.2f} zł".format(category.available_amount)
-                    print("{}. {}, dostępne środki: {}".format(n, category.name, formatted_available))
-                    n += 1
+        # LOAD WHOLE BUDGET
+        print("\n{}".format(list_of_user_budgets[0].name.upper()))
 
-        print("\n")
+        # loop through parent categories
+        for parent in list_of_user_budgets[0].parent_categories:
+            # Calculate avaialbale amount based on category.avaialable_amount
+            sum = 0.00
+            # Loop through categories to calculate sum
+            for category in parent.categories:
+                sum += category.available_amount
+            formatted_sum = "{:.2f} zł".format(sum)
+            print("\n---------------- {}, dostępna kwota: {} ---------------- \n".format(parent.name, formatted_sum))
+
+            # Loop tgrough ONCE AGAIN to print them
+            n = 1  # Number of category within the parent
+            for category in parent.categories:
+                formatted_available = "{:.2f} zł".format(category.available_amount)
+                print("{}. {}, dostępne środki: {}".format(n, category.name, formatted_available))
+                n += 1  #Increment the category number
+
+        print("\n")  # Print space between the next command
