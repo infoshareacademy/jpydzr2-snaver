@@ -82,7 +82,7 @@ def validate_login(username, password):
 
     # Wrong username
     if user_instance is None:
-        print("Wrong password / username. Let's try again!")
+        print("\nWrong password / username. Let's try again!")
         login()
 
     # Correct username
