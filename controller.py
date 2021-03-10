@@ -56,7 +56,7 @@ def create_account():
     # Check if username is not taken
     user_account = session.query(User).filter_by(name=username).first()
     while user_account is not None:
-        print("\nHmm, that username is already taken! Let'stry something different.")
+        print("\nHmm, that username is already taken. Let'stry something different!")
         username = input("Choose your username: ")
         user_account = session.query(User).filter_by(name=username).first()
 
@@ -132,7 +132,7 @@ def show_budget():
 
     # If user has no budgets
     if budget_instance is None:
-        print("Whoops, you don't have any budgets yet. :-(")
+        print("Whoops, you don't have any budgets yet. Shall we create one?")
 
     # else == User does have at least 1 budget
     else:
@@ -143,7 +143,7 @@ def show_budget():
         # Wpisanie budgets_list[0].parent_categories zwraca listę parent kategorii pierwszego budżetu na liście
         # budgets_list[0].parent_categories[0].categories zwraca listę kategorii i tak dalej
 
-        # print the name of the firsy budget on the list
+        # print the name of the first budget on the list
         print("\n{}".format(budgets_list[0].name.upper()))  # Print first budget's name
 
         # LOAD WHOLE BUDGET
