@@ -151,10 +151,10 @@ def show_budget():
         # loop through parent categories of the first budget in the list
         for parent in budgets_list[0].parent_categories:
 
-            # Calculate avaialbale amount based on category.avaialable_amount
+            # Start calculating the parent's avaialbale amount based its children' avaialable_amount
             parent_available_sum = 0.00
 
-            # Loop through parent's categories to calculate parent_sum
+            # Loop through the parent's categories to add available_amount to the parent_avaialble_sum
             for category in parent.categories:
                 parent_available_sum += category.available_amount
 
