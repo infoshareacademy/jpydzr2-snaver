@@ -126,9 +126,15 @@ def show_budget():
     global global_user_name
 
     print("\n{}, here's your budget!".format(global_user_name))
+
+    # Try to retrieve the user's budget
     budget_instance = session.query(Budget).filter_by(user_id=global_user_id).first()
+
+    # If user has no budgets
     if budget_instance is None:
         print("Whoops, you don't have any budgets yet. :-(")
+
+    # else == User does have at least 1 budget
     else:
         budgets_list = session.query(Budget).filter_by(user_id=global_user_id).options(
             lazyload(Budget.parent_categories).subqueryload(ParentCategory.categories)).all()
@@ -141,21 +147,26 @@ def show_budget():
         print("\n{}".format(budgets_list[0].name.upper()))  # Print first budget's name
 
         # LOAD WHOLE BUDGET
+
         # loop through parent categories of the first budget in the list
         for parent in budgets_list[0].parent_categories:
+
             # Calculate avaialbale amount based on category.avaialable_amount
             parent_available_sum = 0.00
-            # Loop through categories to calculate sum
+
+            # Loop through parent's categories to calculate parent_sum
             for category in parent.categories:
                 parent_available_sum += category.available_amount
+
+            # Format the result and print it along parent category's name
             formatted_sum = "{:.2f} zł".format(parent_available_sum)
             print("\n---------------- {}, dostępna kwota: {} ---------------- \n".format(parent.name, formatted_sum))
 
             # Loop tgrough categories ONCE AGAIN, this time to print them
-            n = 1  # Number of category within the parent
+            n = 1  # Position (number) of the category within the parent
             for category in parent.categories:
                 formatted_available = "{:.2f} zł".format(category.available_amount)
                 print("{}. {}, dostępne środki: {}".format(n, category.name, formatted_available))
-                n += 1  #Increment the category number
+                n += 1  # Increment the category number
 
         print("\n")  # Print space between the next command
