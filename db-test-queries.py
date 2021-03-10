@@ -33,6 +33,7 @@ for instance in session.query(ParentCategory).order_by(ParentCategory.id).limit(
 
 # Loop through first 5 categories
 for instance in session.query(Category).order_by(Category.id).limit(5):
+    print(f"Transactions in category {instance.id}: {instance.get_transactions()}")
     print(instance)
 
 # Loop through first 5 transactions
