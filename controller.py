@@ -40,11 +40,13 @@ def login():
         print("\nAlright, let's log you in!")
         username = input("Username: ")
         password = getpass(prompt="Password: ")
+
+        # Validate the login credentials
         validate_login(username, password)
 
     # If user does not cooperate
     else:
-        print("\nHmm, let's try again!")
+        print("\nHmm, let's start over!")
         login()
 
 
@@ -80,6 +82,7 @@ def create_account():
     set_global_variables(user_instance)
 
 
+# Validate the login credentials
 def validate_login(username, password):
     # Get user instance
     user_instance = session.query(User).filter_by(name=username).first()
@@ -89,7 +92,7 @@ def validate_login(username, password):
         print("\nWrong password / username. Let's try again!")
         login()
 
-    # Correct username
+    # else == Correct username
     else:
 
         # Retrieve user's salt and key
@@ -102,7 +105,8 @@ def validate_login(username, password):
         if key != new_key:
             print("\nWrong password / username. Let's try again!")
             login()
-        # Correct password
+
+        # else == Correct password
         else:
             # Redirect logged user
             set_global_variables(user_instance)
@@ -116,6 +120,8 @@ def set_global_variables(user_instance):
 
     global_user_id = user_instance.id
     global_user_name = user_instance.name
+
+    # Redirect the user to their budgets
     show_budget()
 
 
@@ -124,8 +130,6 @@ def show_budget():
     # refer to global variables inside function
     global global_user_id
     global global_user_name
-
-    print("\n{}, here's your budget!".format(global_user_name))
 
     # Try to retrieve the user's budget
     budget_instance = session.query(Budget).filter_by(user_id=global_user_id).first()
@@ -136,6 +140,10 @@ def show_budget():
 
     # else == User does have at least 1 budget
     else:
+        # Welcome message
+        print("\n{}, here's your budget!".format(global_user_name))
+
+        # Get the list of all user's budgets and its children up to the category level
         budgets_list = session.query(Budget).filter_by(user_id=global_user_id).options(
             lazyload(Budget.parent_categories).subqueryload(ParentCategory.categories)).all()
 
