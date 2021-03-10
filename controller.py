@@ -144,11 +144,11 @@ def show_budget():
         # loop through parent categories of the first budget in the list
         for parent in budgets_list[0].parent_categories:
             # Calculate avaialbale amount based on category.avaialable_amount
-            sum = 0.00
+            parent_available_sum = 0.00
             # Loop through categories to calculate sum
             for category in parent.categories:
-                sum += category.available_amount
-            formatted_sum = "{:.2f} zł".format(sum)
+                parent_available_sum += category.available_amount
+            formatted_sum = "{:.2f} zł".format(parent_available_sum)
             print("\n---------------- {}, dostępna kwota: {} ---------------- \n".format(parent.name, formatted_sum))
 
             # Loop tgrough categories ONCE AGAIN, this time to print them
