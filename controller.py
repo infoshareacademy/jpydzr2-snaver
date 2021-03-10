@@ -136,7 +136,7 @@ def show_budget():
 
     # If user has no budgets
     if budget_instance is None:
-        print("Whoops, you don't have any budgets yet. Shall we create one?")
+        print("\nWhoops, you don't have any budgets yet. Shall we create one?")
 
     # else == User does have at least 1 budget
     else:
