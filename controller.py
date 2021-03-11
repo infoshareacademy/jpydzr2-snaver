@@ -3,12 +3,20 @@
 It is induced by main.py
 """
 
-from models.Base import Base
+# from models.Base import Base
 from models.User import User
 from models.Budget import Budget
 from models.ParentCategory import ParentCategory
+from models.Category import Category
+from models.Transaction import Transaction
 
 from session import session
+
+from getpass import getpass
+import hashlib
+import os
+
+from sqlalchemy.orm import lazyload
 
 # GLOBAL VARIABLES
 global_user_id = None
@@ -19,35 +27,102 @@ global_user_name = None
 
 # Display login form
 def login():
-    username = input("Hello, what's your name?\n")
-    get_user(username)
+    # Ask you user if they have an account
+    answer = input("Do you have an account?[y/n]: ")
+
+    # If user does not have an account, redirect them to create_account function
+    if answer.lower() == 'n' or answer.lower() == 'no':
+        print("\nSo, let's set up an account for you, then! :-)")
+        create_account()
+
+    # If user does have an account, ask them for login credentials
+    elif answer.lower() == 'y' or answer.lower() == 'yes':
+        print("\nAlright, let's log you in!")
+        username = input("Username: ")
+        password = getpass(prompt="Password: ")
+
+        # Validate the login credentials
+        validate_login(username, password)
+
+    # If user does not cooperate
+    else:
+        print("\nHmm, let's start over!")
+        login()
 
 
-# Check if user exists, set global variables, redirect
-def get_user(username):
+# Create account
+def create_account():
+    # Prompt user for username
+    username = input("Choose your username: ")
+
+    # Check if username is not taken
+    user_account = session.query(User).filter_by(name=username).first()
+    while user_account is not None:
+        print("\nHmm, that username is already taken. Let'stry something different!")
+        username = input("Choose your username: ")
+        user_account = session.query(User).filter_by(name=username).first()
+
+    # Prompt user for password
+    password = getpass(prompt="Great, choose your password now: ")
+
+    # Hash password
+    salt = os.urandom(32)  # A new salt for this user
+    key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+
+    # Create user
+    user = User(name=username, salt=salt, key=key)
+    session.add(user)
+    session.commit()
+
+    # Get user instance from db
+    user_instance = session.query(User).filter_by(name=username).first()
+    print("\nYou've sucessfully created the account!")
+
+    # Redirect logged user
+    set_global_variables(user_instance)
+
+
+# Validate the login credentials
+def validate_login(username, password):
+    # Get user instance
+    user_instance = session.query(User).filter_by(name=username).first()
+
+    # Wrong username
+    if user_instance is None:
+        print("\nWrong password / username. Let's try again!")
+        login()
+
+    # else == Correct username
+    else:
+
+        # Retrieve user's salt and key
+        salt = user_instance.salt
+        key = user_instance.key
+
+        new_key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+
+        # Check if the password is correct
+        if key != new_key:
+            print("\nWrong password / username. Let's try again!")
+            login()
+
+        # else == Correct password
+        else:
+            # Redirect logged user
+            set_global_variables(user_instance)
+
+
+# Set global variables, redirect
+def set_global_variables(user_instance):
     # refer to global variables inside function
     global global_user_id
     global global_user_name
 
-    user_instance = session.query(User).filter_by(name=username).first()
-    if user_instance is None:
-        create_account(username)
-    else:
-        global_user_id = user_instance.id
-        global_user_name = user_instance.name
-        show_budget()
+    global_user_id = user_instance.id
+    global_user_name = user_instance.name
 
-
-# Create account
-def create_account(username):
-    print("\nHi, {}, seems like you don't have an account. Worry not! We've just created one for you! :-)".format(
-        username))
-    user = User(name=username)
-    session.add(user)
-    session.commit()
-
-    # set global variables through get_user function
-    get_user(username)
+    # Redirect the user to their budgets
+    show_budget()
 
 
 # Show user's budget
@@ -56,8 +131,50 @@ def show_budget():
     global global_user_id
     global global_user_name
 
-    print("Hej, {}, oto Twój budżet!".format(global_user_name))
+    # Try to retrieve the user's budget
     budget_instance = session.query(Budget).filter_by(user_id=global_user_id).first()
-    print(budget_instance)
 
-    # TODO
+    # If user has no budgets
+    if budget_instance is None:
+        print("\nWhoops, you don't have any budgets yet. Shall we create one?")
+
+    # else == User does have at least 1 budget
+    else:
+        # Welcome message
+        print("\n{}, here's your budget!".format(global_user_name))
+
+        # Get the list of all user's budgets and its children up to the category level
+        budgets_list = session.query(Budget).filter_by(user_id=global_user_id).options(
+            lazyload(Budget.parent_categories).subqueryload(ParentCategory.categories)).all()
+
+        # Zapytanie wyżej zwraca listę budżetów zalogowanego użytkownika, w której są listy pod-dzieci
+        # Wpisanie budgets_list[0].parent_categories zwraca listę parent kategorii pierwszego budżetu na liście
+        # budgets_list[0].parent_categories[0].categories zwraca listę kategorii i tak dalej
+
+        # print the name of the first budget on the list
+        print("\n{}".format(budgets_list[0].name.upper()))  # Print first budget's name
+
+        # LOAD WHOLE BUDGET
+
+        # loop through parent categories of the first budget in the list
+        for parent in budgets_list[0].parent_categories:
+
+            # Start calculating the parent's avaialbale amount based its children' avaialable_amount
+            parent_available_sum = 0.00
+
+            # Loop through the parent's categories to add available_amount to the parent_avaialble_sum
+            for category in parent.categories:
+                parent_available_sum += category.available_amount
+
+            # Format the result and print it along parent category's name
+            formatted_sum = "{:.2f} zł".format(parent_available_sum)
+            print("\n---------------- {}, dostępna kwota: {} ---------------- \n".format(parent.name, formatted_sum))
+
+            # Loop tgrough the categories of the parent ONCE AGAIN, this time to print them
+            n = 1  # Position (number) of the category within the parent
+            for category in parent.categories:
+                formatted_available = "{:.2f} zł".format(category.available_amount)
+                print("{}. {}, dostępne środki: {}".format(n, category.name, formatted_available))
+                n += 1  # Increment the category number
+
+        print("\n")  # Print space between the next command

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime
 
 from .Base import Base
 
@@ -9,8 +9,8 @@ class Transaction(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     payee_name = Column(String)
-    amount_inflow = Column(Numeric)
-    amount_outflow = Column(Numeric)
+    amount_inflow = Column(Float)
+    amount_outflow = Column(Float)
     category_id = Column(Integer, ForeignKey("category.id"))
     date = Column(DateTime)
 
