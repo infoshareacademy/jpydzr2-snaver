@@ -79,8 +79,6 @@ for parent_instance in session.query(ParentCategory).order_by(ParentCategory.id)
         category_list.append(Category(
             name=category_names[index][c],
             budgeted_amount=round(uniform(30.0, 2500.0), 2),
-            # TODO - żeby się wyliczało w locie, na razie jest na twardo zakodowane :-(
-            available_amount=round(uniform(0.0, 1300.0), 2),
             parent_id=parent_instance.id
         ))
 

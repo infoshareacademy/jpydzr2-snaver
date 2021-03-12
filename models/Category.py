@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Float
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
 # This is a hack to import session TODO fix this
@@ -18,13 +19,21 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     budgeted_amount = Column(Float)
-    available_amount = Column(Float)
     parent_id = Column(Integer, ForeignKey("parent_category.id"))
     transactions = relationship("Transaction", backref="category")
 
     def __repr__(self):
         formatted_available = "{:.2f} zł".format(self.available_amount)
-        return f"id: {self.id}, name: {self.name}"
+        return f"id: {self.id}, name: {self.name}, available: {formatted_available}"
 
     def get_transactions(self):
         return session.query(Transaction).filter(Transaction.category_id == self.id).all()
+
+    @property
+    def available_amount(self):
+        amount = session.query(func.sum(Transaction.amount_outflow)).filter(Transaction.category_id == self.id).first()
+        return self.budgeted_amount - float(amount[0])
+
+    def set_budgeted_amount(self, amount):
+        session.query(Category).filter_by(id=self.id).update({'budgeted_amount': amount})
+        session.commit()
