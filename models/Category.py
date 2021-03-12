@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Float
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.hybrid import hybrid_property
 
 # This is a hack to import session TODO fix this
 # https://stackoverflow.com/questions/30669474/beyond-top-level-package-error-in-relative-import
@@ -18,7 +19,7 @@ class Category(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    budgeted_amount = Column(Float)
+    __budgeted_amount = Column("budgeted_amount", Float)
     parent_id = Column(Integer, ForeignKey("parent_category.id"))
     transactions = relationship("Transaction", backref="category")
 
@@ -32,8 +33,14 @@ class Category(Base):
     @property
     def available_amount(self):
         amount = session.query(func.sum(Transaction.amount_outflow)).filter(Transaction.category_id == self.id).first()
-        return self.budgeted_amount - float(amount[0])
+        return self.__budgeted_amount - float(amount[0])
 
-    def set_budgeted_amount(self, amount):
+    @hybrid_property
+    def budgeted_amount(self):
+        return self.__budgeted_amount
+
+    @budgeted_amount.setter
+    def budgeted_amount(self, amount):
+        self.__budgeted_amount = amount
         session.query(Category).filter_by(id=self.id).update({'budgeted_amount': amount})
         session.commit()

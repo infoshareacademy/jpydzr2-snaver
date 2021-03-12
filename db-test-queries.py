@@ -31,9 +31,8 @@ for instance in session.query(ParentCategory).order_by(ParentCategory.id).limit(
 
 # Loop through first 5 categories
 for instance in session.query(Category).order_by(Category.id).limit(5):
-    instance.set_budgeted_amount(3000)
     print(f"Available amount: {instance.available_amount}")
-    instance.set_budgeted_amount(5000)
+    instance.budgeted_amount += 1000
     print(f"Available amount: {instance.available_amount}")
     print(f"Transactions in category {instance.id}: {instance.get_transactions()}")
     print(instance)
