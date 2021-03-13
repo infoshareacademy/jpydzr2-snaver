@@ -76,7 +76,7 @@ for parent_instance in session.query(ParentCategory).order_by(ParentCategory.id)
     for c in range(len(category_names[index])):
         category_list.append(Category(
             name=category_names[index][c],
-            budgeted_amount=round(uniform(30.0, 2500.0), 2),  # Unexpected argument because of getter-setter setup
+            budgeted_amount=round(uniform(30.0, 2500.0), 2),  # PyCharm complains but it's expected behaviour because of getter-setter setup
             parent_id=parent_instance.id
         ))
 
