@@ -3,20 +3,18 @@
 It is induced by main.py
 """
 
-# from models.Base import Base
-from models.User import User
-from models.Budget import Budget
-from models.ParentCategory import ParentCategory
-from models.Category import Category
-from models.Transaction import Transaction
-
-from session import session
-
-from getpass import getpass
 import hashlib
 import os
+from getpass import getpass
 
 from sqlalchemy.orm import lazyload
+
+from models.Budget import Budget
+from models.Category import Category
+from models.ParentCategory import ParentCategory
+from models.Transaction import Transaction
+from models.User import User
+from session import session
 
 # GLOBAL VARIABLES
 global_user_id = None
@@ -58,7 +56,7 @@ def create_account():
     # Check if username is not taken
     user_account = session.query(User).filter_by(name=username).first()
     while user_account is not None:
-        print("\nHmm, that username is already taken. Let'stry something different!")
+        print("\nHmm, that username is already taken. Let's try something different!")
         username = input("Choose your username: ")
         user_account = session.query(User).filter_by(name=username).first()
 
@@ -76,7 +74,7 @@ def create_account():
 
     # Get user instance from db
     user_instance = session.query(User).filter_by(name=username).first()
-    print("\nYou've sucessfully created the account!")
+    print("\nYou've successfully created the account!")
 
     # Redirect logged user
     set_global_variables(user_instance)
@@ -159,10 +157,10 @@ def show_budget():
         # loop through parent categories of the first budget in the list
         for parent in budgets_list[0].parent_categories:
 
-            # Start calculating the parent's avaialbale amount based its children' avaialable_amount
+            # Start calculating the parent's available amount based its children' available_amount
             parent_available_sum = 0.00
 
-            # Loop through the parent's categories to add available_amount to the parent_avaialble_sum
+            # Loop through the parent's categories to add available_amount to the parent_available_sum
             for category in parent.categories:
                 parent_available_sum += category.available_amount
 
@@ -170,7 +168,7 @@ def show_budget():
             formatted_sum = "{:.2f} zł".format(parent_available_sum)
             print("\n---------------- {}, dostępna kwota: {} ---------------- \n".format(parent.name, formatted_sum))
 
-            # Loop tgrough the categories of the parent ONCE AGAIN, this time to print them
+            # Loop through the categories of the parent ONCE AGAIN, this time to print them
             n = 1  # Position (number) of the category within the parent
             for category in parent.categories:
                 formatted_available = "{:.2f} zł".format(category.available_amount)

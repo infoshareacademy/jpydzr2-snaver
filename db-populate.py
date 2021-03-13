@@ -3,20 +3,18 @@
 Feel free to add your own generators :-)
 """
 
+import hashlib
+import os
 from datetime import datetime
-# from decimal import Decimal
-from random import uniform, randint
+from random import randint
+from random import uniform
 
 from models.Budget import Budget
 from models.Category import Category
 from models.ParentCategory import ParentCategory
 from models.Transaction import Transaction
 from models.User import User
-
 from session import session
-
-import hashlib
-import os
 
 # ADD USERS
 # ------------------------------
@@ -78,7 +76,7 @@ for parent_instance in session.query(ParentCategory).order_by(ParentCategory.id)
     for c in range(len(category_names[index])):
         category_list.append(Category(
             name=category_names[index][c],
-            budgeted_amount=round(uniform(30.0, 2500.0), 2),
+            budgeted_amount=round(uniform(30.0, 2500.0), 2),  # Unexpected argument because of getter-setter setup
             parent_id=parent_instance.id
         ))
 

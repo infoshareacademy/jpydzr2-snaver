@@ -1,17 +1,22 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Float
-from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.hybrid import hybrid_property
-
 # This is a hack to import session TODO fix this
 # https://stackoverflow.com/questions/30669474/beyond-top-level-package-error-in-relative-import
 import sys
 
 sys.path.append("..")
 
+from sqlalchemy import Column
+from sqlalchemy import Float
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy import String
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+
+from session import session
+
 from .Base import Base
 from .Transaction import Transaction
-from session import session
 
 
 class Category(Base):

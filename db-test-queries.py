@@ -4,14 +4,14 @@ Feel free to add your own queries :-)
 Don't forget to import the modules
 """
 
+from sqlalchemy.orm import lazyload
+
 from models.Budget import Budget
 from models.Category import Category
 from models.ParentCategory import ParentCategory
 from models.Transaction import Transaction
 from models.User import User
 from session import session
-
-from sqlalchemy.orm import lazyload, joinedload
 
 # Retrieve a User object with a name 'Krzysiek'
 get_user = session.query(User).filter_by(name='Krzysiek').first()
@@ -53,13 +53,7 @@ print("Number of transactions: {}.".format(number_of_transactions))
 
 
 # Relationships
-users = session.query(User).options(lazyload(User.budgets).subqueryload(Budget.parent_categories).subqueryload(ParentCategory.categories)).all()
+users = session.query(User).options(lazyload(User.budgets).subqueryload(Budget.parent_categories).subqueryload(
+    ParentCategory.categories)).all()
 print(type(users))
 print(users[1].budgets[0].parent_categories[0].categories)
-
-# users2 = session.query(User).options(joinedload('budgets').subqueryload(Budget.parent_categories)).all()
-# print(users[2].budgets)
-
-
-
-# hmm = session.query(Parent).options(joinedload(Parent.children).subqueryload(Child.subelements)).all()
