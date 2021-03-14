@@ -1,9 +1,22 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Float
+# This is a hack to import session TODO fix this
+# https://stackoverflow.com/questions/30669474/beyond-top-level-package-error-in-relative-import
+import sys
+
+sys.path.append("..")
+
+from sqlalchemy import Column
+from sqlalchemy import Float
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy import String
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+
+from session import session
 
 from .Base import Base
-
-
-from sqlalchemy.orm import relationship
+from .Transaction import Transaction
 
 
 class Category(Base):
@@ -11,11 +24,28 @@ class Category(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    budgeted_amount = Column(Float)  # Jeśli nie chcemy miesięcy na początku, to ten atrybut jest chyba zbędny
-    available_amount = Column(Float)
+    __budgeted_amount = Column("budgeted_amount", Float)
     parent_id = Column(Integer, ForeignKey("parent_category.id"))
     transactions = relationship("Transaction", backref="category")
 
     def __repr__(self):
         formatted_available = "{:.2f} zł".format(self.available_amount)
-        return "Kategoria '%s',  dostępna kwota: %s, ID rodzica: %i" % (self.name, formatted_available, self.parent_id)
+        return f"id: {self.id}, name: {self.name}, available: {formatted_available}"
+
+    def get_transactions(self):
+        return session.query(Transaction).filter(Transaction.category_id == self.id).all()
+
+    @property
+    def available_amount(self):
+        amount = session.query(func.sum(Transaction.amount_outflow)).filter(Transaction.category_id == self.id).first()
+        return self.__budgeted_amount - float(amount[0])
+
+    @hybrid_property
+    def budgeted_amount(self):
+        return self.__budgeted_amount
+
+    @budgeted_amount.setter
+    def budgeted_amount(self, amount):
+        self.__budgeted_amount = amount
+        session.query(Category).filter_by(id=self.id).update({'budgeted_amount': amount})
+        session.commit()

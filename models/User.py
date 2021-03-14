@@ -1,9 +1,10 @@
-from sqlalchemy import Column, Integer, String, LargeBinary
+from sqlalchemy import Column
+from sqlalchemy import Integer
+from sqlalchemy import LargeBinary
+from sqlalchemy import String
+from sqlalchemy.orm import relationship
 
 from .Base import Base
-
-
-from sqlalchemy.orm import relationship
 
 
 class User(Base):

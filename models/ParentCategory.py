@@ -1,9 +1,10 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy import String
+from sqlalchemy.orm import relationship
 
 from .Base import Base
-
-
-from sqlalchemy.orm import relationship
 
 
 class ParentCategory(Base):
@@ -15,4 +16,4 @@ class ParentCategory(Base):
     categories = relationship("Category", backref="parent")
 
     def __repr__(self):
-        return "ParentCategory '%s', wchodząca w skład budżetu o ID %i" % (self.name, self.budget_id)
+        return f"ParentCategory {self.name}, wchodząca w skład budżetu o ID {self.budget_id}"
