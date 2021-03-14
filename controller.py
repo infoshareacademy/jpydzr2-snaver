@@ -190,7 +190,6 @@ def adding_budget():
 
 
 def add_transaction():
-
     transaction_name = input("Podaj nazwe transakcji:")
     transaction_payee_name = input("Podaj nazwę sklepu lub płatnika: ")
     transaction_amount_inflow = float(input("Podaj kwotę wpływu:"))
