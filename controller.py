@@ -17,6 +17,7 @@ import hashlib
 import os
 
 from sqlalchemy.orm import lazyload
+import datetime
 
 # GLOBAL VARIABLES
 global_user_id = None
@@ -182,8 +183,10 @@ def show_budget():
 
 def adding_budget():
     global global_user_id
-    nazwa = input("Nazwij swój budżet:")
-    budget = Budget(name=nazwa, user_id=global_user_id)
+    budget_name = input("Nazwij swój budżet:")
+    budget = Budget(name=budget_name, user_id=global_user_id)
     session.add(budget)
     session.commit()
     show_budget()
+
+
