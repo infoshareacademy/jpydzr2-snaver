@@ -179,15 +179,6 @@ def show_budget():
         print("\n")  # Print space between the next command
 
 
-def adding_budget():
-    global global_user_id
-    budget_name = input("Nazwij swój budżet:")
-    budget = Budget(name=budget_name, user_id=global_user_id)
-    session.add(budget)
-    session.commit()
-    show_budget()
-
-
 
 def add_transaction():
     transaction_name = input("Podaj nazwe transakcji:")
