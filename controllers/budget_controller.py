@@ -23,6 +23,7 @@ def show_budget():
     # If user has no budgets
     if budget_instance is None:
         print("\nWhoops, you don't have any budgets yet. Shall we create one?")
+        adding_budget()
 
     # else == User does have at least 1 budget
     else:
@@ -64,3 +65,12 @@ def show_budget():
                 n += 1  # Increment the category number
 
         print("\n")  # Print space between the next command
+
+
+def adding_budget():
+    global global_user_id
+    budget_name = input("Nazwij swój budżet:")
+    budget = Budget(name=budget_name, user_id=global_user_id)
+    session.add(budget)
+    session.commit()
+    show_budget()
