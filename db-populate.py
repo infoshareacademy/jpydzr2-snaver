@@ -95,9 +95,7 @@ for category_instance in session.query(Category).order_by(Category.id):
             payee_name="Nazwa sklepu / płatnika",
             amount_inflow=0.00,
             amount_outflow=round(uniform(0.0, 800.0), 2),
-            # TODO trzeba wykminić, czy korzystamy z Decimal czy z czego
-            category_id=category_instance.id,
-            date=datetime.now()
+            category_id=category_instance.id
         ))
 
 session.add_all(transaction_list)
