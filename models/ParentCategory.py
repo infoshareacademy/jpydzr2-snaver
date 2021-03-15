@@ -5,6 +5,7 @@ from sqlalchemy import String
 from sqlalchemy.orm import relationship
 
 from .Base import Base
+from .Category import Category
 
 
 class ParentCategory(Base):

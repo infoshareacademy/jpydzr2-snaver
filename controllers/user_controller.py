@@ -107,7 +107,3 @@ def set_global_variables(user_instance):
 
     global_user_id = user_instance.id
     global_user_name = user_instance.name
-
-    # Redirect the user to their budgets
-    show_budget()
-
