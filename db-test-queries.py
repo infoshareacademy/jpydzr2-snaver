@@ -27,7 +27,6 @@ for instance in session.query(Budget).order_by(Budget.id):
 
 # Loop through first 5 parent categories
 for instance in session.query(ParentCategory).order_by(ParentCategory.id).limit(5):
-    print(instance.get_categories())
     print(instance)
 
 # Loop through first 5 categories
