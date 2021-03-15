@@ -10,7 +10,7 @@
 
 * [Class names](/docs/glossary.md)
 
-* [Future improvements](/docs/imrpovements.md)
+* [Future improvements](/docs/improvements.md)
 
 ### External Links
 
