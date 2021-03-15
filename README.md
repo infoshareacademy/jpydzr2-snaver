@@ -10,6 +10,8 @@
 
 * [Class names](/docs/glossary.md)
 
+* [Future improvements](/docs/improvements.md)
+
 ### External Links
 
 * [Miro board](https://miro.com/app/board/o9J_lTRAVVw=/)
