@@ -5,7 +5,7 @@ from sqlalchemy import String
 from sqlalchemy.orm import relationship
 
 from .Base import Base
-
+from .ParentCategory import ParentCategory
 
 class Budget(Base):
     __tablename__ = 'budget'
