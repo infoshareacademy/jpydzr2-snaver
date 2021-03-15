@@ -51,6 +51,8 @@ print("Number of categories: {}.".format(number_of_categories))
 number_of_transactions = session.query(Transaction).count()
 print("Number of transactions: {}.".format(number_of_transactions))
 
+transactions = session.query(Transaction).all()
+print(transactions)
 
 # Relationships
 users = session.query(User).options(lazyload(User.budgets).subqueryload(Budget.parent_categories).subqueryload(
