@@ -3,28 +3,34 @@
 Feel free to add your own generators :-)
 """
 
+import hashlib
+import os
 from datetime import datetime
-# from decimal import Decimal
-from random import uniform, randint
+from random import randint
+from random import uniform
 
 from models.Budget import Budget
 from models.Category import Category
 from models.ParentCategory import ParentCategory
 from models.Transaction import Transaction
 from models.User import User
-
 from session import session
 
 # ADD USERS
 # ------------------------------
 
-session.add_all([
-    User(name='Zbyszek'),
-    User(name='Krzysiek'),
-    User(name='Mariola')
-])
+user_names = ["Zbyszek", "Krzysiek", "Mariola"]
+user_list = []
+
+for i in range(len(user_names)):
+    salt = os.urandom(32)
+    # Test users' passwords == "test"
+    key = hashlib.pbkdf2_hmac('sha256', "test".encode('utf-8'), salt, 100000)
+    # append user instance
+    user_list.append(User(name=user_names[i], salt=salt, key=key))
 
 # Zapisz do bazy
+session.add_all(user_list)
 session.commit()
 
 # ADD BUDGETS
@@ -70,9 +76,7 @@ for parent_instance in session.query(ParentCategory).order_by(ParentCategory.id)
     for c in range(len(category_names[index])):
         category_list.append(Category(
             name=category_names[index][c],
-            budgeted_amount=round(uniform(30.0, 2500.0), 2),
-            # TODO - żeby się wyliczało w locie, na razie jest na twardo zakodowane :-(
-            available_amount=round(uniform(0.0, 1300.0), 2),
+            budgeted_amount=round(uniform(30.0, 2500.0), 2),  # PyCharm complains but it's expected behaviour because of getter-setter setup
             parent_id=parent_instance.id
         ))
 
@@ -91,9 +95,7 @@ for category_instance in session.query(Category).order_by(Category.id):
             payee_name="Nazwa sklepu / płatnika",
             amount_inflow=0.00,
             amount_outflow=round(uniform(0.0, 800.0), 2),
-            # TODO trzeba wykminić, czy korzystamy z Decimal czy z czego
-            category_id=category_instance.id,
-            date=datetime.now()
+            category_id=category_instance.id
         ))
 
 session.add_all(transaction_list)

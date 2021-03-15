@@ -4,6 +4,8 @@ Feel free to add your own queries :-)
 Don't forget to import the modules
 """
 
+from sqlalchemy.orm import lazyload
+
 from models.Budget import Budget
 from models.Category import Category
 from models.ParentCategory import ParentCategory
@@ -31,6 +33,10 @@ for instance in session.query(ParentCategory).order_by(ParentCategory.id).limit(
 
 # Loop through first 5 categories
 for instance in session.query(Category).order_by(Category.id).limit(5):
+    print(f"Available amount: {instance.available_amount}")
+    instance.budgeted_amount += 1000
+    print(f"Available amount: {instance.available_amount}")
+    print(f"Transactions in category {instance.id}: {instance.get_transactions()}")
     print(instance)
 
 # Loop through first 5 transactions
@@ -44,3 +50,12 @@ print("Number of categories: {}.".format(number_of_categories))
 # Count Transactions
 number_of_transactions = session.query(Transaction).count()
 print("Number of transactions: {}.".format(number_of_transactions))
+
+transactions = session.query(Transaction).all()
+print(transactions)
+
+# Relationships
+users = session.query(User).options(lazyload(User.budgets).subqueryload(Budget.parent_categories).subqueryload(
+    ParentCategory.categories)).all()
+print(type(users))
+print(users[1].budgets[0].parent_categories[0].categories)
