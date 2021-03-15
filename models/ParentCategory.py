@@ -1,11 +1,8 @@
-<<<<<<< HEAD
-from sqlalchemy import Column, Integer, String, ForeignKey
-=======
 from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
->>>>>>> develop
+
 from sqlalchemy.orm import relationship
 
 from .Base import Base
