@@ -11,6 +11,8 @@ def reading_ascii(file_name):
             line = line.strip('\n')
             print(line)
 
+reading_ascii('docs/images/ascii_image_2.txt')
+
 print("\nWelcome to Snaver!")
 login()
 
