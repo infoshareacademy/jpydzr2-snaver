@@ -4,6 +4,7 @@ from models.Budget import Budget
 from models.ParentCategory import ParentCategory
 from session import session
 
+
 # GLOBAL VARIABLES
 global_user_id = None
 global_user_name = None
@@ -74,3 +75,10 @@ def add_budget():
     session.add(budget)
     session.commit()
     show_budget()
+
+# Written by Robert:
+def add_new_budget(user_to_show):
+    budget_name = input("Name of new budget: ")
+    budget = Budget(name=budget_name, user_id=user_to_show)
+    session.add(budget)
+    session.commit()
