@@ -37,7 +37,7 @@ def menu():
         reports()
     if choice == "7":
         print("End. Program closed.")
-        pass
+        exit()
     else:
         print("\n!!! >>> WRONG CHOICE (OUT OF RANGE). TRY AGAIN...")
         menu()
@@ -140,11 +140,11 @@ def print_budget():
 
 
 def new_transaction():
-    print("\nNEW TRANSACTION MENU:")
-    print("1. Inflow")
-    print("2. Outflow")
-    print(("## YOUR CHOICE: "))
-    x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
+    # print("\nNEW TRANSACTION MENU:")
+    # print("1. Inflow")
+    # print("2. Outflow")
+    # print(("## YOUR CHOICE: "))
+    # x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
 
     add_transaction()
 
