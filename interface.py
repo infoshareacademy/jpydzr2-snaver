@@ -1,4 +1,3 @@
-
 from models.Budget import Budget
 from models.Category import Category
 from models.ParentCategory import ParentCategory
@@ -8,14 +7,7 @@ from controllers.budget_controller import add_new_budget
 from session import session
 
 from prettytable import PrettyTable
-from sqlalchemy import insert
-import sqlite3
-from prettytable import from_db_cursor
 
-from sqlalchemy.orm import lazyload, joinedload
-
-# global work_in_progress
-# work_in_progress= "@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget."
 
 def menu():
     print("MENU:")

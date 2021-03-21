@@ -4,7 +4,7 @@ Induces controller.py
 """
 
 from controllers.user_controller import login
-from interface_09 import *
+from interface import *
 
 def reading_ascii(file_name):
     with open(file_name, 'r') as file:
