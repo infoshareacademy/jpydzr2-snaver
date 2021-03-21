@@ -79,6 +79,7 @@ def change_budget():
     budget_to_show = input("Which budget to show? Input budget's id OR input 'n' to create new budget: ")
     if budget_to_show == 'n':
         add_new_budget(user_to_show)
+        budget_to_show = list(session.query(Budget.id).order_by(Budget.id.desc()).first())[0]
     print_budget()
 
 
@@ -203,8 +204,9 @@ def edit_categories():
         session.add(insert_into_category_table)
         session.commit()
 
+        # Below we need to add empty record to Transactions to avoid errors during print_budget()
         last_category_id = list(session.query(Category.id).order_by(Category.id.desc()).first())[0]
-        empty_record = Transaction(name="# empty record", amount_inflow=0, amount_outflow=0, category_id=last_category_id)
+        empty_record = Transaction(name="# empty record to initiate a new category", amount_inflow=0, amount_outflow=0, category_id=last_category_id)
         session.add(empty_record)
         session.commit()
 
@@ -231,33 +233,31 @@ def switch_month():
 
 def reports():
     print("\nREPORTS MENU:")
-    print("0. Print the table with all transactions in this budget")
+    print("0. Print the table with all transactions in this budget   [FUNCTION NOT AVAILABLE YET]")
     print("1. Display the bar chart")
-    print("2. Eksport my budget do csv file")
-    print("3. Eksport my budget to json file")
+    print("2. Eksport my budget do csv file   [FUNCTION NOT AVAILABLE YET]")
+    print("3. Eksport my budget to json file  [FUNCTION NOT AVAILABLE YET]")
     choice = input("## YOUR CHOICE: ")
 
-    x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
+    if choice == "1":
+        # Definition of PrettyTable
+        bar_chart = PrettyTable()
+        bar_chart.field_names = [" id, CATEGORY", "ACTIVITY", "BAR CHART"]
+        bar_chart.align = "l"  # align in all columns to the left side
+        bar_chart.align["ACTIVITY"] = "r"   # align in column "ACTIVITY" to the right side
+        bar_chart.float_format = "1.2"  # the way floating point data is printed, for example "123.45"
 
-    # Definition of PrettyTable
-    bar_chart = PrettyTable()
-    bar_chart.field_names = [" id, CATEGORY", "ACTIVITY", "BAR CHART"]
-    bar_chart.align = "l"  # align in all columns to the left side
-    bar_chart.align["ACTIVITY"] = "r"   # align in column "ACTIVITY" to the right side
-    bar_chart.float_format = "1.2"  # the way floating point data is printed, for example "123.45"
+        # reading values from database and inserting into PrettyTable
+        for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget_to_show):
+            for value_budgeted in session.query(Category).filter(Category.parent_id == ParentCategory.give_parent_categories(instance)[0]):
+                activity_amount = Category.give_info(value_budgeted)[2]
+                bar = int(round(activity_amount/100)) * "#"     # The idea is that each 100 PLN is "#"
+                bar_chart.add_row([Category.give_info(value_budgeted)[0], activity_amount, bar])
+        print(bar_chart)
+        x = input("press ENTER to go back to your budget")
 
-    # reading values from database and inserting into PrettyTable
-    for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget_to_show):
-        for value_budgeted in session.query(Category).filter(Category.parent_id == ParentCategory.give_parent_categories(instance)[0]):
-            activity_amount = Category.give_info(value_budgeted)[2]
-            bar = int(round(activity_amount/100)) * "#"     # The idea is that each 100 PLN is "#"
-            bar_chart.add_row([Category.give_info(value_budgeted)[0], activity_amount, bar])
-
-    print(bar_chart)
-
-    x = input("press ENTER")
-
-
+    else:
+        x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
 
     print_budget()
 

@@ -82,3 +82,4 @@ def add_new_budget(user_to_show):
     budget = Budget(name=budget_name, user_id=user_to_show)
     session.add(budget)
     session.commit()
+
