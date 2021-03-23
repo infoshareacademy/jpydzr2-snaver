@@ -31,10 +31,13 @@ def login():
         # Validate the login credentials
         validate_login(username, password)
 
+
     # If user does not cooperate
     else:
         print("\nHmm, let's start over!")
         login()
+
+    return global_user_id, global_user_name
 
 
 # Create account
@@ -107,3 +110,10 @@ def set_global_variables(user_instance):
 
     global_user_id = user_instance.id
     global_user_name = user_instance.name
+
+# Change user when already logged in.
+def change_user():
+    global user_to_show
+    user_to_show = input("\nInput user's id: ")
+    print(f"\nUser >>id={user_to_show}<< logged in.")       # TODO: Here should be "User {user.name} logged in."
+    change_budget()
