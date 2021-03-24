@@ -1,7 +1,6 @@
-from session import session
-
 from models.Category import Category
 from models.Category import CategoryNotFoundException
+from session import session
 
 
 def update_category_name(category_id: int, new_name: str):

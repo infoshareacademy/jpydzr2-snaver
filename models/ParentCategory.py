@@ -2,7 +2,6 @@ from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
-
 from sqlalchemy.orm import relationship
 
 from .Base import Base
@@ -15,11 +14,11 @@ class ParentCategoryNotFoundException(Exception):
             self.category_id = category_id
             self.message = f"Parent Category with id: {self.category_id} does not exist"
         else:
-            self.message = f"Parent Category does not exist"
+            self.message = "Parent Category does not exist"
         super().__init__(self.message)
 
     def __str__(self):
-        return f"{self.message}"
+        return self.message
 
 
 class ParentCategory(Base):

@@ -1,7 +1,6 @@
-from session import session
-
 from models.ParentCategory import ParentCategory
 from models.ParentCategory import ParentCategoryNotFoundException
+from session import session
 
 
 def update_parent_category_name(parent_category_id: int, new_name: str):

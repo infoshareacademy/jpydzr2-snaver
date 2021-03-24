@@ -14,11 +14,11 @@ class BudgetNotFoundException(Exception):
             self.budget_id = budget_id
             self.message = f"Budget with id: {self.budget_id} does not exist"
         else:
-            self.message = f"Budget does not exist"
+            self.message = "Budget does not exist"
         super().__init__(self.message)
 
     def __str__(self):
-        return f"{self.message}"
+        return self.message
 
 
 class Budget(Base):
