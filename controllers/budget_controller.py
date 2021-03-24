@@ -1,6 +1,7 @@
 from sqlalchemy.orm import lazyload
 
 from models.Budget import Budget
+from models.Budget import BudgetNotFoundException
 from models.ParentCategory import ParentCategory
 from session import session
 
@@ -74,3 +75,13 @@ def add_budget():
     session.add(budget)
     session.commit()
     show_budget()
+
+
+def update_budget_name(budget_id: int, new_name: str):
+    budget_instance = session.query(Budget).filter_by(id=budget_id).first()
+    if budget_instance:
+        budget_instance.name = new_name
+        session.commit()
+        return budget_instance
+    else:
+        raise BudgetNotFoundException(budget_id)

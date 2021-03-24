@@ -5,10 +5,10 @@ from models.ParentCategory import ParentCategoryNotFoundException
 
 
 def update_parent_category_name(parent_category_id: int, new_name: str):
-    category_instance = session.query(ParentCategory).filter_by(id=parent_category_id).first()
-    if category_instance:
-        category_instance.name = new_name
+    parent_category_instance = session.query(ParentCategory).filter_by(id=parent_category_id).first()
+    if parent_category_instance:
+        parent_category_instance.name = new_name
         session.commit()
-        return category_instance
+        return parent_category_instance
     else:
         raise ParentCategoryNotFoundException(parent_category_id)
