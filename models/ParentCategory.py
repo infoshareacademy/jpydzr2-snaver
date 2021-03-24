@@ -31,3 +31,6 @@ class ParentCategory(Base):
 
     def __repr__(self):
         return f"ParentCategory {self.name}, wchodząca w skład budżetu o ID {self.budget_id}"
+
+    def give_parent_categories(self):
+        return [self.id, self.name]

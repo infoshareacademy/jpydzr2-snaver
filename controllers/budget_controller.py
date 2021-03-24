@@ -24,7 +24,7 @@ def show_budget():
     # If user has no budgets
     if budget_instance is None:
         print("\nWhoops, you don't have any budgets yet. Shall we create one?")
-        add_budget()
+        add_new_budget()
 
     # else == User does have at least 1 budget
     else:
@@ -68,15 +68,6 @@ def show_budget():
         print("\n")  # Print space between the next command
 
 
-def add_budget():
-    global global_user_id
-    budget_name = input("Nazwij swój budżet:")
-    budget = Budget(name=budget_name, user_id=global_user_id)
-    session.add(budget)
-    session.commit()
-    show_budget()
-
-
 def update_budget_name(budget_id: int, new_name: str):
     budget_instance = session.query(Budget).filter_by(id=budget_id).first()
     if budget_instance:
@@ -85,3 +76,10 @@ def update_budget_name(budget_id: int, new_name: str):
         return budget_instance
     else:
         raise BudgetNotFoundException(budget_id)
+
+
+def add_new_budget(user_to_show):
+    budget_name = input("Name of new budget: ")
+    budget = Budget(name=budget_name, user_id=user_to_show)
+    session.add(budget)
+    session.commit()

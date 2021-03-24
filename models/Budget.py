@@ -31,3 +31,6 @@ class Budget(Base):
 
     def __repr__(self):
         return "Nazwa: '%s', ID właściciela: %i" % (self.name, self.user_id)
+
+    def give_budgets(self):
+        return [self.id, self.name, self.user_id]
