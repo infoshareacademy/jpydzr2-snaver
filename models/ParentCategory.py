@@ -9,6 +9,19 @@ from .Base import Base
 from .Category import Category
 
 
+class ParentCategoryNotFoundException(Exception):
+    def __init__(self, category_id=None):
+        if category_id:
+            self.category_id = category_id
+            self.message = f"Parent Category with id: {self.category_id} does not exist"
+        else:
+            self.message = f"Parent Category does not exist"
+        super().__init__(self.message)
+
+    def __str__(self):
+        return f"{self.message}"
+
+
 class ParentCategory(Base):
     __tablename__ = 'parent_category'
 
