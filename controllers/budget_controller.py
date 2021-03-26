@@ -67,15 +67,15 @@ def print_budget(budget_id):
 
     budget = session.query(Budget).filter_by(id=budget_id).first()
 
-    for instance in budget.parent_categories:
+    for parent_instance in budget.parent_categories:
 
         # adding up values from categories and assigning them to parent_categories
         for value_budgeted in session.query(Category).filter(
-                Category.parent_id == ParentCategory.give_parent_categories(instance)[0]):
+                Category.parent_id == ParentCategory.give_parent_categories(parent_instance)[0]):
             sum_budgeted += (Category.give_info(value_budgeted)[1])
 
         for value_available in session.query(Category).filter(
-                Category.parent_id == ParentCategory.give_parent_categories(instance)[0]):
+                Category.parent_id == ParentCategory.give_parent_categories(parent_instance)[0]):
             sum_available += (Category.give_info(value_available)[3])
 
         sum_activity = sum_budgeted - sum_available
@@ -86,7 +86,7 @@ def print_budget(budget_id):
         # | -------------------- | -------------------- | -------------------- | -------------------- |
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
         table_budget.add_row(
-            [ParentCategory.give_parent_categories(instance), sum_budgeted, sum_activity, sum_available])
+            [ParentCategory.give_parent_categories(parent_instance), sum_budgeted, sum_activity, sum_available])
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
         total_budgeted += sum_budgeted
@@ -96,7 +96,7 @@ def print_budget(budget_id):
         sum_budgeted = 0  # this is reset to zero to allow summing categories in next parent-categories
         sum_available = 0  # this is reset to zero to allow summing categories in next parent-categories
 
-        for category_instance in instance.categories:
+        for category_instance in parent_instance.categories:
             table_budget.add_row(Category.give_info(category_instance))
 
         # Below code makes a visible break between parent categories (just for better readability of the table)
