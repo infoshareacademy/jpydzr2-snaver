@@ -2,6 +2,7 @@
 
 from interface import *
 from controllers.user_controller import login
+from controllers.transaction_controller import add_transaction
 
 welcome_message = "\nWelcome to Snaver!"
 farewell_message = "\nGood bye!"
