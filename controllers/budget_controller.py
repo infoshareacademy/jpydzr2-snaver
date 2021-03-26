@@ -8,11 +8,12 @@ from prettytable import PrettyTable
 
 
 def add_budget(user_id):
-    budget_name = input("Name of new budget: ")
+    budget_name = input("Name of the new budget: ")
     budget = Budget(name=budget_name, user_id=user_id)
     session.add(budget)
     session.commit()
-    new_budget = list(session.query(Budget.id).order_by(Budget.id.desc()).first())[0]
+    # new_budget = list(session.query(Budget.id).order_by(Budget.id.desc()).first())[0]
+    new_budget = session.query(Budget.id).order_by(Budget.id.desc()).first()
     return new_budget.id
 
 
