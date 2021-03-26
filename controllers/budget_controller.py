@@ -9,11 +9,13 @@ from prettytable import PrettyTable
 global global_user_id
 
 
-def add_budget(global_user_id):
+def add_budget(user_id):
     budget_name = input("Name of new budget: ")
-    budget = Budget(name=budget_name, user_id=global_user_id)
+    budget = Budget(name=budget_name, user_id=user_id)
     session.add(budget)
     session.commit()
+    new_budget = list(session.query(Budget.id).order_by(Budget.id.desc()).first())[0]
+    return new_budget.id
 
 
 def change_budget(global_user_id):
@@ -35,12 +37,11 @@ def change_budget(global_user_id):
     # budget_to_show = input("Which budget to show? Input budget's id: ")
     budget_to_show = input("Which budget to show? Input budget's id OR input 'n' to create new budget: ")
     if budget_to_show == 'n':
-        add_budget(global_user_id)
-        budget_to_show = list(session.query(Budget.id).order_by(Budget.id.desc()).first())[0]
-    print_budget(global_user_id)
+        budget_id = add_budget(global_user_id)
+    print_budget(budget_id)
 
 
-def print_budget(global_user_id):
+def print_budget(budget_id):
     # Definition of PrettyTable
     table_budget = PrettyTable()
     table_budget.field_names = [" id, CATEGORY", "BUDGETED", "ACTIVITY", "AVAILABLE"]
@@ -56,7 +57,7 @@ def print_budget(global_user_id):
     total_available = 0
 
 
-    for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget_to_show):
+    for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget_id):
 
         # adding up values from categories and assigning them to parent_categories
         for value_budgeted in session.query(Category).filter(Category.parent_id == ParentCategory.give_parent_categories(instance)[0]):
@@ -99,11 +100,9 @@ def print_budget(global_user_id):
     print(f"TOTAL AVAILABLE:  {round(total_available, 2)}")
 
     print(table_budget)
-    # menu(global_user_id)
-    return global_user_id
 
 
-def reports(global_user_id):
+def reports(budget_id):
     print("\nREPORTS MENU:")
     print("0. Print the table with all transactions in this budget   [FUNCTION NOT AVAILABLE YET]")
     print("1. Display the bar chart")
@@ -120,7 +119,7 @@ def reports(global_user_id):
         bar_chart.float_format = "1.2"  # the way floating point data is printed, for example "123.45"
 
         # reading values from database and inserting into PrettyTable
-        for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget_to_show):
+        for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget_id):
             for value_budgeted in session.query(Category).filter(Category.parent_id == ParentCategory.give_parent_categories(instance)[0]):
                 activity_amount = Category.give_info(value_budgeted)[2]
                 bar = int(round(activity_amount/100)) * "#"     # The idea is that each 100 PLN is "#"
@@ -130,6 +129,4 @@ def reports(global_user_id):
 
     else:
         x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
-
-    print_budget(global_user_id)
 

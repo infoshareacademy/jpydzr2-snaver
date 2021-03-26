@@ -4,11 +4,17 @@ from getpass import getpass
 
 from models.User import User
 from session import session
+from .budget_controller import change_budget
+
+global_user_id = None
+global_user_name = None
 
 
 # Display login form
 def login() -> (int, str):
-    # Ask you user if they have an account
+    user_id = None
+    user_name = None
+
     answer = input("Do you have an account?[y/n]: ")
 
     # If user does not have an account, redirect them to create_account function
