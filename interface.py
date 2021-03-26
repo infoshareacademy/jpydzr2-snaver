@@ -24,69 +24,6 @@ def menu():
     choice = input("## YOUR CHOICE: ")
     return choice
 
-
-def print_budget(budget_id):
-    # Definition of PrettyTable
-    table_budget = PrettyTable()
-    table_budget.field_names = [" id, CATEGORY", "BUDGETED", "ACTIVITY", "AVAILABLE"]
-    table_budget.align = "r"  # align in all columns to the right side
-    table_budget.align[" id, CATEGORY"] = "l"  # align in column "CATEGORY" to the left side
-    table_budget.float_format = "1.2"  # the way floating point data is printed
-
-    # Reading data from database and inserting into PrettyTable
-    sum_budgeted = 0
-    sum_available = 0
-    total_budgeted = 0
-    total_activity = 0
-    total_available = 0
-
-    for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget_id):
-
-        # adding up values from categories and assigning them to parent_categories
-        for value_budgeted in session.query(Category).filter(
-                Category.parent_id == ParentCategory.give_parent_categories(instance)[0]):
-            sum_budgeted += (Category.give_info(value_budgeted)[1])
-
-        for value_available in session.query(Category).filter(
-                Category.parent_id == ParentCategory.give_parent_categories(instance)[0]):
-            sum_available += (Category.give_info(value_available)[3])
-
-        sum_activity = sum_budgeted - sum_available
-
-        # Below code adds rows to PrettyTable like this:
-        # | -------------------- | -------------------- | -------------------- | -------------------- |
-        # | parent_category      |               xxx.xx |               yyy.yy |               zzz.zz |
-        # | -------------------- | -------------------- | -------------------- | -------------------- |
-        table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
-        table_budget.add_row(
-            [ParentCategory.give_parent_categories(instance), sum_budgeted, sum_activity, sum_available])
-        table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
-
-        total_budgeted += sum_budgeted
-        total_activity += sum_activity
-        total_available += sum_available
-
-        sum_budgeted = 0  # this is reset to zero to allow summing categories in next parent-categories
-        sum_available = 0  # this is reset to zero to allow summing categories in next parent-categories
-
-        for instance in session.query(Category).filter(
-                Category.parent_id == ParentCategory.give_parent_categories(instance)[0]):
-            table_budget.add_row(Category.give_info(instance))
-
-        # Below code makes a visible break between parent categories (just for better readability of the table)
-        table_budget.add_row([" ", " ", " ", " "])
-
-    print(f"\nHere is your budget:")  # TODO: Here could be "Here is your budget called "{budget.name}"
-    print("--------------------")
-    print("MONTH: >>month<<")  # TODO: fill {month} with the right data (do f-string)
-    print("--------------------")
-    print(
-        f"TOTAL BUDGETED:   {round(total_budgeted, 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
-    print(f"TOTAL ACTIVITY:   {round(total_activity, 2)}")
-    print(f"TOTAL AVAILABLE:  {round(total_available, 2)}")
-    print(table_budget)
-
-
 def edit_categories(budget_id):
     print("\nEDIT CATEGORIES MENU:")
     print("   PARENT CATEGORY:")

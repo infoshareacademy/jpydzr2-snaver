@@ -65,6 +65,8 @@ def print_budget(budget_id):
     total_activity = 0
     total_available = 0
 
+    budget = session.query(Budget).filter_by(id=budget_id).first()
+
     for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget_id):
 
         # adding up values from categories and assigning them to parent_categories
@@ -102,7 +104,7 @@ def print_budget(budget_id):
         table_budget.add_row([" ", " ", " ", " "])
 
     print(
-        f"\nHere is your budget with ID: {budget_id}:")  # TODO: Here could be "Here is your budget called "{budget.name}"
+        f"\nHere is your budget \"{budget.name}\"")  # TODO: Here could be "Here is your budget called "{budget.name}"
     print("-----------------------------")
     print("MONTH: >>month<<")  # TODO: fill {month} with the right data (do f-string)
     print("-----------------------------")

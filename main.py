@@ -2,6 +2,7 @@
 
 from interface import *
 from controllers.user_controller import login
+from controllers.budget_controller import print_budget
 from controllers.transaction_controller import add_transaction
 
 welcome_message = "\nWelcome to Snaver!"
