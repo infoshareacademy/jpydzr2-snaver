@@ -1,6 +1,7 @@
 """File that starts the program"""
 
 from interface import *
+from controllers.user_controller import login
 
 welcome_message = "\nWelcome to Snaver!"
 farewell_message = "\nGood bye!"
@@ -16,22 +17,23 @@ try:
     budget_id = select_budget(user_id)
     while not close_snaver:
         print_budget(budget_id)
-        choice = menu(user_id)
+        choice = menu()
 
         if choice == "1":
             budget_id = change_budget(user_id)
         elif choice == "2":
             add_transaction()
         elif choice == "3":
-            edit_categories()
+            edit_categories(budget_id)
         elif choice == "4":
             edit_budget()
         elif choice == "5":
             switch_month()
         elif choice == "6":
-            reports()
+            reports(budget_id)
         elif choice == "7":
             user_id, user_name = login()
+            budget_id = select_budget(user_id)
         elif choice == "8":
             print("Good bye!")
             exit()

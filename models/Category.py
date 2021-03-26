@@ -19,7 +19,6 @@ from .Base import Base
 from .Transaction import Transaction
 
 
-
 class Category(Base):
     __tablename__ = 'category'
 

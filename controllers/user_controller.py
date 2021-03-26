@@ -6,9 +6,6 @@ from models.User import User
 from session import session
 from .budget_controller import change_budget
 
-global_user_id = None
-global_user_name = None
-
 
 # Display login form
 def login() -> (int, str):
@@ -80,21 +77,3 @@ def validate_login(username, password) -> (int, str):
         return None, None
     else:
         return user_instance.id, user_instance.name
-
-
-# Set global variables, redirect
-def set_global_variables(user_instance):
-    # refer to global variables inside function
-    global global_user_id
-    global global_user_name
-
-    global_user_id = user_instance.id
-    global_user_name = user_instance.name
-
-
-# Change user when already logged in.
-def change_user():
-    global user_to_show
-    user_to_show = input("\nInput user's id: ")
-    print(f"\nUser >>id={user_to_show}<< logged in.")  # TODO: Here should be "User {user.name} logged in."
-    change_budget()

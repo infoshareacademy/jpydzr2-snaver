@@ -3,14 +3,15 @@ from models.Category import Category
 from models.ParentCategory import ParentCategory
 from models.Transaction import Transaction
 from models.User import User
-from controllers.budget_controller import add_budget
-from controllers.user_controller import login
+from controllers.budget_controller import *
+
+
 from session import session
 
 from prettytable import PrettyTable
 
 
-def menu(user_id):
+def menu():
     print("MENU:")
     print("1. Change budget")
     print("2. New transaction (activity)")
@@ -24,49 +25,7 @@ def menu(user_id):
     return choice
 
 
-def change_user():
-    global global_user_id
-    global_user_id = input("\nInput user's id: ")
-    print(f"\nUser >>id={global_user_id}<< logged in.")  # TODO: Here should be "User {user.name} logged in."
-    change_budget()
-
-
-def select_budget(user_id):
-    budgets = session.query(Budget).filter(Budget.user_id == user_id).all()
-    if len(budgets) == 1:
-        budget_id = budgets[0].id
-    else:
-        budget_id = change_budget(user_id)
-    return budget_id
-
-
-def change_budget(user_id):
-    print("\nYour budgetes: ")
-
-    ''' Printing the table with user's budgetes.'''
-    # Definition of PrettyTable for budgetes.
-    table_show_budgetes = PrettyTable()
-    table_show_budgetes.field_names = ["id", "name"]
-
-    # Reading data from databe and inserting into PrettyTable
-    for instance in session.query(Budget).filter(Budget.user_id == user_id):
-        table_show_budgetes.add_row([Budget.give_budgets(instance)[0], Budget.give_budgets(instance)[1]])
-
-    print(table_show_budgetes)
-
-    ''' Printing the budget's table that user selected.'''
-    choice = input("Which budget to show? Input budget's id OR input 'n' to create new budget: ")
-    if choice == 'n':
-        budget_id = add_budget(user_id)
-    else:
-        # TODO: Add validation if the choice is correct
-        budget_id = choice
-    return budget_id
-
-
 def print_budget(budget_id):
-    global global_budget_id
-    global_budget_id = budget_id
     # Definition of PrettyTable
     table_budget = PrettyTable()
     table_budget.field_names = [" id, CATEGORY", "BUDGETED", "ACTIVITY", "AVAILABLE"]
@@ -81,7 +40,7 @@ def print_budget(budget_id):
     total_activity = 0
     total_available = 0
 
-    for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == global_budget_id):
+    for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget_id):
 
         # adding up values from categories and assigning them to parent_categories
         for value_budgeted in session.query(Category).filter(
@@ -142,11 +101,9 @@ def add_transaction():
                               category_id=transaction_category_id)
     session.add(transaction)
     session.commit()
-    print_budget()
 
 
-def edit_categories():
-    global global_budget_id
+def edit_categories(budget_id):
     print("\nEDIT CATEGORIES MENU:")
     print("   PARENT CATEGORY:")
     print("      1. Add parent category")
@@ -156,16 +113,14 @@ def edit_categories():
     print("      4. Add category")
     print("      5. Remove category   [FUNCTION NOT AVAILABLE YET]")
     print("      6. Rename category   [FUNCTION NOT AVAILABLE YET]")
-    print("")
-    print("      7. Go back to the budget")
+    print("    7. Go back to the budget")
     choice = input("## YOUR CHOICE: ")
 
     if choice == "1":
         new_parent_category = input("Write name of new parent category: ")
-        insert_into_parent_category_table = ParentCategory(name=new_parent_category, budget_id=global_budget_id)
+        insert_into_parent_category_table = ParentCategory(name=new_parent_category, budget_id=budget_id)
         session.add(insert_into_parent_category_table)
         session.commit()
-        print_budget()
 
     elif choice == "4":
         new_category = input("Write name of new category: ")
@@ -184,13 +139,11 @@ def edit_categories():
         session.add(empty_record)
         session.commit()
 
-        print_budget()
-
     elif choice == "7":
-        print_budget()
+        pass
+
     else:
         x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
-        print_budget()
 
 
 def edit_budget():
@@ -198,18 +151,13 @@ def edit_budget():
     print("@$@#%^@%@##@$%#^*&^ Here you edit budget (modify budgeted amounts)")
     x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
 
-    print_budget()
-
 
 def switch_month():
     print("\n@$@#%^@%@##@$%#^*&^ Here you can switch the month (the billing peroid)")
     x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
 
-    print_budget()
 
-
-def reports():
-    global global_budget_id
+def reports(budget_id):
     print("\nREPORTS MENU:")
     print("0. Print the table with all transactions in this budget   [FUNCTION NOT AVAILABLE YET]")
     print("1. Display the bar chart")
@@ -226,7 +174,7 @@ def reports():
         bar_chart.float_format = "1.2"  # the way floating point data is printed, for example "123.45"
 
         # reading values from database and inserting into PrettyTable
-        for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == global_budget_id):
+        for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget_id):
             for value_budgeted in session.query(Category).filter(
                     Category.parent_id == ParentCategory.give_parent_categories(instance)[0]):
                 activity_amount = Category.give_info(value_budgeted)[2]
@@ -238,15 +186,9 @@ def reports():
     else:
         x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
 
-    print_budget()
-
 
 def reading_ascii(file_name):
     with open(file_name, 'r') as file:
         for line in file:
             line = line.strip('\n')
             print(line)
-
-
-if __name__ == "__main__":
-    change_user()
