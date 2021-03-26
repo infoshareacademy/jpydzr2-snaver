@@ -1,27 +1,19 @@
-"""File that starts the program
-
-Induces controller.py
-"""
+"""File that starts the program"""
 
 from controllers.user_controller import login
-
-
-def reading_ascii(file_name):
-    with open(file_name, 'r') as file:
-        for line in file:
-            line = line.strip('\n')
-            print(line)
-
+from interface import *
 
 reading_ascii('docs/images/ascii_image_2.txt')
 
 print("\nWelcome to Snaver!")
 
-login = login()
-global_user_id = login[0]
-global_user_name = login[1]
-
-# Run the file "controller.py"
-import controller
-controller
-
+try:
+    user_id, user_name = login()
+    while not user_id or not user_name:
+        user_id, user_name = login()
+        global_user_id = user_id
+        global_user_name = user_name
+    menu()
+except KeyboardInterrupt as keyboard_exit:
+    print('\nGood bye!')
+    exit(0)

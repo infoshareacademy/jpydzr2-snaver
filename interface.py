@@ -3,7 +3,7 @@ from models.Category import Category
 from models.ParentCategory import ParentCategory
 from models.Transaction import Transaction
 from models.User import User
-from controllers.budget_controller import add_new_budget
+from controllers.budget_controller import add_budget
 from session import session
 
 from prettytable import PrettyTable
@@ -26,7 +26,7 @@ def menu():
     if choice == "1":
         change_budget()
     if choice == "2":
-        new_transaction()
+        add_transaction()
     if choice == "3":
         edit_categories()
     if choice == "4":
@@ -70,7 +70,7 @@ def change_budget():
     # budget_to_show = input("Which budget to show? Input budget's id: ")
     budget_to_show = input("Which budget to show? Input budget's id OR input 'n' to create new budget: ")
     if budget_to_show == 'n':
-        add_new_budget(user_to_show)
+        add_budget(user_to_show)
         budget_to_show = list(session.query(Budget.id).order_by(Budget.id.desc()).first())[0]
     print_budget()
 
@@ -133,20 +133,9 @@ def print_budget():
     print(f"TOTAL BUDGETED:   {round(total_budgeted, 2)}        TO BE BUDGETED:   >>to_be_budgeted<<") # TODO: fill to_be_budgeted
     print(f"TOTAL ACTIVITY:   {round(total_activity, 2)}")
     print(f"TOTAL AVAILABLE:  {round(total_available, 2)}")
-
     print(table_budget)
 
     menu()
-
-
-def new_transaction():
-    # print("\nNEW TRANSACTION MENU:")
-    # print("1. Inflow")
-    # print("2. Outflow")
-    # print(("## YOUR CHOICE: "))
-    # x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
-
-    add_transaction()
 
 def add_transaction():
     transaction_name = input("Write name of transaction: ")
@@ -162,9 +151,7 @@ def add_transaction():
                                   category_id=transaction_category_id)
     session.add(transaction)
     session.commit()
-
     print_budget()
-
 
 def edit_categories():
     print("\nEDIT CATEGORIES MENU:")
@@ -252,6 +239,12 @@ def reports():
         x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
 
     print_budget()
+
+def reading_ascii(file_name):
+    with open(file_name, 'r') as file:
+        for line in file:
+            line = line.strip('\n')
+            print(line)
 
 if __name__ == "__main__":
     change_user()
