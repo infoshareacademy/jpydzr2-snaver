@@ -67,7 +67,7 @@ def print_budget(budget_id):
 
     budget = session.query(Budget).filter_by(id=budget_id).first()
 
-    for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget_id):
+    for instance in budget.parent_categories:
 
         # adding up values from categories and assigning them to parent_categories
         for value_budgeted in session.query(Category).filter(
@@ -96,9 +96,8 @@ def print_budget(budget_id):
         sum_budgeted = 0  # this is reset to zero to allow summing categories in next parent-categories
         sum_available = 0  # this is reset to zero to allow summing categories in next parent-categories
 
-        for instance in session.query(Category).filter(
-                Category.parent_id == ParentCategory.give_parent_categories(instance)[0]):
-            table_budget.add_row(Category.give_info(instance))
+        for category_instance in instance.categories:
+            table_budget.add_row(Category.give_info(category_instance))
 
         # Below code makes a visible break between parent categories (just for better readability of the table)
         table_budget.add_row([" ", " ", " ", " "])
