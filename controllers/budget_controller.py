@@ -86,7 +86,7 @@ def print_budget(budget: Budget) -> None:
             .join(Category).join(ParentCategory)\
             .filter(ParentCategory.id == parent.id).first()[0]
 
-        sum_available = sum_budgeted - sum_activity
+        sum_available = sum_budgeted + sum_activity
 
         # Below code adds rows to PrettyTable like this:
         # | -------------------- | -------------------- | -------------------- | -------------------- |
