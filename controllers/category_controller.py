@@ -1,10 +1,9 @@
 from session import session
-from models.ParentCategory import ParentCategory
 from models.Category import Category
-from models.Transaction import Transaction
+from controllers.parentcategory_controller import add_parent_category
 
 
-def edit_categories(budget):
+def menu_categories() -> str:
     print("\nEDIT CATEGORIES MENU:")
     print("   PARENT CATEGORY:")
     print("      1. Add parent category")
@@ -15,30 +14,30 @@ def edit_categories(budget):
     print("      5. Remove category   [FUNCTION NOT AVAILABLE YET]")
     print("      6. Rename category   [FUNCTION NOT AVAILABLE YET]")
     print("    7. Go back to the budget")
-    choice = input("## YOUR CHOICE: ")
+    user_choice = input("## YOUR CHOICE: ")
+    return user_choice
+
+
+def add_category() -> Category:
+    category_name = input("The name of the new parent category: ")
+    parent_id = int(input("To which parent category does it belong (parent_id): "))
+    new_budgeted_amount = float(input("Write budgeted amount: "))
+    category = Category(name=category_name, parent_id=parent_id, budgeted_amount=new_budgeted_amount)
+    session.add(category)
+    session.commit()
+    # TODO: If more than one person creates a new category at the same time we might get incorrect data here
+    new_category = session.query(Category).order_by(Category.id.desc()).first()
+    return new_category
+
+
+def edit_categories(budget):
+    choice = menu_categories()
 
     if choice == "1":
-        new_parent_category = input("Write name of new parent category: ")
-        insert_into_parent_category_table = ParentCategory(name=new_parent_category, budget_id=budget.id)
-        session.add(insert_into_parent_category_table)
-        session.commit()
+        _ = add_parent_category(budget)
 
     elif choice == "4":
-        new_category = input("Write name of new category: ")
-        which_parent_id = int(input("To which parent category does it belong (parent_id): "))
-        new_budgeted_amount = float(input("Write budgeted amount: "))
-
-        insert_into_category_table = Category(name=new_category, budgeted_amount=new_budgeted_amount,
-                                              parent_id=which_parent_id)
-        session.add(insert_into_category_table)
-        session.commit()
-
-        # Below we need to add empty record to Transactions to avoid errors during print_budget()
-        last_category_id = list(session.query(Category.id).order_by(Category.id.desc()).first())[0]
-        empty_record = Transaction(name="# empty record to initiate a new category", amount_inflow=0, amount_outflow=0,
-                                   category_id=last_category_id)
-        session.add(empty_record)
-        session.commit()
+        _ = add_category()
 
     elif choice == "7":
         pass

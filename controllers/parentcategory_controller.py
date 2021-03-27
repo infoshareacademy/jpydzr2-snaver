@@ -1,4 +1,15 @@
+from models.Budget import Budget
+from models.ParentCategory import ParentCategory
 from session import session
+
+
+def add_parent_category(budget: Budget) -> ParentCategory:
+    parent_category_name = input("The name of the new parent category: ")
+    parent_category = ParentCategory(name=parent_category_name, budget_id=budget.id)
+    session.add(parent_category)
+    session.commit()
+    new_parent_category = session.query(Budget).order_by(Budget.id.desc()).first()
+    return new_parent_category
 
 
 def edit_categories():

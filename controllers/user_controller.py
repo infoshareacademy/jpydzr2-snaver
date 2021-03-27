@@ -24,6 +24,8 @@ def login() -> User:
 
         # Validate the login credentials
         user = validate_login(username, password)
+    else:
+        user = None
 
     return user
 
