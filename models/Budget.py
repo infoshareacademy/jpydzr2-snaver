@@ -3,9 +3,14 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy.orm import relationship
+from sqlalchemy import func
 
 from .Base import Base
+from .ParentCategory import ParentCategory
+from .Category import Category
+from .Transaction import Transaction
 
+from session import session
 
 class Budget(Base):
     __tablename__ = 'budget'
@@ -17,3 +22,28 @@ class Budget(Base):
 
     def __repr__(self):
         return f"Name: {self.name}, Id: {self.id}, Owner id: {self.user_id}"
+
+    @property
+    def total_budgeted(self):
+        total_budgeted = session.query(
+            func.sum(Category.budgeted_amount)) \
+            .join(ParentCategory) \
+            .filter(ParentCategory.id == self.id).first()[0]
+
+        if total_budgeted is None:
+            total_budgeted = 0.0
+
+        return total_budgeted
+
+    @property
+    def total_activity(self):
+        total_activity = session.query(
+            func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
+            .join(Category).join(ParentCategory) \
+            .join(Budget) \
+            .filter(Budget.id == self.id).first()[0]
+
+        if total_activity is None:
+            total_activity = 0.0
+
+        return total_activity

@@ -67,15 +67,14 @@ def print_budget(budget: Budget) -> None:
     table_budget.float_format = "1.2"  # the way floating point data is printed
 
     # Reading data from database and inserting into PrettyTable
-    total_budgeted = 0
-    total_activity = 0
-    total_available = 0
+    total_budgeted = budget.total_budgeted
+    total_activity = budget.total_activity
+    total_available = total_budgeted + total_activity
 
     for parent in budget.parent_categories:
 
         sum_budgeted = parent.sum_budgeted
         sum_activity = parent.sum_activity
-
         sum_available = sum_budgeted + sum_activity
 
         # Below code adds rows to PrettyTable like this:
@@ -86,10 +85,6 @@ def print_budget(budget: Budget) -> None:
         table_budget.add_row(
             [f"[{parent.id}, '{parent.name}']", sum_budgeted, sum_activity, sum_available])
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
-
-        total_budgeted += sum_budgeted
-        total_activity += sum_activity
-        total_available += sum_available
 
         for category in parent.categories:
             table_budget.add_row(category.fit_into_prettytable)
