@@ -59,32 +59,38 @@ def edit_budget(budget: Budget) -> Budget:
 
 
 def print_budget(budget: Budget) -> None:
-    # Definition of PrettyTable
+    # Initiate and set up a PrettyTable table
     table_budget = PrettyTable()
     table_budget.field_names = [" id, CATEGORY", "BUDGETED", "ACTIVITY", "AVAILABLE"]
     table_budget.align = "r"  # align in all columns to the right side
     table_budget.align[" id, CATEGORY"] = "l"  # align in column "CATEGORY" to the left side
     table_budget.float_format = "1.2"  # the way floating point data is printed
 
+    # Loop through parent categories of the budget
     for parent in budget.parent_categories:
 
-        # Code belows adds rows to PrettyTable like this:
+        # Code belows adds rows to PrettyTable object (table_budget)
         # | -------------------- | -------------------- | -------------------- | -------------------- |
         # | parent_category      |               xxx.xx |               yyy.yy |               zzz.zz |
         # | -------------------- | -------------------- | -------------------- | -------------------- |
+
+        # Start drawing the lines
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
-        # Add a row with parent's details
+        # Fill the row with parent's details using prettytable_repr method
         table_budget.add_row(parent.prettytable_repr)
 
+        # Draw closing lines
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
+        # Attach category details as new rows
         for category in parent.categories:
             table_budget.add_row(category.prettytable_repr)
 
-        # Below code makes a visible break between parent categories (just for better readability of the table)
+        # Draw blank row before the new Parent row (just for better readability of the table)
         table_budget.add_row([" ", " ", " ", " "])
 
+    # Print budget headlines
     print(
         f"\nHere is your budget \"{budget.name}\"")
     print("-----------------------------")
@@ -95,6 +101,7 @@ def print_budget(budget: Budget) -> None:
     print(f"TOTAL ACTIVITY:   {round(budget.total_activity, 2)}")
     print(f"TOTAL AVAILABLE:  {round(budget.total_budgeted - budget.total_activity, 2)}")
 
+    # Print the table
     print(table_budget)
 
 
