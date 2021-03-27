@@ -101,8 +101,8 @@ def print_budget(budget: Budget) -> None:
         total_activity += sum_activity
         total_available += sum_available
 
-        for category_instance in parent_instance.categories:
-            table_budget.add_row(Category.give_info(category_instance))
+        for category in parent_instance.categories:
+            table_budget.add_row(category.fit_into_prettytable)
 
         # Below code makes a visible break between parent categories (just for better readability of the table)
         table_budget.add_row([" ", " ", " ", " "])

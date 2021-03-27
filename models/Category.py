@@ -53,6 +53,7 @@ class Category(Base):
         session.query(Category).filter_by(id=self.id).update({'budgeted_amount': amount})
         session.commit()
 
-    def give_info(self):
+    @property
+    def fit_into_prettytable(self):
         self.activity_amount = self.budgeted_amount - self.available_amount
         return [(self.id, self.name), self.budgeted_amount, self.activity_amount, self.available_amount]
