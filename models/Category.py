@@ -37,7 +37,7 @@ class Category(Base):
 
     @property
     def available_amount(self):
-        amount = (session.query(func.sum(Transaction.amount_outflow)).filter(Transaction.category_id == self.id).first())[0]
+        amount = (session.query(func.sum(Transaction.amount_outflow - Transaction.amount_inflow)).filter(Transaction.category_id == self.id).first())[0]
         if amount:
             return self.__budgeted_amount - float(amount)
         else:

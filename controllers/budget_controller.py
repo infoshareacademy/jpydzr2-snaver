@@ -82,7 +82,7 @@ def print_budget(budget: Budget) -> None:
             ).first()[0]
 
         sum_available = sum_budgeted - session.query(
-            func.sum(Transaction.amount_outflow))\
+            func.sum(Transaction.amount_outflow - Transaction.amount_inflow))\
             .join(Category).join(ParentCategory)\
             .filter(ParentCategory.id == parent.id).first()[0]
 
