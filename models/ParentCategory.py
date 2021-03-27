@@ -48,3 +48,7 @@ class ParentCategory(Base):
 
         return sum_activity
 
+    @property
+    def prettytable_repr(self):
+        return [(self.id, self.name), self.sum_budgeted, self.sum_activity, self.sum_budgeted - self.sum_activity]
+

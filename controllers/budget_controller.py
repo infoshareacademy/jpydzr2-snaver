@@ -68,21 +68,19 @@ def print_budget(budget: Budget) -> None:
 
     for parent in budget.parent_categories:
 
-        sum_budgeted = parent.sum_budgeted
-        sum_activity = parent.sum_activity
-        sum_available = sum_budgeted + sum_activity
-
-        # Below code adds rows to PrettyTable like this:
+        # Code belows adds rows to PrettyTable like this:
         # | -------------------- | -------------------- | -------------------- | -------------------- |
         # | parent_category      |               xxx.xx |               yyy.yy |               zzz.zz |
         # | -------------------- | -------------------- | -------------------- | -------------------- |
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
-        table_budget.add_row(
-            [f"[{parent.id}, '{parent.name}']", sum_budgeted, sum_activity, sum_available])
+
+        # Add a row with parent's details
+        table_budget.add_row(parent.prettytable_repr)
+
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
         for category in parent.categories:
-            table_budget.add_row(category.fit_into_prettytable)
+            table_budget.add_row(category.prettytable_repr)
 
         # Below code makes a visible break between parent categories (just for better readability of the table)
         table_budget.add_row([" ", " ", " ", " "])

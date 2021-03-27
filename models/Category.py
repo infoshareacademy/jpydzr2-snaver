@@ -55,6 +55,6 @@ class Category(Base):
         session.commit()
 
     @property
-    def fit_into_prettytable(self):
+    def prettytable_repr(self):
         self.activity_amount = self.budgeted_amount - self.available_amount
         return [(self.id, self.name), self.budgeted_amount, -(self.activity_amount), self.available_amount]
