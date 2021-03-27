@@ -69,8 +69,6 @@ def print_budget(budget: Budget) -> None:
     table_budget.float_format = "1.2"  # the way floating point data is printed
 
     # Reading data from database and inserting into PrettyTable
-    sum_budgeted = 0
-    sum_available = 0
     total_budgeted = 0
     total_activity = 0
     total_available = 0
@@ -79,7 +77,7 @@ def print_budget(budget: Budget) -> None:
         # adding up values from categories and assigning them to parent_categories
 
         sum_budgeted = session.query(
-            func.sum(Category.budgeted_amount)\
+            func.sum(Category.budgeted_amount)
             .filter(Category.parent_id == parent_instance.id)
             ).first()[0]
 
@@ -102,9 +100,6 @@ def print_budget(budget: Budget) -> None:
         total_budgeted += sum_budgeted
         total_activity += sum_activity
         total_available += sum_available
-
-        sum_budgeted = 0  # this is reset to zero to allow summing categories in next parent-categories
-        sum_available = 0  # this is reset to zero to allow summing categories in next parent-categories
 
         for category_instance in parent_instance.categories:
             table_budget.add_row(Category.give_info(category_instance))
