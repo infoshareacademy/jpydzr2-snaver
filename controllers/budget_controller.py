@@ -76,8 +76,6 @@ def print_budget(budget: Budget) -> None:
         # adding up values from categories and assigning them to parent_categories
         for category in parent_instance.categories:
             sum_budgeted += category.budgeted_amount
-
-        for category in parent_instance.categories:
             sum_available += category.available_amount
 
         sum_activity = sum_budgeted - sum_available
