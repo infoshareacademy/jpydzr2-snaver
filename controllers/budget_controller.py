@@ -35,8 +35,8 @@ def change_budget(user: User) -> Budget:
     table_show_budgets = PrettyTable()
     table_show_budgets.field_names = ["id", "name"]
 
-    for budget_instance in all_budgets:
-        table_show_budgets.add_row([budget_instance.id, budget_instance.name])
+    for budget in all_budgets:
+        table_show_budgets.add_row([budget.id, budget.name])
 
     while True:
         print("\nYour budgets: ")
@@ -73,18 +73,18 @@ def print_budget(budget: Budget) -> None:
     total_activity = 0
     total_available = 0
 
-    for parent_instance in budget.parent_categories:
+    for parent in budget.parent_categories:
         # adding up values from categories and assigning them to parent_categories
 
         sum_budgeted = session.query(
             func.sum(Category.budgeted_amount)
-            .filter(Category.parent_id == parent_instance.id)
+            .filter(Category.parent_id == parent.id)
             ).first()[0]
 
         sum_available = sum_budgeted - session.query(
             func.sum(Transaction.amount_outflow))\
             .join(Category).join(ParentCategory)\
-            .filter(ParentCategory.id == parent_instance.id).first()[0]
+            .filter(ParentCategory.id == parent.id).first()[0]
 
         sum_activity = sum_budgeted - sum_available
 
@@ -94,14 +94,14 @@ def print_budget(budget: Budget) -> None:
         # | -------------------- | -------------------- | -------------------- | -------------------- |
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
         table_budget.add_row(
-            [f"[{parent_instance.id}, '{parent_instance.name}']", sum_budgeted, sum_activity, sum_available])
+            [f"[{parent.id}, '{parent.name}']", sum_budgeted, sum_activity, sum_available])
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
         total_budgeted += sum_budgeted
         total_activity += sum_activity
         total_available += sum_available
 
-        for category in parent_instance.categories:
+        for category in parent.categories:
             table_budget.add_row(category.fit_into_prettytable)
 
         # Below code makes a visible break between parent categories (just for better readability of the table)
@@ -127,10 +127,10 @@ def print_budget_bar_chart(budget: Budget) -> None:
     bar_chart.align["ACTIVITY"] = "r"
     bar_chart.float_format = "1.2"
 
-    for parent_category_instance in budget.parent_categories:
-        for category_instance in parent_category_instance.categories:
-            activity_amount = sum(activity.amount_outflow for activity in category_instance.transactions)
+    for parent in budget.parent_categories:
+        for category in parent.categories:
+            activity_amount = sum(activity.amount_outflow for activity in category.transactions)
             bar = int(round(activity_amount / 100)) * "#"  # Each 100 PLN is a single "#"
-            bar_chart.add_row([(category_instance.id, category_instance.name), activity_amount, bar])
+            bar_chart.add_row([(category.id, category.name), activity_amount, bar])
     print(bar_chart)
     _ = input("Press ENTER to go back.")
