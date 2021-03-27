@@ -1,10 +1,37 @@
 """File that starts the program"""
 
-from interface import reading_ascii, menu, switch_month, reports
 from controllers.user_controller import login
 from controllers.budget_controller import print_budget, select_budget, change_budget, edit_budget
 from controllers.category_controller import edit_categories
 from controllers.transaction_controller import add_transaction
+from controllers.reports_controller import reports
+
+
+def switch_month():
+    print("\n@$@#%^@%@##@$%#^*&^ Here you can switch the month (the billing period)")
+    _ = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
+
+
+def menu() -> str:
+    print("MENU:")
+    print("1. Change budget")
+    print("2. New transaction (activity)")
+    print("3. Edit categories")
+    print("4. Edit budget (modify budgeted amounts)")
+    print("5. Switch the month (the billing period)")
+    print("6. Reports")
+    print("7. Change user")
+    print("8. Save and close the program")
+    user_choice = input("## YOUR CHOICE: ")
+    return user_choice
+
+
+def reading_ascii(file_name: str) -> None:
+    with open(file_name, 'r') as file:
+        for line in file:
+            line = line.strip('\n')
+            print(line)
+
 
 welcome_message = "\nWelcome to Snaver!"
 farewell_message = "\nGood bye!"
@@ -39,7 +66,7 @@ try:
         elif choice == "8":
             print(farewell_message)
             exit()
-    
+
 except KeyboardInterrupt:
     print(farewell_message)
     exit(0)
