@@ -88,7 +88,7 @@ def print_budget(budget: Budget) -> None:
         # | -------------------- | -------------------- | -------------------- | -------------------- |
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
         table_budget.add_row(
-            [ParentCategory.give_parent_categories(parent_instance), sum_budgeted, sum_activity, sum_available])
+            [f"[{parent_instance.id}, '{parent_instance.name}']", sum_budgeted, sum_activity, sum_available])
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
         total_budgeted += sum_budgeted
