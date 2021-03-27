@@ -74,13 +74,11 @@ def print_budget(budget: Budget) -> None:
 
     for parent_instance in budget.parent_categories:
         # adding up values from categories and assigning them to parent_categories
-        for value_budgeted in session.query(Category).filter(
-                Category.parent_id == ParentCategory.give_parent_categories(parent_instance)[0]):
-            sum_budgeted += (Category.give_info(value_budgeted)[1])
+        for category in parent_instance.categories:
+            sum_budgeted += category.budgeted_amount
 
-        for value_available in session.query(Category).filter(
-                Category.parent_id == ParentCategory.give_parent_categories(parent_instance)[0]):
-            sum_available += (Category.give_info(value_available)[3])
+        for category in parent_instance.categories:
+            sum_available += category.available_amount
 
         sum_activity = sum_budgeted - sum_available
 
