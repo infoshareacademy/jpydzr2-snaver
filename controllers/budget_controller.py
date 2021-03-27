@@ -3,9 +3,12 @@ from sqlalchemy.orm import lazyload
 from models.Budget import Budget
 from models.User import User
 from models.Category import Category
+from models.Transaction import Transaction
 from models.ParentCategory import ParentCategory
 from session import session
 from prettytable import PrettyTable
+
+from sqlalchemy import func
 
 
 def add_budget(user: User) -> Budget:
@@ -74,9 +77,16 @@ def print_budget(budget: Budget) -> None:
 
     for parent_instance in budget.parent_categories:
         # adding up values from categories and assigning them to parent_categories
-        for category in parent_instance.categories:
-            sum_budgeted += category.budgeted_amount
-            sum_available += category.available_amount
+
+        sum_budgeted = session.query(
+            func.sum(Category.budgeted_amount)\
+            .filter(Category.parent_id == parent_instance.id)
+            ).first()[0]
+
+        sum_available = sum_budgeted - session.query(
+            func.sum(Transaction.amount_outflow))\
+            .join(Category).join(ParentCategory)\
+            .filter(ParentCategory.id == parent_instance.id).first()[0]
 
         sum_activity = sum_budgeted - sum_available
 
