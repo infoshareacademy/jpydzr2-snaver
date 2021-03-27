@@ -66,11 +66,6 @@ def print_budget(budget: Budget) -> None:
     table_budget.align[" id, CATEGORY"] = "l"  # align in column "CATEGORY" to the left side
     table_budget.float_format = "1.2"  # the way floating point data is printed
 
-    # Reading data from database and inserting into PrettyTable
-    total_budgeted = budget.total_budgeted
-    total_activity = budget.total_activity
-    total_available = total_budgeted + total_activity
-
     for parent in budget.parent_categories:
 
         sum_budgeted = parent.sum_budgeted
@@ -98,9 +93,9 @@ def print_budget(budget: Budget) -> None:
     print("MONTH: >>month<<")  # TODO: fill {month} with the right data (do f-string)
     print("-----------------------------")
     print(
-        f"TOTAL BUDGETED:   {round(total_budgeted, 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
-    print(f"TOTAL ACTIVITY:   {round(total_activity, 2)}")
-    print(f"TOTAL AVAILABLE:  {round(total_available, 2)}")
+        f"TOTAL BUDGETED:   {round(budget.total_budgeted, 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
+    print(f"TOTAL ACTIVITY:   {round(budget.total_activity, 2)}")
+    print(f"TOTAL AVAILABLE:  {round(budget.total_budgeted - budget.total_activity, 2)}")
 
     print(table_budget)
 
