@@ -1,56 +1,62 @@
 from sqlalchemy.orm import lazyload
 
 from models.Budget import Budget
+from models.User import User
 from models.Category import Category
 from models.ParentCategory import ParentCategory
 from session import session
 from prettytable import PrettyTable
 
 
-def add_budget(user_id):
+def add_budget(user: User) -> Budget:
     budget_name = input("Name of the new budget: ")
-    budget = Budget(name=budget_name, user_id=user_id)
+    budget = Budget(name=budget_name, user_id=user.id)
     session.add(budget)
     session.commit()
-    # new_budget = list(session.query(Budget.id).order_by(Budget.id.desc()).first())[0]
-    new_budget = session.query(Budget.id).order_by(Budget.id.desc()).first()
-    return new_budget.id
+    new_budget = session.query(Budget).order_by(Budget.id.desc()).first()
+    return new_budget
 
 
-def select_budget(user_id):
-    budgets = session.query(Budget).filter(Budget.user_id == user_id).all()
+def select_budget(user: User) -> Budget:
+    budgets = user.budgets
     if len(budgets) == 1:
-        budget_id = budgets[0].id
+        selected_budget = budgets[0]
     else:
-        budget_id = change_budget(user_id)
-    return budget_id
+        selected_budget = change_budget(user)
+    return selected_budget
 
 
-def change_budget(user_id):
-    print("\nYour budgets: ")
+def change_budget(user: User) -> Budget:
+    all_budgets = user.budgets
 
-    ''' Printing the table with user's budgets.'''
-    # Definition of PrettyTable for budgets.
     table_show_budgets = PrettyTable()
     table_show_budgets.field_names = ["id", "name"]
 
-    # Reading data from databe and inserting into PrettyTable
-    for instance in session.query(Budget).filter(Budget.user_id == user_id):
-        table_show_budgets.add_row([Budget.give_budgets(instance)[0], Budget.give_budgets(instance)[1]])
+    for budget_instance in all_budgets:
+        table_show_budgets.add_row([budget_instance.id, budget_instance.name])
 
-    print(table_show_budgets)
+    while True:
+        print("\nYour budgets: ")
+        print(table_show_budgets)
 
-    ''' Printing the budget's table that user selected.'''
-    choice = input("Which budget to show? Input budget's id OR input 'n' to create new budget: ")
-    if choice == 'n':
-        budget_id = add_budget(user_id)
-    else:
-        # TODO: Add validation if the choice is correct
-        budget_id = choice
-    return budget_id
+        choice = input("Which budget to show? Pick budget's ID or input 'n' to create a new budget: ")
+        if choice == 'n':
+            selected_budget = add_budget(user)
+        else:
+            selected_budget = next((budget for budget in all_budgets if budget.id == int(choice)), None)
+        if selected_budget:
+            return selected_budget
+        else:
+            print("Select a correct budget!")
 
 
-def print_budget(budget_id):
+def edit_budget(budget: Budget) -> Budget:
+    print("\nEDIT BUDGET MENU:")
+    print("@$@#%^@%@##@$%#^*&^ Here you edit budget (modify budgeted amounts)")
+    x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
+
+
+def print_budget(budget: Budget) -> None:
     # Definition of PrettyTable
     table_budget = PrettyTable()
     table_budget.field_names = [" id, CATEGORY", "BUDGETED", "ACTIVITY", "AVAILABLE"]
@@ -65,10 +71,7 @@ def print_budget(budget_id):
     total_activity = 0
     total_available = 0
 
-    budget = session.query(Budget).filter_by(id=budget_id).first()
-
     for parent_instance in budget.parent_categories:
-
         # adding up values from categories and assigning them to parent_categories
         for value_budgeted in session.query(Category).filter(
                 Category.parent_id == ParentCategory.give_parent_categories(parent_instance)[0]):
@@ -115,7 +118,7 @@ def print_budget(budget_id):
     print(table_budget)
 
 
-def reports(budget_id):
+def reports(budget: Budget) -> None:
     print("\nREPORTS MENU:")
     print("0. Print the table with all transactions in this budget   [FUNCTION NOT AVAILABLE YET]")
     print("1. Display the bar chart")
@@ -132,7 +135,7 @@ def reports(budget_id):
         bar_chart.float_format = "1.2"  # the way floating point data is printed, for example "123.45"
 
         # reading values from database and inserting into PrettyTable
-        for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget_id):
+        for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget.id):
             for value_budgeted in session.query(Category).filter(
                     Category.parent_id == ParentCategory.give_parent_categories(instance)[0]):
                 activity_amount = Category.give_info(value_budgeted)[2]

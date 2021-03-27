@@ -8,16 +8,13 @@ from .budget_controller import change_budget
 
 
 # Display login form
-def login() -> (int, str):
-    user_id = None
-    user_name = None
-
+def login() -> User:
     answer = input("Do you have an account?[y/n]: ")
 
     # If user does not have an account, redirect them to create_account function
     if answer.lower() == 'n' or answer.lower() == 'no':
         print("\nSo, let's set up an account for you, then! :-)")
-        user_id, user_name = create_account()
+        user = create_account()
 
     # If user does have an account, ask them for login credentials
     elif answer.lower() == 'y' or answer.lower() == 'yes':
@@ -26,13 +23,13 @@ def login() -> (int, str):
         password = getpass(prompt="Password: ")
 
         # Validate the login credentials
-        user_id, user_name = validate_login(username, password)
+        user = validate_login(username, password)
 
-    return user_id, user_name
+    return user
 
 
 # Create account
-def create_account() -> (int, str):
+def create_account() -> User:
     # Prompt user for username
     username = input("Choose your username: ")
 
@@ -55,17 +52,18 @@ def create_account() -> (int, str):
     user_instance = session.query(User).filter_by(name=username).first()
     print("\nYou've successfully created the account!")
 
-    return user_instance.id, user_instance.name
+    return user_instance
 
 
 # Validate the login credentials
-def validate_login(username, password) -> (int, str):
-    # Get user instance
+def validate_login(username, password) -> User:
+    wrong_credentials_message = "Wrong username or password!"
     user_instance = session.query(User).filter_by(name=username).first()
 
     # Wrong username
     if user_instance is None:
-        return None, None
+        print(wrong_credentials_message)
+        return None
 
     # Retrieve user's salt and key
     salt = user_instance.salt
@@ -74,6 +72,7 @@ def validate_login(username, password) -> (int, str):
 
     # Check if the password is correct
     if key != calculated_key:
-        return None, None
+        print(wrong_credentials_message)
+        return None
     else:
-        return user_instance.id, user_instance.name
+        return user_instance

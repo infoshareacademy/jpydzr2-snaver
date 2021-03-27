@@ -17,60 +17,12 @@ def menu():
     print("2. New transaction (activity)")
     print("3. Edit categories")
     print("4. Edit budget (modify budgeted amounts)")
-    print("5. Switch the month (the billing peroid")
+    print("5. Switch the month (the billing period)")
     print("6. Reports")
     print("7. Change user")
     print("8. Save and close the program")
     choice = input("## YOUR CHOICE: ")
     return choice
-
-def edit_categories(budget_id):
-    print("\nEDIT CATEGORIES MENU:")
-    print("   PARENT CATEGORY:")
-    print("      1. Add parent category")
-    print("      2. Remove parent category   [FUNCTION NOT AVAILABLE YET]")
-    print("      3. Rename parent category   [FUNCTION NOT AVAILABLE YET]")
-    print("   CATEGORY (subcategory of the parent category):")
-    print("      4. Add category")
-    print("      5. Remove category   [FUNCTION NOT AVAILABLE YET]")
-    print("      6. Rename category   [FUNCTION NOT AVAILABLE YET]")
-    print("    7. Go back to the budget")
-    choice = input("## YOUR CHOICE: ")
-
-    if choice == "1":
-        new_parent_category = input("Write name of new parent category: ")
-        insert_into_parent_category_table = ParentCategory(name=new_parent_category, budget_id=budget_id)
-        session.add(insert_into_parent_category_table)
-        session.commit()
-
-    elif choice == "4":
-        new_category = input("Write name of new category: ")
-        which_parent_id = int(input("To which parent category does it belong (parent_id): "))
-        new_budgeted_amount = float(input("Write budgeted amount: "))
-
-        insert_into_category_table = Category(name=new_category, budgeted_amount=new_budgeted_amount,
-                                              parent_id=which_parent_id)
-        session.add(insert_into_category_table)
-        session.commit()
-
-        # Below we need to add empty record to Transactions to avoid errors during print_budget()
-        last_category_id = list(session.query(Category.id).order_by(Category.id.desc()).first())[0]
-        empty_record = Transaction(name="# empty record to initiate a new category", amount_inflow=0, amount_outflow=0,
-                                   category_id=last_category_id)
-        session.add(empty_record)
-        session.commit()
-
-    elif choice == "7":
-        pass
-
-    else:
-        x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
-
-
-def edit_budget():
-    print("\nEDIT BUDGET MENU:")
-    print("@$@#%^@%@##@$%#^*&^ Here you edit budget (modify budgeted amounts)")
-    x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
 
 
 def switch_month():
@@ -78,7 +30,7 @@ def switch_month():
     x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
 
 
-def reports(budget_id):
+def reports(budget: Budget) -> None:
     print("\nREPORTS MENU:")
     print("0. Print the table with all transactions in this budget   [FUNCTION NOT AVAILABLE YET]")
     print("1. Display the bar chart")
@@ -95,7 +47,7 @@ def reports(budget_id):
         bar_chart.float_format = "1.2"  # the way floating point data is printed, for example "123.45"
 
         # reading values from database and inserting into PrettyTable
-        for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget_id):
+        for instance in session.query(ParentCategory).filter(ParentCategory.budget_id == budget.id):
             for value_budgeted in session.query(Category).filter(
                     Category.parent_id == ParentCategory.give_parent_categories(instance)[0]):
                 activity_amount = Category.give_info(value_budgeted)[2]
@@ -108,7 +60,7 @@ def reports(budget_id):
         x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
 
 
-def reading_ascii(file_name):
+def reading_ascii(file_name: str) -> None:
     with open(file_name, 'r') as file:
         for line in file:
             line = line.strip('\n')
