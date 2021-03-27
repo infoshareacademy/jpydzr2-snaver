@@ -8,8 +8,6 @@ from models.ParentCategory import ParentCategory
 from session import session
 from prettytable import PrettyTable
 
-from sqlalchemy import func
-
 
 def add_budget(user: User) -> Budget:
     budget_name = input("Name of the new budget: ")
@@ -74,17 +72,9 @@ def print_budget(budget: Budget) -> None:
     total_available = 0
 
     for parent in budget.parent_categories:
-        # adding up values from categories and assigning them to parent_categories
 
-        sum_budgeted = session.query(
-            func.sum(Category.budgeted_amount)
-            .filter(Category.parent_id == parent.id)
-            ).first()[0]
-
-        sum_activity = session.query(
-            func.sum(Transaction.amount_inflow - Transaction.amount_outflow))\
-            .join(Category).join(ParentCategory)\
-            .filter(ParentCategory.id == parent.id).first()[0]
+        sum_budgeted = parent.sum_budgeted
+        sum_activity = parent.sum_activity
 
         sum_available = sum_budgeted + sum_activity
 
