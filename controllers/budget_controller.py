@@ -99,7 +99,7 @@ def print_budget(budget: Budget) -> None:
     print(
         f"TOTAL BUDGETED:   {round(budget.total_budgeted, 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
     print(f"TOTAL ACTIVITY:   {round(budget.total_activity, 2)}")
-    print(f"TOTAL AVAILABLE:  {round(budget.total_budgeted - budget.total_activity, 2)}")
+    print(f"TOTAL AVAILABLE:  {round(budget.total_budgeted + budget.total_activity, 2)}")
 
     # Print the table
     print(table_budget)
