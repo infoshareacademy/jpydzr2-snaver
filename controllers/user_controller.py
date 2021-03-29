@@ -4,23 +4,17 @@ from getpass import getpass
 
 from models.User import User
 from session import session
+from .budget_controller import change_budget
 
-# GLOBAL VARIABLES
-global_user_id = None
-global_user_name = None
-
-
-# DEFINE LOGIC HERE
 
 # Display login form
-def login():
-    # Ask you user if they have an account
+def login() -> User:
     answer = input("Do you have an account?[y/n]: ")
 
     # If user does not have an account, redirect them to create_account function
     if answer.lower() == 'n' or answer.lower() == 'no':
         print("\nSo, let's set up an account for you, then! :-)")
-        create_account()
+        user = create_account()
 
     # If user does have an account, ask them for login credentials
     elif answer.lower() == 'y' or answer.lower() == 'yes':
@@ -29,16 +23,15 @@ def login():
         password = getpass(prompt="Password: ")
 
         # Validate the login credentials
-        validate_login(username, password)
-
-    # If user does not cooperate
+        user = validate_login(username, password)
     else:
-        print("\nHmm, let's start over!")
-        login()
+        user = None
+
+    return user
 
 
 # Create account
-def create_account():
+def create_account() -> User:
     # Prompt user for username
     username = input("Choose your username: ")
 
@@ -48,62 +41,40 @@ def create_account():
         print("\nHmm, that username is already taken. Let's try something different!")
         username = input("Choose your username: ")
         user_account = session.query(User).filter_by(name=username).first()
+        # TODO: Allow the user to leave this loop
 
-    # Prompt user for password
     password = getpass(prompt="Great, choose your password now: ")
-
-    # Hash password
     salt = os.urandom(32)  # A new salt for this user
     key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
 
-    # Create user
     user = User(name=username, salt=salt, key=key)
     session.add(user)
     session.commit()
 
-    # Get user instance from db
     user_instance = session.query(User).filter_by(name=username).first()
     print("\nYou've successfully created the account!")
 
-    # Redirect logged user
-    set_global_variables(user_instance)
+    return user_instance
 
 
 # Validate the login credentials
-def validate_login(username, password):
-    # Get user instance
+def validate_login(username, password) -> User:
+    wrong_credentials_message = "Wrong username or password!"
     user_instance = session.query(User).filter_by(name=username).first()
 
     # Wrong username
     if user_instance is None:
-        print("\nWrong password / username. Let's try again!")
-        login()
+        print(wrong_credentials_message)
+        return None
 
-    # else == Correct username
+    # Retrieve user's salt and key
+    salt = user_instance.salt
+    key = user_instance.key
+    calculated_key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+
+    # Check if the password is correct
+    if key != calculated_key:
+        print(wrong_credentials_message)
+        return None
     else:
-
-        # Retrieve user's salt and key
-        salt = user_instance.salt
-        key = user_instance.key
-
-        new_key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
-
-        # Check if the password is correct
-        if key != new_key:
-            print("\nWrong password / username. Let's try again!")
-            login()
-
-        # else == Correct password
-        else:
-            # Redirect logged user
-            set_global_variables(user_instance)
-
-
-# Set global variables, redirect
-def set_global_variables(user_instance):
-    # refer to global variables inside function
-    global global_user_id
-    global global_user_name
-
-    global_user_id = user_instance.id
-    global_user_name = user_instance.name
+        return user_instance

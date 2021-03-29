@@ -1,20 +1,15 @@
+from models.Budget import Budget
+from models.ParentCategory import ParentCategory
 from session import session
 
 
-
-# ADD PARENT CATEGORIES
-# ------------------------------
-
-# parent_category_list = []
-# parent_category_names = ["Rachunki", "Kredyty", "Wydatki na życie", "Odkładanie", "Rozrywki"]
-#
-# for budget_instance in session.query(Budget).order_by(Budget.id):
-#     for i in range(len(parent_category_names)):
-#         parent_category_list.append(ParentCategory(name=parent_category_names[i], budget_id=budget_instance.id))
-#
-# session.add_all(parent_category_list)
-# session.commit()
-
+def add_parent_category(budget: Budget) -> ParentCategory:
+    parent_category_name = input("The name of the new parent category: ")
+    parent_category = ParentCategory(name=parent_category_name, budget_id=budget.id)
+    session.add(parent_category)
+    session.commit()
+    new_parent_category = session.query(Budget).order_by(Budget.id.desc()).first()
+    return new_parent_category
 
 
 def edit_categories():
