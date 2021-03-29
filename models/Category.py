@@ -50,8 +50,12 @@ class Category(Base):
 
     @property
     def available_amount(self):
-        amount = session.query(func.sum(Transaction.amount_outflow)).filter(Transaction.category_id == self.id).first()
-        return self.__budgeted_amount - float(amount[0])
+        amount = (session.query(func.sum(Transaction.amount_outflow - Transaction.amount_inflow))
+                  .filter(Transaction.category_id == self.id).first())[0]
+        if amount:
+            return self.__budgeted_amount - float(amount)
+        else:
+            return self.__budgeted_amount
 
     @hybrid_property
     def budgeted_amount(self):
@@ -63,6 +67,7 @@ class Category(Base):
         session.query(Category).filter_by(id=self.id).update({'budgeted_amount': amount})
         session.commit()
 
-    def give_info(self):
+    @property
+    def prettytable_repr(self):
         self.activity_amount = self.budgeted_amount - self.available_amount
-        return [(self.id, self.name), self.budgeted_amount, self.activity_amount, self.available_amount]
+        return [(self.id, self.name), self.budgeted_amount, -(self.activity_amount), self.available_amount]
