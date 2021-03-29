@@ -11,6 +11,7 @@ from session import session
 from .Base import Base
 from .Category import Category
 from .Transaction import Transaction
+from .style import style
 
 
 class ParentCategory(Base):
@@ -50,5 +51,12 @@ class ParentCategory(Base):
 
     @property
     def prettytable_repr(self):
-        return [(self.id, self.name), self.sum_budgeted, self.sum_activity, self.sum_budgeted + self.sum_activity]
+        sum_available = self.sum_budgeted + self.sum_activity
 
+        if sum_available < 0:
+            sum_available = f"{style.tRED}%.2f{style.RESET}" % sum_available
+        else:
+            sum_available = f"{style.tGREEN}%.2f{style.RESET}" % sum_available
+        # NOTE: Above '%.2f' is made for printing two decimal places including zeros at the end.
+
+        return [(self.id, self.name), self.sum_budgeted, self.sum_activity, sum_available]

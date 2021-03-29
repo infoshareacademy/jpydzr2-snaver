@@ -7,6 +7,7 @@ from models.Transaction import Transaction
 from models.ParentCategory import ParentCategory
 from session import session
 from prettytable import PrettyTable
+from models.style import style
 
 
 def add_budget(user: User) -> Budget:
@@ -93,7 +94,7 @@ def print_budget(budget: Budget) -> None:
     # Print budget headlines
     print(
         f"\nHere is your budget \"{budget.name}\"")
-    print("-----------------------------")
+    print(f"-----------------------------")
     print("MONTH: >>month<<")  # TODO: fill {month} with the right data (do f-string)
     print("-----------------------------")
     print(
@@ -113,9 +114,11 @@ def print_budget_bar_chart(budget: Budget) -> None:
     bar_chart.float_format = "1.2"
 
     for parent in budget.parent_categories:
+        i=1
         for category in parent.categories:
             activity_amount = sum(activity.amount_outflow for activity in category.transactions)
-            bar = int(round(activity_amount / 100)) * "#"  # Each 100 PLN is a single "#"
+            bar = int(round(activity_amount / 100)) * f"\033[3{i}m█{style.RESET}"  # Each 100 PLN is a single "█"
             bar_chart.add_row([(category.id, category.name), activity_amount, bar])
+            i += 1
     print(bar_chart)
     _ = input("Press ENTER to go back.")
