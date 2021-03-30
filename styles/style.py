@@ -11,7 +11,7 @@ class style:
     """
     RESET = '\033[0m'
     tRED = '\033[91m'
-    tGREEN = '\033[32m'
+    tGREEN = '\033[92m'
     bGREY = '\033[100m'
     bBLACK = '\033[40m'
     fBOLD = '\033[1m'

@@ -113,12 +113,14 @@ def print_budget_bar_chart(budget: Budget) -> None:
     bar_chart.align["ACTIVITY"] = "r"
     bar_chart.float_format = "1.2"
 
+    i_color = 31
     for parent in budget.parent_categories:
-        i=1
         for category in parent.categories:
             activity_amount = sum(activity.amount_outflow for activity in category.transactions)
-            bar = int(round(activity_amount / 100)) * f"\033[3{i}m█{style.RESET}"  # Each 100 PLN is a single "█"
+            bar = int(round(activity_amount / 100)) * f"\033[{i_color}m█{style.RESET}"  # Each 100 PLN is a single "█"
             bar_chart.add_row([(category.id, category.name), activity_amount, bar])
-            i += 1
+            i_color += 1
+            if i_color == 38:
+                i_color = 31
     print(bar_chart)
-    _ = input("Press ENTER to go back.")
+    _ = input("Press ENTER to go back to your budget.")
