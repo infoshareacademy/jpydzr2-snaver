@@ -53,10 +53,15 @@ class ParentCategory(Base):
     def prettytable_repr(self):
         sum_available = self.sum_budgeted + self.sum_activity
 
-        if sum_available < 0:
+        if sum_available == 0:
+            category = f"{style.tBLUE}[{self.id}] {self.name.upper()}{style.RESET}"
+            sum_available = f"{style.tBLUE}%.2f{style.RESET}" % sum_available
+        elif sum_available < 0:
+            category = f"{style.tRED}[{self.id}] {self.name.upper()}{style.RESET}"
             sum_available = f"{style.tRED}%.2f{style.RESET}" % sum_available
         else:
+            category = f"{style.tGREEN}[{self.id}] {self.name.upper()}{style.RESET}"
             sum_available = f"{style.tGREEN}%.2f{style.RESET}" % sum_available
         # NOTE: Above '%.2f' is made for printing two decimal places including zeros at the end.
 
-        return [(self.id, self.name), self.sum_budgeted, self.sum_activity, sum_available]
+        return [category, self.sum_budgeted, self.sum_activity, sum_available]

@@ -62,9 +62,9 @@ def edit_budget(budget: Budget) -> Budget:
 def print_budget(budget: Budget) -> None:
     # Initiate and set up a PrettyTable table
     table_budget = PrettyTable()
-    table_budget.field_names = [" id, CATEGORY", "BUDGETED", "ACTIVITY", "AVAILABLE"]
+    table_budget.field_names = ["id, CATEGORY", "BUDGETED", "ACTIVITY", "AVAILABLE"]
     table_budget.align = "r"  # align in all columns to the right side
-    table_budget.align[" id, CATEGORY"] = "l"  # align in column "CATEGORY" to the left side
+    table_budget.align["id, CATEGORY"] = "l"  # align in column "CATEGORY" to the left side
     table_budget.float_format = "1.2"  # the way floating point data is printed
 
     # Loop through parent categories of the budget
@@ -92,15 +92,14 @@ def print_budget(budget: Budget) -> None:
         table_budget.add_row([" ", " ", " ", " "])
 
     # Print budget headlines
-    print(
-        f"\nHere is your budget \"{budget.name}\"")
-    print(f"-----------------------------")
-    print("MONTH: >>month<<")  # TODO: fill {month} with the right data (do f-string)
-    print("-----------------------------")
-    print(
+    print(f"\n{style.tYELLOW}{style.fBOLD}{style.fUNDERLINE}"
+        f"Here is your budget \"{budget.name}\"{style.RESET}")
+    print(f"{style.tYELLOW}{style.fUNDERLINE}MONTH: >>month<<{style.RESET}")  # TODO: fill {month} with the right data (do f-string)
+    print(f"{style.tYELLOW}"
         f"TOTAL BUDGETED:   {round(budget.total_budgeted, 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
     print(f"TOTAL ACTIVITY:   {round(budget.total_activity, 2)}")
-    print(f"TOTAL AVAILABLE:  {round(budget.total_budgeted + budget.total_activity, 2)}")
+    print(f"TOTAL AVAILABLE:  {round(budget.total_budgeted + budget.total_activity, 2)}"
+          f"{style.RESET}")
 
     # Print the table
     print(table_budget)
@@ -108,7 +107,7 @@ def print_budget(budget: Budget) -> None:
 
 def print_budget_bar_chart(budget: Budget) -> None:
     bar_chart = PrettyTable()
-    bar_chart.field_names = [" id, CATEGORY", "ACTIVITY", "BAR CHART"]
+    bar_chart.field_names = ["id, CATEGORY", "ACTIVITY", "BAR CHART"]
     bar_chart.align = "l"
     bar_chart.align["ACTIVITY"] = "r"
     bar_chart.float_format = "1.2"

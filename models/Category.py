@@ -59,10 +59,15 @@ class Category(Base):
     def prettytable_repr(self):
         self.activity_amount = self.budgeted_amount - self.available_amount
 
-        if self.available_amount < 0:
+        if self.available_amount == 0:
+            category = f"{style.tBLUE}({self.id}) {self.name}{style.RESET}"
+            available_amount = f"{style.tBLUE}%.2f{style.RESET}" % self.available_amount
+        elif self.available_amount < 0:
+            category = f"{style.tRED}({self.id}) {self.name}{style.RESET}"
             available_amount = f"{style.tRED}%.2f{style.RESET}" % self.available_amount
         else:
+            category = f"{style.tGREEN}({self.id}) {self.name}{style.RESET}"
             available_amount = f"{style.tGREEN}%.2f{style.RESET}" % self.available_amount
         # NOTE: Above '%.2f' is made for printing two decimal places including zeros at the end.
 
-        return [(self.id, self.name), self.budgeted_amount, -(self.activity_amount), available_amount]
+        return [category, self.budgeted_amount, -(self.activity_amount), available_amount]
