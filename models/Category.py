@@ -17,7 +17,7 @@ from session import session
 
 from .Base import Base
 from .Transaction import Transaction
-from .style import style
+from styles.style import style
 
 
 class Category(Base):

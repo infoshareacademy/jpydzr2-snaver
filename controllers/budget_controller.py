@@ -7,7 +7,7 @@ from models.Transaction import Transaction
 from models.ParentCategory import ParentCategory
 from session import session
 from prettytable import PrettyTable
-from models.style import style
+from styles.style import style
 
 
 def add_budget(user: User) -> Budget:
