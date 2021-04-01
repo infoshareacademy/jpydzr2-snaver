@@ -5,7 +5,6 @@ from controllers.budget_controller import print_budget, select_budget, change_bu
 from controllers.category_controller import edit_categories
 from controllers.transaction_controller import add_transaction
 from controllers.reports_controller import reports
-from styles.style import style
 
 
 def switch_month():

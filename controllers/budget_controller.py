@@ -76,13 +76,13 @@ def print_budget(budget: Budget) -> None:
         # | -------------------- | -------------------- | -------------------- | -------------------- |
 
         # Start drawing the lines
-        table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
+        table_budget.add_row([40 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
         # Fill the row with parent's details using prettytable_repr method
         table_budget.add_row(parent.prettytable_repr)
 
         # Draw closing lines
-        table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
+        table_budget.add_row([40 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
         # Attach category details as new rows
         for category in parent.categories:
@@ -92,14 +92,43 @@ def print_budget(budget: Budget) -> None:
         table_budget.add_row([" ", " ", " ", " "])
 
     # Print budget headlines
-    print(f"\n{style.tYELLOW}{style.fBOLD}{style.fUNDERLINE}"
-        f"Here is your budget \"{budget.name}\"{style.RESET}")
-    print(f"{style.tYELLOW}{style.fUNDERLINE}MONTH: >>month<<{style.RESET}")  # TODO: fill {month} with the right data (do f-string)
-    print(f"{style.tYELLOW}"
-        f"TOTAL BUDGETED:   {round(budget.total_budgeted, 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
-    print(f"TOTAL ACTIVITY:   {round(budget.total_activity, 2)}")
-    print(f"TOTAL AVAILABLE:  {round(budget.total_budgeted + budget.total_activity, 2)}"
-          f"{style.RESET}")
+    print(f"\n{style.tYELLOW}{style.fBOLD}{style.fUNDERLINE}")
+    print(f"Here is your budget \"{budget.name}\"{style.RESET}")
+    print(f"{style.tYELLOW}{style.fUNDERLINE}MONTH: >>month<<{style.RESET}")  # TODO: fill {month} with the right data
+
+    head_table = PrettyTable()
+    head_table.add_column("TO BE BUDGETED", [
+        "",
+        f" TO BE BUDGETED: >>to_be_budg<<         ",  # TODO: fill {to_be_budg}
+        f" INFLOWS: >>inflows<<"             # TODO: fill {inflows}
+    ])
+    head_table.add_column("TOTAL BUDGETED", [
+        f"    TOTAL   ",
+        f"    BUDGETED",
+        f"%.2f" % budget.total_budgeted
+    ])
+    head_table.add_column("TOTAL ACTIVITY", [
+        f"   TOTAL   ",
+        f"   ACTIVITY",
+        f"%.2f" % budget.total_activity
+    ])
+    head_table.add_column("TOTAL AVAILABLE", [
+        f"  TOTAL    ",
+        f"  AVAILABLE",
+        f"%.2f" % (budget.total_budgeted + budget.total_activity)
+    ])
+    # NOTE: Above '%.2f' is made for printing two decimal places including zeros at the end.
+    # (When we use "round(x, 2) then it prints for example 7.0 instead of 7.00)
+
+    head_table.align = "r"
+    head_table.align["TO BE BUDGETED"] = "l"
+    head_table.header = False
+    head_table.border = False
+
+    print(f"{style.tYELLOW}", end="")   # end="" causes that there is no empty newline after this line of code.
+    print(head_table, end="")
+    print(f"{style.RESET}")
+
 
     # Print the table
     print(table_budget)
