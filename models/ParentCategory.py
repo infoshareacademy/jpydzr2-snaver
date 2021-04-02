@@ -2,27 +2,14 @@ from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
-from sqlalchemy.orm import relationship
 from sqlalchemy import func
+from sqlalchemy.orm import relationship
 
 from session import session
 
 from .Base import Base
 from .Category import Category
 from .Transaction import Transaction
-
-
-class ParentCategoryNotFoundException(Exception):
-    def __init__(self, category_id=None):
-        if category_id:
-            self.category_id = category_id
-            self.message = f"Parent Category with id: {self.category_id} does not exist"
-        else:
-            self.message = "Parent Category does not exist"
-        super().__init__(self.message)
-
-    def __str__(self):
-        return self.message
 
 
 class ParentCategory(Base):
@@ -63,4 +50,3 @@ class ParentCategory(Base):
     @property
     def prettytable_repr(self):
         return [(self.id, self.name), self.sum_budgeted, self.sum_activity, self.sum_budgeted + self.sum_activity]
-

@@ -1,10 +1,12 @@
 """File that starts the program"""
 
-from controllers.user_controller import login
-from controllers.budget_controller import print_budget, select_budget, change_budget, edit_budget
+from controllers.budget_controller import edit_budget
+from controllers.budget_controller import print_budget
+from controllers.budget_controller import select_budget
 from controllers.category_controller import edit_categories
-from controllers.transaction_controller import add_transaction
 from controllers.reports_controller import reports
+from controllers.transaction_controller import add_transaction
+from controllers.user_controller import login
 
 
 def switch_month():
@@ -14,14 +16,13 @@ def switch_month():
 
 def menu() -> str:
     print("MENU:")
-    print("1. Change budget")
-    print("2. New transaction (activity)")
-    print("3. Edit categories")
-    print("4. Edit budget (modify budgeted amounts)")
-    print("5. Switch the month (the billing period)")
-    print("6. Reports")
-    print("7. Change user")
-    print("8. Save and close the program")
+    print("1. New transaction (activity)")
+    print("2. Edit categories")
+    print("3. Edit budgets")
+    print("4. Switch the month (the billing period)")
+    print("5. Reports")
+    print("6. Change user")
+    print("7. Close the program")
     user_choice = input("## YOUR CHOICE: ")
     return user_choice
 
@@ -49,23 +50,25 @@ try:
         choice = menu()
 
         if choice == "1":
-            budget = change_budget(user)
-        elif choice == "2":
             add_transaction()
-        elif choice == "3":
+        elif choice == "2":
             edit_categories(budget)
+        elif choice == "3":
+            edited_budget = edit_budget(user)
+            if edited_budget:
+                budget = edited_budget
         elif choice == "4":
-            budget = edit_budget(budget)
-        elif choice == "5":
             switch_month()
-        elif choice == "6":
+        elif choice == "5":
             reports(budget)
+        elif choice == "6":
+            new_user = login()
+            if new_user:
+                user = new_user
+                budget = select_budget(user)
         elif choice == "7":
-            user = login()
-            budget = select_budget(user)
-        elif choice == "8":
             print(farewell_message)
-            exit()
+            exit(0)
 
 except KeyboardInterrupt:
     print(farewell_message)

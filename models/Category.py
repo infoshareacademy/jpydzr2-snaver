@@ -19,19 +19,6 @@ from .Base import Base
 from .Transaction import Transaction
 
 
-class CategoryNotFoundException(Exception):
-    def __init__(self, category_id=None):
-        if category_id:
-            self.category_id = category_id
-            self.message = f"Category with id: {self.category_id} does not exist"
-        else:
-            self.message = f"Category does not exist"
-        super().__init__(self.message)
-
-    def __str__(self):
-        return f"{self.message}"
-
-
 class Category(Base):
     __tablename__ = 'category'
 

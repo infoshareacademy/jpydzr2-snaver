@@ -1,13 +1,49 @@
-# from sqlalchemy.orm import lazyload
-
 from models.Budget import Budget
-from models.Budget import BudgetNotFoundException
 from models.User import User
-from models.Category import Category
-from models.Transaction import Transaction
-from models.ParentCategory import ParentCategory
-from session import session
 from prettytable import PrettyTable
+from session import session
+
+
+def menu_budget():
+    print("\nEDIT BUDGET MENU:")
+    print("   1. Change budget")
+    print("   2. Add budget")
+    print("   3. Rename budget")
+    print("   4. Remove budget")
+    print("5. Go back to main menu")
+    user_choice = input("## YOUR CHOICE: ")
+    return user_choice
+
+
+def edit_budget(user: User) -> Budget:
+    choice = menu_budget()
+
+    if choice == "1":
+        return change_budget(user)
+    elif choice == "2":
+        return add_budget(user)
+    elif choice == "3":
+        return rename_budget(user)
+    elif choice == "4":
+        pass
+    elif choice == "5":
+        pass
+    else:
+        print("Wrong choice!")
+        pass
+
+
+def display_budgets(user: User) -> None:
+    all_budgets = user.budgets
+
+    table_show_budgets = PrettyTable()
+    table_show_budgets.field_names = ["id", "name"]
+
+    for budget in all_budgets:
+        table_show_budgets.add_row([budget.id, budget.name])
+
+    print("\nYour budgets: ")
+    print(table_show_budgets)
 
 
 def add_budget(user: User) -> Budget:
@@ -29,71 +65,38 @@ def select_budget(user: User) -> Budget:
 
 
 def change_budget(user: User) -> Budget:
-    all_budgets = user.budgets
-
-    table_show_budgets = PrettyTable()
-    table_show_budgets.field_names = ["id", "name"]
-
-    for budget in all_budgets:
-        table_show_budgets.add_row([budget.id, budget.name])
-
     while True:
-        print("\nYour budgets: ")
-        print(table_show_budgets)
+        display_budgets(user)
+        choice = input("Which budget to show? Pick budget's ID or input 'n' to create a new budget: ").lower()
 
-        choice = input("Which budget to show? Pick budget's ID or input 'n' to create a new budget: ")
         if choice == 'n':
             selected_budget = add_budget(user)
         else:
-            selected_budget = next((budget for budget in all_budgets if budget.id == int(choice)), None)
+            selected_budget = next((budget for budget in user.budgets if budget.id == int(choice)), None)
         if selected_budget:
             return selected_budget
         else:
             print("Select a correct budget!")
 
 
-def edit_budget(budget: Budget) -> Budget:
-    print("\nEDIT BUDGET MENU:")
-    print("@$@#%^@%@##@$%#^*&^ Here you edit budget (modify budgeted amounts)")
-    _ = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
-    return budget
-
-
 def print_budget(budget: Budget) -> None:
-    # Initiate and set up a PrettyTable table
     table_budget = PrettyTable()
     table_budget.field_names = [" id, CATEGORY", "BUDGETED", "ACTIVITY", "AVAILABLE"]
     table_budget.align = "r"  # align in all columns to the right side
     table_budget.align[" id, CATEGORY"] = "l"  # align in column "CATEGORY" to the left side
     table_budget.float_format = "1.2"  # the way floating point data is printed
 
-    # Loop through parent categories of the budget
     for parent in budget.parent_categories:
-
-        # Code belows adds rows to PrettyTable object (table_budget)
-        # | -------------------- | -------------------- | -------------------- | -------------------- |
-        # | parent_category      |               xxx.xx |               yyy.yy |               zzz.zz |
-        # | -------------------- | -------------------- | -------------------- | -------------------- |
-
-        # Start drawing the lines
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
-
-        # Fill the row with parent's details using prettytable_repr method
         table_budget.add_row(parent.prettytable_repr)
-
-        # Draw closing lines
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
-        # Attach category details as new rows
         for category in parent.categories:
             table_budget.add_row(category.prettytable_repr)
 
-        # Draw blank row before the new Parent row (just for better readability of the table)
         table_budget.add_row([" ", " ", " ", " "])
 
-    # Print budget headlines
-    print(
-        f"\nHere is your budget \"{budget.name}\"")
+    print(f"\nHere is your budget \"{budget.name}\"")
     print("-----------------------------")
     print("MONTH: >>month<<")  # TODO: fill {month} with the right data (do f-string)
     print("-----------------------------")
@@ -101,8 +104,6 @@ def print_budget(budget: Budget) -> None:
         f"TOTAL BUDGETED:   {round(budget.total_budgeted, 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
     print(f"TOTAL ACTIVITY:   {round(budget.total_activity, 2)}")
     print(f"TOTAL AVAILABLE:  {round(budget.total_budgeted + budget.total_activity, 2)}")
-
-    # Print the table
     print(table_budget)
 
 
@@ -122,11 +123,16 @@ def print_budget_bar_chart(budget: Budget) -> None:
     _ = input("Press ENTER to go back.")
 
 
-def update_budget_name(budget_id: int, new_name: str):
-    budget_instance = session.query(Budget).filter_by(id=budget_id).first()
-    if budget_instance:
-        budget_instance.name = new_name
+def rename_budget(user: User) -> Budget:
+    display_budgets(user)
+    choice = input("Pick budget's ID to rename: ")
+
+    selected_budget = next((budget for budget in user.budgets if budget.id == int(choice)), None)
+    if selected_budget:
+        new_name = input(f"Provide new name for {selected_budget.name}: ")
+        selected_budget.name = new_name
+        session.add(selected_budget)
         session.commit()
-        return budget_instance
+        return selected_budget
     else:
-        raise BudgetNotFoundException(budget_id)
+        print("Incorrect budget!")
