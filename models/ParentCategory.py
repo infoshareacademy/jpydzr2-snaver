@@ -2,9 +2,8 @@ from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
-
-from sqlalchemy.orm import relationship
 from sqlalchemy import func
+from sqlalchemy.orm import relationship
 
 from session import session
 
@@ -51,4 +50,3 @@ class ParentCategory(Base):
     @property
     def prettytable_repr(self):
         return [(self.id, self.name), self.sum_budgeted, self.sum_activity, self.sum_budgeted + self.sum_activity]
-

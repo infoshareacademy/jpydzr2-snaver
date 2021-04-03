@@ -1,6 +1,9 @@
-from session import session
-from models.Category import Category
 from controllers.parentcategory_controller import add_parent_category
+from controllers.parentcategory_controller import rename_parent_category
+from models.Budget import Budget
+from models.Category import Category
+from prettytable import PrettyTable
+from session import session
 
 
 def menu_categories() -> str:
@@ -8,11 +11,11 @@ def menu_categories() -> str:
     print("   PARENT CATEGORY:")
     print("      1. Add parent category")
     print("      2. Remove parent category   [FUNCTION NOT AVAILABLE YET]")
-    print("      3. Rename parent category   [FUNCTION NOT AVAILABLE YET]")
+    print("      3. Rename parent category")
     print("   CATEGORY (subcategory of the parent category):")
     print("      4. Add category")
     print("      5. Remove category   [FUNCTION NOT AVAILABLE YET]")
-    print("      6. Rename category   [FUNCTION NOT AVAILABLE YET]")
+    print("      6. Rename category")
     print("    7. Go back to the budget")
     user_choice = input("## YOUR CHOICE: ")
     return user_choice
@@ -35,12 +38,56 @@ def edit_categories(budget):
 
     if choice == "1":
         _ = add_parent_category(budget)
-
+    elif choice == "2":
+        pass
+    elif choice == "3":
+        _ = rename_parent_category(budget)
     elif choice == "4":
         _ = add_category()
-
+    elif choice == "5":
+        pass
+    elif choice == "6":
+        _ = rename_category(budget)
     elif choice == "7":
         pass
-
     else:
-        x = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
+        _ = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
+
+
+def get_budget_categories(budget: Budget) -> list:
+    all_categories = []
+    all_parent_categories = [parent for parent in budget.parent_categories]
+    for parent in all_parent_categories:
+        for category in parent.categories:
+            all_categories.append(category)
+
+    return all_categories
+
+
+def display_categories(budget: Budget) -> None:
+    all_categories = get_budget_categories(budget)
+
+    table_show_categories = PrettyTable()
+    table_show_categories.field_names = ["id", "name"]
+
+    for category in all_categories:
+        table_show_categories.add_row([category.id, category.name])
+
+    print("\nYour categories: ")
+    print(table_show_categories)
+
+
+def rename_category(budget: Budget) -> Category:
+    all_categories = get_budget_categories(budget)
+    display_categories(budget)
+    choice = input("Pick category's ID to rename: ")
+
+    selected_category = next((category for category in all_categories if category.id == int(choice)), None)
+    if selected_category:
+        new_name = input(f"Provide new name for {selected_category.name}: ")
+        selected_category.name = new_name
+        session.add(selected_category)
+        session.commit()
+        return selected_category
+    else:
+        print("Incorrect category!")
