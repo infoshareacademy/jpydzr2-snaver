@@ -28,7 +28,8 @@ class Budget(Base):
         total_budgeted = session.query(
             func.sum(Category.budgeted_amount)) \
             .join(ParentCategory) \
-            .filter(ParentCategory.id == self.id).first()[0]
+            .join(Budget) \
+            .filter(Budget.id == self.id).first()[0]
 
         if total_budgeted is None:
             total_budgeted = 0.0
