@@ -16,6 +16,7 @@ from session import session
 
 from .Base import Base
 from .Transaction import Transaction
+from .CategoryBudget import CategoryBudget
 
 
 class Category(Base):
@@ -34,8 +35,20 @@ class Category(Base):
     def get_transactions(self):
         return session.query(Transaction).filter(Transaction.category_id == self.id).all()
 
+    def get_budgeted_amount(self, month, year):
+        budgeted_amount = session.query(CategoryBudget)\
+            .filter(
+            CategoryBudget.category_id == self.id,
+            CategoryBudget.month == month,
+            CategoryBudget.year == year).first()
+
+        if not budgeted_amount:
+            budgeted_amount = 0.00
+
+        return budgeted_amount
+
     @property
-    def available_amount(self):
+    def available_amount(self): #TODO - do przepisania
         amount = (session.query(func.sum(Transaction.amount_outflow - Transaction.amount_inflow))
                   .filter(Transaction.category_id == self.id).first())[0]
         if amount:
@@ -44,6 +57,6 @@ class Category(Base):
             return self.__budgeted_amount
 
     @property
-    def prettytable_repr(self):
-        self.activity_amount = self.budgeted_amount - self.available_amount
-        return [(self.id, self.name), self.budgeted_amount, -(self.activity_amount), self.available_amount]
+    def prettytable_repr(self, month, year):
+        self.activity_amount = self.get_budgeted_amount(month, year) - self.available_amount
+        return [(self.id, self.name), self.get_budgeted_amount(month, year), - self.activity_amount, self.available_amount]

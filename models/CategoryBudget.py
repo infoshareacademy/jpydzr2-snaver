@@ -22,7 +22,7 @@ class CategoryBudget(Base):
     year = Column(Integer)
 
     def __repr__(self):
-        return f"Budżet na transakcję {self.category_id} na miesiąć {self.month} i rok: {self.year}"
+        return f"Budżet kategorii {self.category_id} na miesiąć {self.month} i rok: {self.year}"
 
     @hybrid_property
     def budgeted_amount(self):
