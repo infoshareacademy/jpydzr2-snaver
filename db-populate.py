@@ -113,5 +113,7 @@ category_budgets_list = []
 for category_instance in session.query(Category).order_by(Category.id):
     category_budgets_list.append(CategoryBudget(
         budgeted_amount=round(uniform(30.0, 2500.0), 2),  # PyCharm complains but it's expected behaviour because of getter-setter setup
-
+        category_id=category_instance.id,
+        month=current_month,
+        year=current_year
     ))
