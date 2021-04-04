@@ -9,7 +9,6 @@ from sqlalchemy import Float
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
-from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -24,9 +23,9 @@ class Category(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    __budgeted_amount = Column("budgeted_amount", Float)
     parent_id = Column(Integer, ForeignKey("parent_category.id"))
     transactions = relationship("Transaction", backref="category")
+    budgeted_amounts = relationship("CategoryBudget", backref="category")
 
     def __repr__(self):
         formatted_available = "{:.2f} zł".format(self.available_amount)
@@ -43,16 +42,6 @@ class Category(Base):
             return self.__budgeted_amount - float(amount)
         else:
             return self.__budgeted_amount
-
-    @hybrid_property
-    def budgeted_amount(self):
-        return self.__budgeted_amount
-
-    @budgeted_amount.setter
-    def budgeted_amount(self, amount):
-        self.__budgeted_amount = amount
-        session.query(Category).filter_by(id=self.id).update({'budgeted_amount': amount})
-        session.commit()
 
     @property
     def prettytable_repr(self):
