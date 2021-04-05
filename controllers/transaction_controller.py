@@ -1,6 +1,3 @@
-from sqlalchemy.orm import lazyload
-
-from models.Budget import Budget
 from models.Transaction import Transaction
 from session import session
 

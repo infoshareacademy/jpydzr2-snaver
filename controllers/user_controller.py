@@ -4,7 +4,6 @@ from getpass import getpass
 
 from models.User import User
 from session import session
-from .budget_controller import change_budget
 
 
 # Display login form

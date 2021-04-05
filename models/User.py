@@ -5,7 +5,6 @@ from sqlalchemy import String
 from sqlalchemy.orm import relationship
 
 from .Base import Base
-from .Budget import Budget
 
 
 class User(Base):

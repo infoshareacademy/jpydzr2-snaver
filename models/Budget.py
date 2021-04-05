@@ -2,12 +2,14 @@ from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
-from sqlalchemy.orm import relationship
 from sqlalchemy import func
+from sqlalchemy.orm import relationship
+
+from session import session
 
 from .Base import Base
-from .ParentCategory import ParentCategory
 from .Category import Category
+from .ParentCategory import ParentCategory
 from .Transaction import Transaction
 from .CategoryBudget import CategoryBudget
 

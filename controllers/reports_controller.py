@@ -1,5 +1,5 @@
-from models.Budget import Budget
 from controllers.budget_controller import print_budget_bar_chart
+from models.Budget import Budget
 
 
 def menu_reports() -> str:

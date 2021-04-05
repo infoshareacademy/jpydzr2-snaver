@@ -2,9 +2,8 @@ from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
-
-from sqlalchemy.orm import relationship
 from sqlalchemy import func
+from sqlalchemy.orm import relationship
 
 from session import session
 
@@ -100,4 +99,3 @@ class ParentCategory(Base):
         activity_this_month = self.get_activity_for_the_month(month, year)
         available_up_to_this_point = self.get_available_month(month, year)
         return [(self.id, self.name), budgeted_this_month, activity_this_month, available_up_to_this_point]
-
