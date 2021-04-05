@@ -36,10 +36,19 @@ class Category(Base):
         # return f"id: {self.id}, name: {self.name}, available: {formatted_available}"
         return f"id: {self.id}, name: {self.name}"
 
-    def get_activity(self, month, year):
-        return session.query(func.sum(Transaction.amount_outflow)).filter(Transaction.category_id == self.id,
-                                                 Transaction.created_date >= datetime(year, month, monthrange(year, month)[0]),
-                                                 Transaction.created_date <= datetime(year, month + 2, monthrange(year, month)[1])).first()[0]
+    def get_activity_for_the_month(self, month, year):
+        activity = session.query(
+            func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
+            .join(Category) \
+            .filter(
+                 Category.id == self.id,
+                 Transaction.created_date >= datetime(year, month, monthrange(year, month)[0]),
+                 Transaction.created_date <= datetime(year, month + 2, monthrange(year, month)[1])).first()[0]
+
+        if not activity:
+            return 0.00
+        else:
+            return activity
 
     def get_budgeted_amount(self, month, year):
         budget_for_the_month = session.query(CategoryBudget)\
@@ -68,4 +77,5 @@ class Category(Base):
 
     def get_prettytable_repr(self, month, year):
         sum_budgeted = self.get_budgeted_amount(month, year)
-        return [(self.id, self.name), sum_budgeted, self.sum_activity, sum_budgeted + self.sum_activity]
+        activity = self.get_activity_for_the_month(month, year)
+        return [(self.id, self.name), sum_budgeted, activity, sum_budgeted + activity]

@@ -13,6 +13,9 @@ from .Category import Category
 from .Transaction import Transaction
 from .CategoryBudget import CategoryBudget
 
+from calendar import monthrange
+from datetime import datetime
+
 
 class ParentCategory(Base):
     __tablename__ = 'parent_category'
@@ -25,16 +28,20 @@ class ParentCategory(Base):
     def __repr__(self):
         return f"ParentCategory {self.name}, wchodząca w skład budżetu o ID {self.budget_id}"
 
-    # def sum_budgeted(self):
-    #     sum_budgeted = session.query(
-    #         func.sum(Category.budgeted_amount)
-    #         .filter(Category.parent_id == self.id)
-    #         ).first()[0]
-    #
-    #     if sum_budgeted is None:
-    #         sum_budgeted = 0.0
-    #
-    #     return sum_budgeted
+    def get_activity_for_the_month(self, month, year):
+        activity = session.query(
+            func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
+            .join(Category) \
+            .join(ParentCategory) \
+            .filter(
+            ParentCategory.id == self.id,
+            Transaction.created_date >= datetime(year, month, monthrange(year, month)[0]),
+            Transaction.created_date <= datetime(year, month + 2, monthrange(year, month)[1])).first()[0]
+
+        if not activity:
+            return 0.00
+        else:
+            return activity
 
     def get_budgeted_amount(self, month, year):
         budget_for_the_month = session.query(
@@ -68,5 +75,6 @@ class ParentCategory(Base):
 
     def get_prettytable_repr(self, month, year):
         sum_budgeted = self.get_budgeted_amount(month, year)
-        return [(self.id, self.name), sum_budgeted, self.sum_activity, sum_budgeted + self.sum_activity]
+        activity = self.get_activity_for_the_month(month, year)
+        return [(self.id, self.name), sum_budgeted, activity, sum_budgeted + activity]
 
