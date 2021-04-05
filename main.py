@@ -16,7 +16,7 @@ def switch_month():
     # print("\n@$@#%^@%@##@$%#^*&^ Here you can switch the month (the billing period)")
     global month
     global year
-    month = int(input("Month: "))
+    month = int(input("Month (number of the month): "))
     year = int(input("Year: "))
 
 

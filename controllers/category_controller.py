@@ -1,6 +1,9 @@
 from session import session
 from models.Category import Category
 from controllers.parentcategory_controller import add_parent_category
+from models.CategoryBudget import CategoryBudget
+
+from datetime import datetime
 
 
 def menu_categories() -> str:
@@ -22,11 +25,14 @@ def add_category() -> Category:
     category_name = input("The name of the new parent category: ")
     parent_id = int(input("To which parent category does it belong (parent_id): "))
     new_budgeted_amount = float(input("Write budgeted amount: "))
-    category = Category(name=category_name, parent_id=parent_id, budgeted_amount=new_budgeted_amount)
+    category = Category(name=category_name, parent_id=parent_id)
     session.add(category)
     session.commit()
     # TODO: If more than one person creates a new category at the same time we might get incorrect data here
     new_category = session.query(Category).order_by(Category.id.desc()).first()
+    category_budget = CategoryBudget(budgeted_amount=new_budgeted_amount, category_id=new_category.id, datetime=datetime.now())
+    session.add(category_budget)
+    session.commit()
     return new_category
 
 

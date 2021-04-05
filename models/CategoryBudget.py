@@ -18,11 +18,10 @@ class CategoryBudget(Base):
     id = Column(Integer, primary_key=True)
     __budgeted_amount = Column("budgeted_amount", Float)
     category_id = Column(Integer, ForeignKey("category.id"))
-    month = Column(Integer)
-    year = Column(Integer)
+    datetime = Column(DateTime)
 
     def __repr__(self):
-        return f"Budżet kategorii {self.category_id} na miesiąć {self.month} i rok: {self.year}"
+        return f"Budżet kategorii {self.category_id} na miesiąć {self.datetime.month} i rok: {self.datetime.year}"
 
     @hybrid_property
     def budgeted_amount(self):

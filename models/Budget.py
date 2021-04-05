@@ -12,6 +12,8 @@ from .Transaction import Transaction
 from .CategoryBudget import CategoryBudget
 
 from session import session
+from datetime import datetime
+from calendar import monthrange
 
 class Budget(Base):
     __tablename__ = 'budget'
@@ -24,18 +26,6 @@ class Budget(Base):
     def __repr__(self):
         return f"Name: {self.name}, Id: {self.id}, Owner id: {self.user_id}"
 
-    # @property
-    # def total_budgeted(self):
-        # total_budgeted = session.query(
-        #     func.sum(Category.budgeted_amount)) \
-        #     .join(ParentCategory) \
-        #     .join(Budget) \
-        #     .filter(Budget.id == self.id).first()[0]
-        #
-        # if total_budgeted is None:
-        #     total_budgeted = 0.0
-        #
-        # return total_budgeted
 
     def get_budgeted_amount(self, month, year):
         budget_for_the_month = session.query(
@@ -44,8 +34,9 @@ class Budget(Base):
             .join(ParentCategory) \
             .filter(
             ParentCategory.budget_id == self.id,
-            CategoryBudget.month == month,
-            CategoryBudget.year == year).first()[0]
+            CategoryBudget.datetime >= datetime(year, month, monthrange(year, month)[0]),
+            CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])
+            ).first()[0]
 
         if not budget_for_the_month:
             return 0.00
@@ -65,3 +56,31 @@ class Budget(Base):
             total_activity = 0.0
 
         return total_activity
+
+    def get_month_activity(self, month, year):
+        total_activity = session.query(
+            func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
+            .join(Category) \
+            .join(ParentCategory) \
+            .filter(
+            ParentCategory.budget_id == self.id,
+            Transaction.created_date >= datetime(year, month, monthrange(year, month)[0]),
+            Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])
+            ).first()[0]
+
+        if total_activity is None:
+            total_activity = 0.0
+
+        return total_activity
+
+    def get_available_month(self, month, year):
+        budgeted_this_far = session.query(
+            func.sum(CategoryBudget.budgeted_amount)) \
+            .join(Category) \
+            .join(ParentCategory) \
+            .filter(
+            ParentCategory.budget_id == self.id,
+            CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])
+            ).first()[0]
+
+        return budgeted_this_far + self.total_activity

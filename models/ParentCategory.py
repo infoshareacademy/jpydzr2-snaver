@@ -43,14 +43,14 @@ class ParentCategory(Base):
         else:
             return activity
 
-    def get_budgeted_amount(self, month, year):
+    def get_budgeted_amount_month(self, month, year):
         budget_for_the_month = session.query(
             func.sum(CategoryBudget.budgeted_amount)) \
             .join(Category) \
             .filter(
             Category.parent_id == self.id,
-            CategoryBudget.month == month,
-            CategoryBudget.year == year).first()[0]
+            CategoryBudget.datetime >= datetime(year, month, monthrange(year, month)[0]),
+            CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])).first()[0]
 
         if not budget_for_the_month:
             return 0.00
@@ -70,18 +70,34 @@ class ParentCategory(Base):
 
         return sum_activity
 
-    @property
-    def available(self):
-        budgeted = session.query(
+    def get_available_month(self, month, year):
+        budgeted_this_far = session.query(
             func.sum(CategoryBudget.budgeted_amount)) \
             .join(Category) \
             .filter(
-            Category.parent_id == self.id).first()[0]
+            Category.parent_id == self.id,
+            CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])
+        ).first()[0]
 
-        return budgeted - self.sum_activity
+        if not budgeted_this_far:
+            budgeted_this_far = 0.00
+
+        activity_this_far = session.query(
+            func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
+            .join(Category) \
+            .filter(
+            Category.parent_id == self.id,
+            Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])
+        ).first()[0]
+
+        if not activity_this_far:
+            activity_this_far = 0.00
+
+        return budgeted_this_far + activity_this_far
 
     def get_prettytable_repr(self, month, year):
-        budgeted_this_month = self.get_budgeted_amount(month, year)
-        activity = self.get_activity_for_the_month(month, year)
-        return [(self.id, self.name), budgeted_this_month, activity, self.available]
+        budgeted_this_month = self.get_budgeted_amount_month(month, year)
+        activity_this_month = self.get_activity_for_the_month(month, year)
+        available_up_to_this_point = self.get_available_month(month, year)
+        return [(self.id, self.name), budgeted_this_month, activity_this_month, available_up_to_this_point]
 
