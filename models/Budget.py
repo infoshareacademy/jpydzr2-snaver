@@ -27,7 +27,7 @@ class Budget(Base):
     def __repr__(self):
         return f"Name: {self.name}, Id: {self.id}, Owner id: {self.user_id}"
 
-    def get_budgeted_amount(self, month, year):
+    def get_budgeted_this_month(self, month, year):
         budget_for_the_month = session.query(
             func.sum(CategoryBudget.budgeted_amount)) \
             .join(Category) \
@@ -57,7 +57,7 @@ class Budget(Base):
 
         return total_activity
 
-    def get_month_activity(self, month, year):
+    def get_activity_this_month(self, month, year):
         total_activity = session.query(
             func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
             .join(Category) \
@@ -73,7 +73,7 @@ class Budget(Base):
 
         return total_activity
 
-    def get_available_month(self, month, year):
+    def get_available_this_month(self, month, year):
         budgeted_this_far = session.query(
             func.sum(CategoryBudget.budgeted_amount)) \
             .join(Category) \

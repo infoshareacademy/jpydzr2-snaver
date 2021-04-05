@@ -117,12 +117,12 @@ def print_budget(budget: Budget, month, year) -> None:
 
     print(f"\nHere is your budget \"{budget.name}\"")
     print("-----------------------------")
-    print(f"MONTH: {month_name[month]} {year}")
+    print(f"MONTH: {month_name[month].upper()} {year}")
     print("-----------------------------")
     print(
-        f"BUDGETED THIS MONTH:   {round(budget.get_budgeted_amount(month, year), 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
-    print(f"ACTIVITY THIS MONTH:   {round(budget.get_month_activity(month, year), 2)}")
-    print(f"AVAILABLE THIS MONTH:  {round(budget.get_available_month(month, year), 2)}")
+        f"BUDGETED THIS MONTH:   {round(budget.get_budgeted_this_month(month, year), 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
+    print(f"ACTIVITY THIS MONTH:   {round(budget.get_activity_this_month(month, year), 2)}")
+    print(f"AVAILABLE THIS MONTH:  {round(budget.get_available_this_month(month, year), 2)}")
 
     # Print the table
     print(table_budget)

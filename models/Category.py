@@ -33,7 +33,7 @@ class Category(Base):
     def __repr__(self):
         return f"id: {self.id}, name: {self.name}"
 
-    def get_activity_for_the_month(self, month, year):
+    def get_activity_this_month(self, month, year):
         activity = session.query(
             func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
             .join(Category) \
@@ -47,7 +47,7 @@ class Category(Base):
         else:
             return activity
 
-    def get_budgeted_amount_month(self, month, year):
+    def get_budgeted_this_month(self, month, year):
         budget_for_the_month = session.query(CategoryBudget)\
             .filter(
             CategoryBudget.category_id == self.id,
@@ -72,7 +72,7 @@ class Category(Base):
 
         return sum_activity
 
-    def get_available_month(self, month, year):
+    def get_available_this_month(self, month, year):
         budgeted_this_far = session.query(
             func.sum(CategoryBudget.budgeted_amount)) \
             .filter(
@@ -96,7 +96,7 @@ class Category(Base):
         return budgeted_this_far + activity_this_far
 
     def get_prettytable_repr(self, month, year):
-        budgeted_this_month = self.get_budgeted_amount_month(month, year)
-        activity_this_month = self.get_activity_for_the_month(month, year)
-        available_up_to_this_point = self.get_available_month(month, year)
+        budgeted_this_month = self.get_budgeted_this_month(month, year)
+        activity_this_month = self.get_activity_this_month(month, year)
+        available_up_to_this_point = self.get_available_this_month(month, year)
         return [(self.id, self.name), budgeted_this_month, activity_this_month, available_up_to_this_point]

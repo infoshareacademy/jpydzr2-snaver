@@ -69,6 +69,6 @@ for instance in session.query(CategoryBudget).order_by(CategoryBudget.id).limit(
 print("Cześć")
 get_category = session.query(Category).order_by(Category.id).first()
 
-print(get_category.get_budgeted_amount(4, 2021))
+print(get_category.get_budgeted_this_month(4, 2021))
 
-print(get_category.get_activity_for_the_month(4, 2021))
+print(get_category.get_activity_this_month(4, 2021))
