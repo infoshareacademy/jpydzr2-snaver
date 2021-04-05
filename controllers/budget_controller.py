@@ -111,7 +111,7 @@ def print_budget(budget: Budget, month, year) -> None:
 
         table_budget.add_row([" ", " ", " ", " "])
 
-    print(f"\nHere is your budget \"{budget.name}\"")
+    print(f"\n{budget.name.upper()}")
     print("-----------------------------")
     print(f"MONTH: {month_name[month].upper()} {year}")
     print("-----------------------------")
