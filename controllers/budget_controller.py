@@ -45,9 +45,6 @@ def display_budgets(user: User) -> None:
     print("\nYour budgets: ")
     print(table_show_budgets)
 
-from datetime import datetime
-from calendar import month_name
-
 
 def add_budget(user: User) -> Budget:
     budget_name = input("Name of the new budget: ")
@@ -91,9 +88,6 @@ def edit_budget(budget: Budget) -> Budget:
 
 def print_budget(budget: Budget, month, year) -> None:
     # Initiate and set up a PrettyTable table
-
-    # month = datetime.now().month
-    # year = datetime.now().year
 
     table_budget = PrettyTable()
     table_budget.field_names = [" id, CATEGORY", "BUDGETED", "ACTIVITY", "AVAILABLE"]
