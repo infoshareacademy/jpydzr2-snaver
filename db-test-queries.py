@@ -70,3 +70,5 @@ print("Cześć")
 get_category = session.query(Category).order_by(Category.id).first()
 
 print(get_category.get_budgeted_amount(4, 2021))
+
+print(get_category.get_activity(4, 2021))

@@ -18,6 +18,9 @@ from .Base import Base
 from .Transaction import Transaction
 from .CategoryBudget import CategoryBudget
 
+from datetime import datetime
+from calendar import monthrange
+
 
 class Category(Base):
     __tablename__ = 'category'
@@ -33,9 +36,10 @@ class Category(Base):
         # return f"id: {self.id}, name: {self.name}, available: {formatted_available}"
         return f"id: {self.id}, name: {self.name}"
 
-
-    def get_transactions(self):
-        return session.query(Transaction).filter(Transaction.category_id == self.id).all()
+    def get_activity(self, month, year):
+        return session.query(func.sum(Transaction.amount_outflow)).filter(Transaction.category_id == self.id,
+                                                 Transaction.created_date >= datetime(year, month, monthrange(year, month)[0]),
+                                                 Transaction.created_date <= datetime(year, month + 2, monthrange(year, month)[1])).first()[0]
 
     def get_budgeted_amount(self, month, year):
         budget_for_the_month = session.query(CategoryBudget)\
