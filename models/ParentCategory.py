@@ -35,8 +35,8 @@ class ParentCategory(Base):
             .join(ParentCategory) \
             .filter(
             ParentCategory.id == self.id,
-            Transaction.created_date >= datetime(year, month, monthrange(year, month)[0]),
-            Transaction.created_date <= datetime(year, month + 2, monthrange(year, month)[1])).first()[0]
+            Transaction.created_date >= datetime(year, month, 1),
+            Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])).first()[0]
 
         if not activity:
             return 0.00
@@ -49,7 +49,7 @@ class ParentCategory(Base):
             .join(Category) \
             .filter(
             Category.parent_id == self.id,
-            CategoryBudget.datetime >= datetime(year, month, monthrange(year, month)[0]),
+            CategoryBudget.datetime >= datetime(year, month, 1),
             CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])).first()[0]
 
         if not budget_for_the_month:

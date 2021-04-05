@@ -34,7 +34,7 @@ class Budget(Base):
             .join(ParentCategory) \
             .filter(
             ParentCategory.budget_id == self.id,
-            CategoryBudget.datetime >= datetime(year, month, monthrange(year, month)[0]),
+            CategoryBudget.datetime >= datetime(year, month, 1),
             CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])
             ).first()[0]
 
@@ -64,7 +64,7 @@ class Budget(Base):
             .join(ParentCategory) \
             .filter(
             ParentCategory.budget_id == self.id,
-            Transaction.created_date >= datetime(year, month, monthrange(year, month)[0]),
+            Transaction.created_date >= datetime(year, month, 1),
             Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])
             ).first()[0]
 
@@ -82,5 +82,8 @@ class Budget(Base):
             ParentCategory.budget_id == self.id,
             CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])
             ).first()[0]
+
+        if not budgeted_this_far:
+            budgeted_this_far = 0.00
 
         return budgeted_this_far + self.total_activity

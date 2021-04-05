@@ -42,7 +42,7 @@ class Category(Base):
             .join(Category) \
             .filter(
                  Category.id == self.id,
-                 Transaction.created_date >= datetime(year, month, monthrange(year, month)[0]),
+                 Transaction.created_date >= datetime(year, month, 1),
                  Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])).first()[0]
 
         if not activity:
@@ -54,7 +54,7 @@ class Category(Base):
         budget_for_the_month = session.query(CategoryBudget)\
             .filter(
             CategoryBudget.category_id == self.id,
-            CategoryBudget.datetime >= datetime(year, month, monthrange(year, month)[0]),
+            CategoryBudget.datetime >= datetime(year, month, 1),
             CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])).first()
 
         if not budget_for_the_month:
