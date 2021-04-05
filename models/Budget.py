@@ -13,7 +13,6 @@ from .ParentCategory import ParentCategory
 from .Transaction import Transaction
 from .CategoryBudget import CategoryBudget
 
-from session import session
 from datetime import datetime
 from calendar import monthrange
 

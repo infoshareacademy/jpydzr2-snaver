@@ -4,8 +4,6 @@ from sqlalchemy import Float
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy import String
-import datetime
 
 from session import session
 

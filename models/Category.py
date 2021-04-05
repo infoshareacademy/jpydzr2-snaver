@@ -5,7 +5,6 @@ import sys
 sys.path.append("..")
 
 from sqlalchemy import Column
-from sqlalchemy import Float
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
@@ -32,8 +31,6 @@ class Category(Base):
     budgeted_amounts = relationship("CategoryBudget", backref="category")
 
     def __repr__(self):
-        # formatted_available = "{:.2f} zł".format(self.available_amount)
-        # return f"id: {self.id}, name: {self.name}, available: {formatted_available}"
         return f"id: {self.id}, name: {self.name}"
 
     def get_activity_for_the_month(self, month, year):
