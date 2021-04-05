@@ -1,9 +1,3 @@
-# This is a hack to import session TODO fix this
-# https://stackoverflow.com/questions/30669474/beyond-top-level-package-error-in-relative-import
-import sys
-
-sys.path.append("..")
-
 from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
