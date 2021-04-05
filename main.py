@@ -25,8 +25,8 @@ def switch_month():
         except ValueError:
             print("Sorry, I did not understand this")
             continue
-        if not 13 > input_month < 0 or year + 3 > input_year < 2019:
-            print("Sorry, we can't go that far!")
+        if not 12 >= input_month >= 1 or not year + 2 >= input_year >= year - 2:
+            print("Oops, wrong date! Try again.")
             continue
         else:
             month = input_month
