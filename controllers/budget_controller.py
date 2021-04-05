@@ -117,7 +117,7 @@ def print_budget(budget: Budget, month, year) -> None:
 
     print(f"\nHere is your budget \"{budget.name}\"")
     print("-----------------------------")
-    print(f"MONTH: {month_name[month]}")
+    print(f"MONTH: {month_name[month]} {year}")
     print("-----------------------------")
     print(
         f"BUDGETED THIS MONTH:   {round(budget.get_budgeted_amount(month, year), 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
