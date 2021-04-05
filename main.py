@@ -15,11 +15,23 @@ year = datetime.now().year
 
 
 def switch_month():
-    # print("\n@$@#%^@%@##@$%#^*&^ Here you can switch the month (the billing period)")
     global month
     global year
-    month = int(input("Month (number of the month): "))
-    year = int(input("Year: "))
+
+    while True:
+        try:
+            input_month = int(input("Month (number of the month): "))
+            input_year = int(input("Year: "))
+        except ValueError:
+            print("Sorry, I did not understand this")
+            continue
+        if not 13 > input_month < 0 or year + 3 > input_year < 2019:
+            print("Sorry, we can't go that far!")
+            continue
+        else:
+            month = input_month
+            year = input_year
+            break
 
 
 def menu() -> str:
