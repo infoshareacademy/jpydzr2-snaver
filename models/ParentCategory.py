@@ -70,11 +70,18 @@ class ParentCategory(Base):
 
         return sum_activity
 
-    def get_activity(self, month, year):
-        pass
+    @property
+    def available(self):
+        budgeted = session.query(
+            func.sum(CategoryBudget.budgeted_amount)) \
+            .join(Category) \
+            .filter(
+            Category.parent_id == self.id).first()[0]
+
+        return budgeted - self.sum_activity
 
     def get_prettytable_repr(self, month, year):
-        sum_budgeted = self.get_budgeted_amount(month, year)
+        budgeted_this_month = self.get_budgeted_amount(month, year)
         activity = self.get_activity_for_the_month(month, year)
-        return [(self.id, self.name), sum_budgeted, activity, sum_budgeted + activity]
+        return [(self.id, self.name), budgeted_this_month, activity, self.available]
 

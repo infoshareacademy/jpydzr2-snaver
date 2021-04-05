@@ -75,7 +75,16 @@ class Category(Base):
 
         return sum_activity
 
+    @property
+    def available(self):
+        budgeted = session.query(
+            func.sum(CategoryBudget.budgeted_amount)) \
+            .filter(
+            CategoryBudget.category_id == self.id).first()[0]
+
+        return budgeted - self.sum_activity
+
     def get_prettytable_repr(self, month, year):
         sum_budgeted = self.get_budgeted_amount(month, year)
         activity = self.get_activity_for_the_month(month, year)
-        return [(self.id, self.name), sum_budgeted, activity, sum_budgeted + activity]
+        return [(self.id, self.name), sum_budgeted, activity, self.available]
