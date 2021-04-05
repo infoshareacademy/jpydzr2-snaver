@@ -28,7 +28,6 @@ class Budget(Base):
     def __repr__(self):
         return f"Name: {self.name}, Id: {self.id}, Owner id: {self.user_id}"
 
-
     def get_budgeted_amount(self, month, year):
         budget_for_the_month = session.query(
             func.sum(CategoryBudget.budgeted_amount)) \
