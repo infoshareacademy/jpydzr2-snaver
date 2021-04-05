@@ -3,6 +3,8 @@ from models.User import User
 from prettytable import PrettyTable
 from session import session
 
+from calendar import month_name
+
 
 def menu_budget():
     print("\nEDIT BUDGET MENU:")
