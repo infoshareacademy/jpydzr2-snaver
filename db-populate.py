@@ -117,3 +117,6 @@ for category_instance in session.query(Category).order_by(Category.id):
         month=current_month,
         year=current_year
     ))
+
+session.add_all(category_budgets_list)
+session.commit()

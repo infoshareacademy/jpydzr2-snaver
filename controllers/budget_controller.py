@@ -8,6 +8,9 @@ from models.ParentCategory import ParentCategory
 from session import session
 from prettytable import PrettyTable
 
+from datetime import datetime
+from calendar import month_abbr
+
 
 def add_budget(user: User) -> Budget:
     budget_name = input("Name of the new budget: ")
@@ -58,8 +61,12 @@ def edit_budget(budget: Budget) -> Budget:
     return budget
 
 
-def print_budget(budget: Budget) -> None:
+def print_budget(budget: Budget, month, year) -> None:
     # Initiate and set up a PrettyTable table
+
+    # month = datetime.now().month
+    # year = datetime.now().year
+
     table_budget = PrettyTable()
     table_budget.field_names = [" id, CATEGORY", "BUDGETED", "ACTIVITY", "AVAILABLE"]
     table_budget.align = "r"  # align in all columns to the right side
@@ -78,14 +85,14 @@ def print_budget(budget: Budget) -> None:
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
         # Fill the row with parent's details using prettytable_repr method
-        table_budget.add_row(parent.prettytable_repr)
+        table_budget.add_row(parent.get_prettytable_repr(month, year))
 
         # Draw closing lines
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
         # Attach category details as new rows
         for category in parent.categories:
-            table_budget.add_row(category.prettytable_repr)
+            table_budget.add_row(category.get_prettytable_repr(month, year))
 
         # Draw blank row before the new Parent row (just for better readability of the table)
         table_budget.add_row([" ", " ", " ", " "])
@@ -94,12 +101,12 @@ def print_budget(budget: Budget) -> None:
     print(
         f"\nHere is your budget \"{budget.name}\"")
     print("-----------------------------")
-    print("MONTH: >>month<<")  # TODO: fill {month} with the right data (do f-string)
+    print(f"MONTH: {month_abbr[month]}")
     print("-----------------------------")
     print(
-        f"TOTAL BUDGETED:   {round(budget.total_budgeted, 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
+        f"TOTAL BUDGETED:   {round(budget.get_budgeted_amount(month, year), 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
     print(f"TOTAL ACTIVITY:   {round(budget.total_activity, 2)}")
-    print(f"TOTAL AVAILABLE:  {round(budget.total_budgeted + budget.total_activity, 2)}")
+    print(f"TOTAL AVAILABLE:  {round(budget.get_budgeted_amount(month, year) + budget.total_activity, 2)}")
 
     # Print the table
     print(table_budget)

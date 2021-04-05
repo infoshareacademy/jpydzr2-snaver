@@ -11,6 +11,7 @@ from session import session
 from .Base import Base
 from .Category import Category
 from .Transaction import Transaction
+from .CategoryBudget import CategoryBudget
 
 
 class ParentCategory(Base):
@@ -24,17 +25,31 @@ class ParentCategory(Base):
     def __repr__(self):
         return f"ParentCategory {self.name}, wchodząca w skład budżetu o ID {self.budget_id}"
 
-    @property
-    def sum_budgeted(self):
-        sum_budgeted = session.query(
-            func.sum(Category.budgeted_amount)
-            .filter(Category.parent_id == self.id)
-            ).first()[0]
+    # def sum_budgeted(self):
+    #     sum_budgeted = session.query(
+    #         func.sum(Category.budgeted_amount)
+    #         .filter(Category.parent_id == self.id)
+    #         ).first()[0]
+    #
+    #     if sum_budgeted is None:
+    #         sum_budgeted = 0.0
+    #
+    #     return sum_budgeted
 
-        if sum_budgeted is None:
-            sum_budgeted = 0.0
+    def get_budgeted_amount(self, month, year):
+        budget_for_the_month = session.query(
+            func.sum(CategoryBudget.budgeted_amount)) \
+            .join(Category) \
+            .filter(
+            Category.parent_id == self.id,
+            CategoryBudget.month == month,
+            CategoryBudget.year == year).first()[0]
 
-        return sum_budgeted
+        if not budget_for_the_month:
+            return 0.00
+
+        else:
+            return budget_for_the_month
 
     @property
     def sum_activity(self):
@@ -48,7 +63,10 @@ class ParentCategory(Base):
 
         return sum_activity
 
-    @property
-    def prettytable_repr(self):
-        return [(self.id, self.name), self.sum_budgeted, self.sum_activity, self.sum_budgeted + self.sum_activity]
+    def get_activity(self, month, year):
+        pass
+
+    def get_prettytable_repr(self, month, year):
+        sum_budgeted = self.get_budgeted_amount(month, year)
+        return [(self.id, self.name), sum_budgeted, self.sum_activity, sum_budgeted + self.sum_activity]
 

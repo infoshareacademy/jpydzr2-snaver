@@ -6,10 +6,18 @@ from controllers.category_controller import edit_categories
 from controllers.transaction_controller import add_transaction
 from controllers.reports_controller import reports
 
+from datetime import datetime
+
+month = datetime.now().month
+year = datetime.now().year
+
 
 def switch_month():
-    print("\n@$@#%^@%@##@$%#^*&^ Here you can switch the month (the billing period)")
-    _ = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
+    # print("\n@$@#%^@%@##@$%#^*&^ Here you can switch the month (the billing period)")
+    global month
+    global year
+    month = int(input("Month: "))
+    year = int(input("Year: "))
 
 
 def menu() -> str:
@@ -45,7 +53,7 @@ try:
         user = login()
     budget = select_budget(user)
     while True:
-        print_budget(budget)
+        print_budget(budget, month, year)
         choice = menu()
 
         if choice == "1":
