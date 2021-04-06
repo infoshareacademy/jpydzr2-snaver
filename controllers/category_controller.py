@@ -2,11 +2,14 @@ from controllers.parentcategory_controller import add_parent_category
 from controllers.parentcategory_controller import rename_parent_category
 from models.Budget import Budget
 from models.Category import Category
+from models.CategoryBudget import CategoryBudget
 from prettytable import PrettyTable
 from session import session
 
 from models.CategoryBudget import CategoryBudget
 from datetime import datetime
+
+from calendar import monthrange
 
 
 def menu_categories() -> str:
@@ -17,7 +20,7 @@ def menu_categories() -> str:
     print("      3. Rename parent category")
     print("   CATEGORY (subcategory of the parent category):")
     print("      4. Add category")
-    print("      5. Remove category   [FUNCTION NOT AVAILABLE YET]")
+    print("      5. Add budget to a category")
     print("      6. Rename category")
     print("    7. Go back to the budget")
     user_choice = input("## YOUR CHOICE: ")
@@ -33,13 +36,14 @@ def add_category() -> Category:
     session.commit()
     # TODO: If more than one person creates a new category at the same time we might get incorrect data here
     new_category = session.query(Category).order_by(Category.id.desc()).first()
-    category_budget = CategoryBudget(budgeted_amount=new_budgeted_amount, category_id=new_category.id, datetime=datetime.now())
+    category_budget = CategoryBudget(budgeted_amount=new_budgeted_amount, category_id=new_category.id,
+                                     datetime=datetime.now())
     session.add(category_budget)
     session.commit()
     return new_category
 
 
-def edit_categories(budget):
+def edit_categories(budget, month, year):
     choice = menu_categories()
 
     if choice == "1":
@@ -51,7 +55,7 @@ def edit_categories(budget):
     elif choice == "4":
         _ = add_category()
     elif choice == "5":
-        pass
+        _ = budget_category(budget, month, year)
     elif choice == "6":
         _ = rename_category(budget)
     elif choice == "7":
@@ -95,5 +99,32 @@ def rename_category(budget: Budget) -> Category:
         session.add(selected_category)
         session.commit()
         return selected_category
+    else:
+        print("Incorrect category!")
+
+
+def budget_category(budget: Budget, month, year) -> Category:
+    all_categories = get_budget_categories(budget)
+    choice = input("Pick category's ID which you want to budget for this month: ")
+    selected_category = next((category for category in all_categories if category.id == int(choice)), None)
+    if selected_category:
+        new_budget_amount = input("What amount do you wish to budget for this category: ")
+        category_budget = session.query(CategoryBudget) \
+            .filter(
+            CategoryBudget.category_id == selected_category.id,
+            CategoryBudget.datetime >= datetime(year, month, 1),
+            CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])
+        ).first()
+
+        if category_budget:
+            category_budget.budgeted_amount = new_budget_amount
+            session.add(category_budget)
+            session.commit()
+
+        else:
+            category_budget = CategoryBudget(budgeted_amount=new_budget_amount, category_id=selected_category.id,
+                                             datetime=datetime(year, month, 1))
+            session.add(category_budget)
+            session.commit()
     else:
         print("Incorrect category!")

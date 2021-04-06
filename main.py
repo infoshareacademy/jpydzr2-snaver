@@ -72,7 +72,7 @@ try:
         if choice == "1":
             add_transaction()
         elif choice == "2":
-            edit_categories(budget)
+            edit_categories(budget, month, year)
         elif choice == "3":
             edited_budget = edit_budget(user)
             if edited_budget:

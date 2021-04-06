@@ -16,6 +16,7 @@ from .CategoryBudget import CategoryBudget
 from datetime import datetime
 from calendar import monthrange
 
+
 class Budget(Base):
     __tablename__ = 'budget'
 
