@@ -6,6 +6,7 @@ from sqlalchemy import Float
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
+from sqlalchemy import Date
 
 from .Base import Base
 
@@ -20,7 +21,10 @@ class Transaction(Base):
     amount_outflow = Column(Float)
     category_id = Column(Integer, ForeignKey("category.id"))
     created_date = Column(DateTime, default=datetime.datetime.utcnow)
+    receipt_date = Column(Date)
+
 
     def __repr__(self):
         formatted_outflow = "{:.2f} zł".format(self.amount_outflow)
-        return f"Transakcja o ID {self.id} na kwotę {formatted_outflow}. ID kategorii: {self.category_id}, data: {self.created_date}"
+        return f"Transakcja o ID {self.id} na kwotę {formatted_outflow}. ID kategorii: {self.category_id}, " \
+               f"data dodania pozycji: {self.created_date}, data paragonu: {self.receipt_date}"
