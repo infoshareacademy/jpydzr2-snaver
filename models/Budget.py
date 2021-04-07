@@ -49,3 +49,9 @@ class Budget(Base):
             total_activity = 0.0
 
         return total_activity
+
+    def all_transactions(self):
+        transactions = session.query(Transaction).join(Category).join(ParentCategory) \
+            .join(Budget) \
+            .filter(Budget.id == self.id).all()
+        return transactions
