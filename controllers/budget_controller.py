@@ -96,14 +96,19 @@ def print_budget(budget: Budget) -> None:
 
         table_budget.add_row([" ", " ", " ", " "])
 
+    budgeted = round(budget.total_budgeted, 2)
+    outflow = round(budget.total_outflow, 2)
+    inflow = round(budget.total_inflow, 2)
+    to_be_budgeted = inflow - budgeted
+    available = inflow - outflow
+
     print(f"\nHere is your budget \"{budget.name}\"")
     print("-----------------------------")
     print("MONTH: >>month<<")  # TODO: fill {month} with the right data (do f-string)
     print("-----------------------------")
-    print(
-        f"TOTAL BUDGETED:   {round(budget.total_budgeted, 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
-    print(f"TOTAL ACTIVITY:   {round(budget.total_activity, 2)}")
-    print(f"TOTAL AVAILABLE:  {round(budget.total_budgeted + budget.total_activity, 2)}")
+    print(f"TOTAL BUDGETED:   {budgeted}        TO BE BUDGETED:   {to_be_budgeted}")
+    print(f"TOTAL INFLOW: {inflow}                 TOTAL OUTFLOW:   {outflow}")
+    print(f"TOTAL AVAILABLE:  {available}")
     print(table_budget)
 
 
