@@ -98,29 +98,41 @@ def print_budget(budget: Budget, month, year) -> None:
     table_budget.float_format = "1.2"  # the way floating point data is printed
 
     for parent in budget.parent_categories:
-        table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
+        table_budget.add_row([40 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
         # Fill the row with parent's details using prettytable_repr method
         table_budget.add_row(parent.get_prettytable_repr(month, year))
 
         # Draw closing lines
-        table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
+        table_budget.add_row([40 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
         for category in parent.categories:
             table_budget.add_row(category.get_prettytable_repr(month, year))
 
         table_budget.add_row([" ", " ", " ", " "])
 
-    print(f"\n{budget.name.upper()}")
+    budgeted = round(budget.total_budgeted, 2)
+    outflow = round(budget.total_outflow, 2)
+    inflow = round(budget.total_inflow, 2)
+    to_be_budgeted = inflow - budgeted
+    available = inflow - outflow
+
+    print(f"\nHere is your budget \"{budget.name}\"")
     print("-----------------------------")
     print(f"MONTH: {month_name[month].upper()} {year}")
     print("-----------------------------")
+    
+    print('>>> merged "feature-SN-41-months" version:')
     print(
         f"BUDGETED THIS MONTH:   {round(budget.get_budgeted_this_month(month, year), 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
     print(f"ACTIVITY THIS MONTH:   {round(budget.get_activity_this_month(month, year), 2)}")
     print(f"AVAILABLE THIS MONTH:  {round(budget.get_available_this_month(month, year), 2)}")
-
-    # Print the table
+    
+    print("─────────────────────────────────────────────────────────────────────")
+    print('>>> before "feature-SN-41-months" version:')
+    print(f"TOTAL BUDGETED:   {budgeted}        TO BE BUDGETED:   {to_be_budgeted}")
+    print(f"TOTAL INFLOW: {inflow}                 TOTAL OUTFLOW:   {outflow}")
+    print(f"TOTAL AVAILABLE:  {available}")
     print(table_budget)
 
 
