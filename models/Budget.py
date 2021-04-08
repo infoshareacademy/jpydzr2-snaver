@@ -55,3 +55,29 @@ class Budget(Base):
             .join(Budget) \
             .filter(Budget.id == self.id).all()
         return transactions
+
+    @property
+    def total_inflow(self):
+        total_inflow = session.query(
+            func.sum(Transaction.amount_inflow)) \
+            .join(Category).join(ParentCategory) \
+            .join(Budget) \
+            .filter(Budget.id == self.id).first()[0]
+
+        if total_inflow is None:
+            total_inflow = 0.0
+
+        return total_inflow
+
+    @property
+    def total_outflow(self):
+        outflow = session.query(
+            func.sum(Transaction.amount_outflow)) \
+            .join(Category).join(ParentCategory) \
+            .join(Budget) \
+            .filter(Budget.id == self.id).first()[0]
+
+        if outflow is None:
+            outflow = 0.0
+
+        return outflow
