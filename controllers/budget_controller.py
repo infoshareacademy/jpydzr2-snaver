@@ -3,8 +3,6 @@ from models.User import User
 from prettytable import PrettyTable
 from session import session
 
-from calendar import month_name
-
 
 def menu_budget():
     print("\nEDIT BUDGET MENU:")
@@ -81,16 +79,7 @@ def change_budget(user: User) -> Budget:
             print("Select a correct budget!")
 
 
-def edit_budget(budget: Budget) -> Budget:
-    print("\nEDIT BUDGET MENU:")
-    print("@$@#%^@%@##@$%#^*&^ Here you edit budget (modify budgeted amounts)")
-    _ = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
-    return budget
-
-
-def print_budget(budget: Budget, month, year) -> None:
-    # Initiate and set up a PrettyTable table
-
+def print_budget(budget: Budget) -> None:
     table_budget = PrettyTable()
     table_budget.field_names = [" id, CATEGORY", "BUDGETED", "ACTIVITY", "AVAILABLE"]
     table_budget.align = "r"  # align in all columns to the right side
@@ -98,16 +87,12 @@ def print_budget(budget: Budget, month, year) -> None:
     table_budget.float_format = "1.2"  # the way floating point data is printed
 
     for parent in budget.parent_categories:
-        table_budget.add_row([40 * "-", 10 * "-", 10 * "-", 10 * "-"])
-
-        # Fill the row with parent's details using prettytable_repr method
-        table_budget.add_row(parent.get_prettytable_repr(month, year))
-
-        # Draw closing lines
-        table_budget.add_row([40 * "-", 10 * "-", 10 * "-", 10 * "-"])
+        table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
+        table_budget.add_row(parent.prettytable_repr)
+        table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
         for category in parent.categories:
-            table_budget.add_row(category.get_prettytable_repr(month, year))
+            table_budget.add_row(category.prettytable_repr)
 
         table_budget.add_row([" ", " ", " ", " "])
 
@@ -119,17 +104,8 @@ def print_budget(budget: Budget, month, year) -> None:
 
     print(f"\nHere is your budget \"{budget.name}\"")
     print("-----------------------------")
-    print(f"MONTH: {month_name[month].upper()} {year}")
+    print("MONTH: >>month<<")  # TODO: fill {month} with the right data (do f-string)
     print("-----------------------------")
-    
-    print('>>> merged "feature-SN-41-months" version:')
-    print(
-        f"BUDGETED THIS MONTH:   {round(budget.get_budgeted_this_month(month, year), 2)}        TO BE BUDGETED:   >>to_be_budgeted<<")  # TODO: fill to_be_budgeted
-    print(f"ACTIVITY THIS MONTH:   {round(budget.get_activity_this_month(month, year), 2)}")
-    print(f"AVAILABLE THIS MONTH:  {round(budget.get_available_this_month(month, year), 2)}")
-    
-    print("─────────────────────────────────────────────────────────────────────")
-    print('>>> before "feature-SN-41-months" version:')
     print(f"TOTAL BUDGETED:   {budgeted}        TO BE BUDGETED:   {to_be_budgeted}")
     print(f"TOTAL INFLOW: {inflow}                 TOTAL OUTFLOW:   {outflow}")
     print(f"TOTAL AVAILABLE:  {available}")

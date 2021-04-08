@@ -1,7 +1,15 @@
+# This is a hack to import session TODO fix this
+# https://stackoverflow.com/questions/30669474/beyond-top-level-package-error-in-relative-import
+import sys
+
+sys.path.append("..")
+
 from sqlalchemy import Column
+from sqlalchemy import Float
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -9,10 +17,6 @@ from session import session
 
 from .Base import Base
 from .Transaction import Transaction
-from .CategoryBudget import CategoryBudget
-
-from datetime import datetime
-from calendar import monthrange
 
 
 class Category(Base):
@@ -20,77 +24,37 @@ class Category(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
+    __budgeted_amount = Column("budgeted_amount", Float)
     parent_id = Column(Integer, ForeignKey("parent_category.id"))
     transactions = relationship("Transaction", backref="category")
-    budgeted_amounts = relationship("CategoryBudget", backref="category")
 
     def __repr__(self):
-        return f"id: {self.id}, name: {self.name}"
+        formatted_available = "{:.2f} zł".format(self.available_amount)
+        return f"id: {self.id}, name: {self.name}, available: {formatted_available}"
 
-    def get_activity_this_month(self, month, year):
-        activity = session.query(
-            func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
-            .join(Category) \
-            .filter(
-                 Category.id == self.id,
-                 Transaction.created_date >= datetime(year, month, 1),
-                 Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])).first()[0]
-
-        if not activity:
-            return 0.00
-        else:
-            return activity
-
-    def get_budgeted_this_month(self, month, year):
-        budget_for_the_month = session.query(CategoryBudget)\
-            .filter(
-            CategoryBudget.category_id == self.id,
-            CategoryBudget.datetime >= datetime(year, month, 1),
-            CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])).first()
-
-        if not budget_for_the_month:
-            return 0.00
-
-        else:
-            return budget_for_the_month.budgeted_amount
+    def get_transactions(self):
+        return session.query(Transaction).filter(Transaction.category_id == self.id).all()
 
     @property
-    def sum_activity(self):
-        sum_activity = session.query(
-            func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
-            .join(Category) \
-            .filter(Category.id == self.id).first()[0]
+    def available_amount(self):
+        amount = (session.query(func.sum(Transaction.amount_outflow - Transaction.amount_inflow))
+                  .filter(Transaction.category_id == self.id).first())[0]
+        if amount:
+            return self.__budgeted_amount - float(amount)
+        else:
+            return self.__budgeted_amount
 
-        if sum_activity is None:
-            sum_activity = 0.0
+    @hybrid_property
+    def budgeted_amount(self):
+        return self.__budgeted_amount
 
-        return sum_activity
+    @budgeted_amount.setter
+    def budgeted_amount(self, amount):
+        self.__budgeted_amount = amount
+        session.query(Category).filter_by(id=self.id).update({'budgeted_amount': amount})
+        session.commit()
 
-    def get_available_this_month(self, month, year):
-        budgeted_this_far = session.query(
-            func.sum(CategoryBudget.budgeted_amount)) \
-            .filter(
-            CategoryBudget.category_id == self.id,
-            CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])
-        ).first()[0]
-
-        if not budgeted_this_far:
-            budgeted_this_far = 0.00
-
-        activity_this_far = session.query(
-            func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
-            .filter(
-            Transaction.category_id == self.id,
-            Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])
-        ).first()[0]
-
-        if not activity_this_far:
-            activity_this_far = 0.00
-
-        return budgeted_this_far + activity_this_far
-
-    def get_prettytable_repr(self, month, year):
-        budgeted_this_month = self.get_budgeted_this_month(month, year)
-        activity_this_month = self.get_activity_this_month(month, year)
-        available_up_to_this_point = self.get_available_this_month(month, year)
-        return [(self.id, self.name), budgeted_this_month, activity_this_month, available_up_to_this_point]
+    @property
+    def prettytable_repr(self):
+        self.activity_amount = self.budgeted_amount - self.available_amount
+        return [(self.id, self.name), self.budgeted_amount, -(self.activity_amount), self.available_amount]
