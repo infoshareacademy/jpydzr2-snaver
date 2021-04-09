@@ -57,17 +57,6 @@ class ParentCategory(Base):
         else:
             return budget_for_the_month
 
-    @property
-    def sum_activity(self):
-        sum_activity = session.query(
-            func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
-            .join(Category).join(ParentCategory) \
-            .filter(ParentCategory.id == self.id).first()[0]
-
-        if sum_activity is None:
-            sum_activity = 0.0
-
-        return sum_activity
 
     def get_available_this_month(self, month, year):
         budgeted_this_far = session.query(

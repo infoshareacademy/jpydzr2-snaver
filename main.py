@@ -51,7 +51,6 @@ def reading_ascii(file_name: str) -> None:
             print(line)
 
 
-
 welcome_message = "\nWelcome to Snaver!"
 farewell_message = "\nGood bye!"
 
