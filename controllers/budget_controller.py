@@ -3,6 +3,8 @@ from models.User import User
 from prettytable import PrettyTable
 from session import session
 
+from calendar import month_name
+
 
 def menu_budget():
     print("\nEDIT BUDGET MENU:")
@@ -79,7 +81,9 @@ def change_budget(user: User) -> Budget:
             print("Select a correct budget!")
 
 
-def print_budget(budget: Budget) -> None:
+def print_budget(budget: Budget, month, year) -> None:
+    # Initiate and set up a PrettyTable table
+
     table_budget = PrettyTable()
     table_budget.field_names = [" id, CATEGORY", "BUDGETED", "ACTIVITY", "AVAILABLE"]
     table_budget.align = "r"  # align in all columns to the right side
@@ -88,27 +92,30 @@ def print_budget(budget: Budget) -> None:
 
     for parent in budget.parent_categories:
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
-        table_budget.add_row(parent.prettytable_repr)
+        table_budget.add_row(parent.get_prettytable_repr(month, year))
         table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
 
         for category in parent.categories:
-            table_budget.add_row(category.prettytable_repr)
+            table_budget.add_row(category.get_prettytable_repr(month, year))
 
         table_budget.add_row([" ", " ", " ", " "])
 
-    budgeted = round(budget.total_budgeted, 2)
-    outflow = round(budget.total_outflow, 2)
-    inflow = round(budget.total_inflow, 2)
-    to_be_budgeted = inflow - budgeted
-    available = inflow - outflow
+    budgeted = round(budget.get_budgeted_this_month(month, year), 2)
+    available = round(budget.get_available_this_month(month, year), 2)
+    activity = round(budget.get_activity_this_month(month, year), 2)
 
-    print(f"\nHere is your budget \"{budget.name}\"")
+    #outflow = round(budget.total_outflow, 2)
+    #inflow = round(budget.total_inflow, 2)
+    #to_be_budgeted = inflow - budgeted
+
+    print(f"\n{budget.name.upper()}")
     print("-----------------------------")
-    print("MONTH: >>month<<")  # TODO: fill {month} with the right data (do f-string)
+    print(f"MONTH: {month_name[month].upper()} {year}")
     print("-----------------------------")
-    print(f"TOTAL BUDGETED:   {budgeted}        TO BE BUDGETED:   {to_be_budgeted}")
-    print(f"TOTAL INFLOW: {inflow}                 TOTAL OUTFLOW:   {outflow}")
-    print(f"TOTAL AVAILABLE:  {available}")
+    print(f"BUDGETED:   {budgeted}") #        TO BE BUDGETED:   {to_be_budgeted}")
+    print(f"ACTIVITY:   {activity}")
+    #print(f"TOTAL INFLOW: {inflow}                 TOTAL OUTFLOW:   {outflow}")
+    print(f"AVAILABLE:  {available}")
     print(table_budget)
 
 

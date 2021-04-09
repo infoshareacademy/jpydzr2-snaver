@@ -10,6 +10,10 @@ from session import session
 from .Base import Base
 from .Category import Category
 from .Transaction import Transaction
+from .CategoryBudget import CategoryBudget
+
+from calendar import monthrange
+from datetime import datetime
 
 
 class ParentCategory(Base):
@@ -23,17 +27,35 @@ class ParentCategory(Base):
     def __repr__(self):
         return f"ParentCategory {self.name}, wchodząca w skład budżetu o ID {self.budget_id}"
 
-    @property
-    def sum_budgeted(self):
-        sum_budgeted = session.query(
-            func.sum(Category.budgeted_amount)
-            .filter(Category.parent_id == self.id)
-            ).first()[0]
+    def get_activity_this_month(self, month, year):
+        activity = session.query(
+            func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
+            .join(Category) \
+            .join(ParentCategory) \
+            .filter(
+            ParentCategory.id == self.id,
+            Transaction.created_date >= datetime(year, month, 1),
+            Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])).first()[0]
 
-        if sum_budgeted is None:
-            sum_budgeted = 0.0
+        if not activity:
+            return 0.00
+        else:
+            return activity
 
-        return sum_budgeted
+    def get_budgeted_this_month(self, month, year):
+        budget_for_the_month = session.query(
+            func.sum(CategoryBudget.budgeted_amount)) \
+            .join(Category) \
+            .filter(
+            Category.parent_id == self.id,
+            CategoryBudget.datetime >= datetime(year, month, 1),
+            CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])).first()[0]
+
+        if not budget_for_the_month:
+            return 0.00
+
+        else:
+            return budget_for_the_month
 
     @property
     def sum_activity(self):
@@ -47,6 +69,33 @@ class ParentCategory(Base):
 
         return sum_activity
 
-    @property
-    def prettytable_repr(self):
-        return [(self.id, self.name), self.sum_budgeted, self.sum_activity, self.sum_budgeted + self.sum_activity]
+    def get_available_this_month(self, month, year):
+        budgeted_this_far = session.query(
+            func.sum(CategoryBudget.budgeted_amount)) \
+            .join(Category) \
+            .filter(
+            Category.parent_id == self.id,
+            CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])
+        ).first()[0]
+
+        if not budgeted_this_far:
+            budgeted_this_far = 0.00
+
+        activity_this_far = session.query(
+            func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
+            .join(Category) \
+            .filter(
+            Category.parent_id == self.id,
+            Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])
+        ).first()[0]
+
+        if not activity_this_far:
+            activity_this_far = 0.00
+
+        return budgeted_this_far + activity_this_far
+
+    def get_prettytable_repr(self, month, year):
+        budgeted_this_month = self.get_budgeted_this_month(month, year)
+        activity_this_month = self.get_activity_this_month(month, year)
+        available_up_to_this_point = self.get_available_this_month(month, year)
+        return [(self.id, self.name), budgeted_this_month, activity_this_month, available_up_to_this_point]
