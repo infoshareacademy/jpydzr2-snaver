@@ -102,4 +102,4 @@ class ParentCategory(Base):
         budgeted_this_month = self.get_budgeted_this_month(month, year)
         outflow_this_month = self.get_outflow_this_month(month, year)
         available_up_to_this_point = budgeted_this_month - outflow_this_month
-        return [(self.id, self.name), budgeted_this_month, outflow_this_month, available_up_to_this_point]
+        return [[self.id, self.name.upper()], budgeted_this_month, outflow_this_month, available_up_to_this_point]
