@@ -13,7 +13,6 @@ from models.Budget import Budget
 from models.Category import Category
 from models.ParentCategory import ParentCategory
 from models.Transaction import Transaction
-from models.CategoryBudget import CategoryBudget
 from models.User import User
 from session import session
 
@@ -77,7 +76,7 @@ for parent_instance in session.query(ParentCategory).order_by(ParentCategory.id)
     for c in range(len(category_names[index])):
         category_list.append(Category(
             name=category_names[index][c],
-            # budgeted_amount=round(uniform(30.0, 2500.0), 2),  # PyCharm complains but it's expected behaviour because of getter-setter setup
+            budgeted_amount=round(uniform(30.0, 2500.0), 2),  # PyCharm complains but it's expected behaviour because of getter-setter setup
             parent_id=parent_instance.id
         ))
 
@@ -100,23 +99,4 @@ for category_instance in session.query(Category).order_by(Category.id):
         ))
 
 session.add_all(transaction_list)
-session.commit()
-
-# ADD CATEGORY BUDGETS
-# ------------------------------
-
-month = datetime.now().month
-year = datetime.now().year
-day = datetime.now().day
-
-category_budgets_list = []
-
-for category_instance in session.query(Category).order_by(Category.id):
-    category_budgets_list.append(CategoryBudget(
-        budgeted_amount=round(uniform(30.0, 2500.0), 2),  # PyCharm complains but it's expected behaviour because of getter-setter setup
-        category_id=category_instance.id,
-        datetime = datetime(year, month, day)
-    ))
-
-session.add_all(category_budgets_list)
 session.commit()
