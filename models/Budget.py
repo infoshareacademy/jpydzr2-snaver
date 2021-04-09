@@ -65,8 +65,8 @@ class Budget(Base):
             .join(ParentCategory) \
             .filter(
             ParentCategory.budget_id == self.id,
-            Transaction.created_date >= datetime(year, month, 1),
-            Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])
+            Transaction.receipt_date >= datetime(year, month, 1),
+            Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])
             ).first()[0]
 
         if total_activity is None:
@@ -81,7 +81,7 @@ class Budget(Base):
             .join(ParentCategory) \
             .filter(
             ParentCategory.budget_id == self.id,
-            CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])
+            CategoryBudget.datetime == datetime(year, month, monthrange(year, month)[1])
             ).first()[0]
 
         if not budgeted_this_far:
@@ -95,26 +95,29 @@ class Budget(Base):
             .filter(Budget.id == self.id).all()
         return transactions
 
-    @property
-    def total_inflow(self):
+    def total_inflow(self, month, year):
         total_inflow = session.query(
             func.sum(Transaction.amount_inflow)) \
-            .join(Category).join(ParentCategory) \
-            .join(Budget) \
-            .filter(Budget.id == self.id).first()[0]
+            .join(Category).join(ParentCategory).join(CategoryBudget) \
+            .filter(Budget.id == self.id,
+                    Transaction.receipt_date >= datetime(year, month, 1),
+                    Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])
+                    ).first()[0]
 
         if total_inflow is None:
             total_inflow = 0.0
 
         return total_inflow
 
-    @property
-    def total_outflow(self):
+    def total_outflow(self, month, year):
         outflow = session.query(
             func.sum(Transaction.amount_outflow)) \
             .join(Category).join(ParentCategory) \
-            .join(Budget) \
-            .filter(Budget.id == self.id).first()[0]
+            .join(CategoryBudget) \
+            .filter(Budget.id == self.id,
+                    Transaction.receipt_date >= datetime(year, month, 1),
+                    Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])
+                    ).first()[0]
 
         if outflow is None:
             outflow = 0.0

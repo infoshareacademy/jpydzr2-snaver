@@ -85,7 +85,7 @@ def print_budget(budget: Budget, month, year) -> None:
     # Initiate and set up a PrettyTable table
 
     table_budget = PrettyTable()
-    table_budget.field_names = [" id, CATEGORY", "BUDGETED", "ACTIVITY", "AVAILABLE"]
+    table_budget.field_names = [" id, CATEGORY", "BUDGETED", "OUTFLOW", "AVAILABLE"]
     table_budget.align = "r"  # align in all columns to the right side
     table_budget.align[" id, CATEGORY"] = "l"  # align in column "CATEGORY" to the left side
     table_budget.float_format = "1.2"  # the way floating point data is printed
@@ -101,20 +101,18 @@ def print_budget(budget: Budget, month, year) -> None:
         table_budget.add_row([" ", " ", " ", " "])
 
     budgeted = round(budget.get_budgeted_this_month(month, year), 2)
-    available = round(budget.get_available_this_month(month, year), 2)
-    activity = round(budget.get_activity_this_month(month, year), 2)
 
-    #outflow = round(budget.total_outflow, 2)
-    #inflow = round(budget.total_inflow, 2)
-    #to_be_budgeted = inflow - budgeted
+    outflow = round(budget.total_outflow(month, year), 2)
+    inflow = round(budget.total_inflow(month, year), 2)
+    available = inflow - outflow
+    to_be_budgeted = inflow - budgeted
 
     print(f"\n{budget.name.upper()}")
     print("-----------------------------")
     print(f"MONTH: {month_name[month].upper()} {year}")
     print("-----------------------------")
-    print(f"BUDGETED:   {budgeted}") #        TO BE BUDGETED:   {to_be_budgeted}")
-    print(f"ACTIVITY:   {activity}")
-    #print(f"TOTAL INFLOW: {inflow}                 TOTAL OUTFLOW:   {outflow}")
+    print(f"BUDGETED:   {budgeted}                 TO BE BUDGETED:   {to_be_budgeted}")
+    print(f"TOTAL INFLOW: {inflow}                 TOTAL OUTFLOW:   {outflow}")
     print(f"AVAILABLE:  {available}")
     print(table_budget)
 

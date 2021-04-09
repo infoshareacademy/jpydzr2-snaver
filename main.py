@@ -10,9 +10,6 @@ from controllers.user_controller import login
 
 from datetime import datetime
 
-month = datetime.now().month
-year = datetime.now().year
-
 
 def switch_month():
     global month
@@ -56,6 +53,9 @@ def reading_ascii(file_name: str) -> None:
 
 welcome_message = "\nWelcome to Snaver!"
 farewell_message = "\nGood bye!"
+
+month = datetime.now().month
+year = datetime.now().year
 
 reading_ascii('docs/images/ascii_image_2.txt')
 print(welcome_message)

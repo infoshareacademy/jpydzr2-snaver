@@ -34,8 +34,8 @@ class ParentCategory(Base):
             .join(ParentCategory) \
             .filter(
             ParentCategory.id == self.id,
-            Transaction.created_date >= datetime(year, month, 1),
-            Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])).first()[0]
+            Transaction.receipt_date >= datetime(year, month, 1),
+            Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])).first()[0]
 
         if not activity:
             return 0.00
@@ -86,7 +86,7 @@ class ParentCategory(Base):
             .join(Category) \
             .filter(
             Category.parent_id == self.id,
-            Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])
+            Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])
         ).first()[0]
 
         if not activity_this_far:
@@ -94,8 +94,23 @@ class ParentCategory(Base):
 
         return budgeted_this_far + activity_this_far
 
+    def get_outflow_this_month(self, month, year):
+        activity = session.query(
+            func.sum(Transaction.amount_outflow)) \
+            .join(Category) \
+            .join(ParentCategory) \
+            .filter(
+            ParentCategory.id == self.id,
+            Transaction.receipt_date >= datetime(year, month, 1),
+            Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])).first()[0]
+
+        if not activity:
+            return 0.00
+        else:
+            return activity
+
     def get_prettytable_repr(self, month, year):
         budgeted_this_month = self.get_budgeted_this_month(month, year)
-        activity_this_month = self.get_activity_this_month(month, year)
-        available_up_to_this_point = self.get_available_this_month(month, year)
-        return [(self.id, self.name), budgeted_this_month, activity_this_month, available_up_to_this_point]
+        outflow_this_month = self.get_outflow_this_month(month, year)
+        available_up_to_this_point = budgeted_this_month - outflow_this_month
+        return [(self.id, self.name), budgeted_this_month, outflow_this_month, available_up_to_this_point]
