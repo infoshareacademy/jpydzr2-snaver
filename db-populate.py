@@ -6,6 +6,9 @@ Feel free to add your own generators :-)
 import hashlib
 import os
 from datetime import datetime
+from datetime import date
+from datetime import timedelta
+
 from random import randint
 from random import uniform
 
@@ -96,7 +99,8 @@ for category_instance in session.query(Category).order_by(Category.id):
             payee_name="Nazwa sklepu / płatnika",
             amount_inflow=0.00,
             amount_outflow=round(uniform(0.0, 800.0), 2),
-            category_id=category_instance.id
+            category_id=category_instance.id,
+            receipt_date=date.today() + timedelta(randint(-60,60))
         ))
 
 session.add_all(transaction_list)
@@ -113,9 +117,10 @@ category_budgets_list = []
 
 for category_instance in session.query(Category).order_by(Category.id):
     category_budgets_list.append(CategoryBudget(
-        budgeted_amount=round(uniform(30.0, 2500.0), 2),  # PyCharm complains but it's expected behaviour because of getter-setter setup
+        budgeted_amount=round(uniform(30.0, 2500.0), 2),
+        # PyCharm complains but it's expected behaviour because of getter-setter setup
         category_id=category_instance.id,
-        datetime = datetime(year, month, day)
+        datetime=datetime(year, month, day)
     ))
 
 session.add_all(category_budgets_list)
