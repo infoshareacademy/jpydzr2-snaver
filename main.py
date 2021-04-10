@@ -7,7 +7,7 @@ from controllers.category_controller import edit_categories
 from controllers.reports_controller import reports
 from controllers.transaction_controller import add_transaction
 from controllers.user_controller import login
-
+from styles.styles import style
 from datetime import datetime
 import db_create_tables
 
@@ -46,10 +46,12 @@ def menu() -> str:
 
 
 def reading_ascii(file_name: str) -> None:
+    print(f"{style.tBLUE}")
     with open(file_name, 'r') as file:
         for line in file:
             line = line.strip('\n')
             print(line)
+    print(f"{style.RESET}")
 
 
 welcome_message = "\nWelcome to Snaver!"
