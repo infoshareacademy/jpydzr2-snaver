@@ -14,6 +14,7 @@ from .Transaction import Transaction
 from .CategoryBudget import CategoryBudget
 
 from datetime import datetime
+from datetime import date
 from calendar import monthrange
 
 
@@ -72,7 +73,7 @@ class Budget(Base):
         total_inflow = session.query(
             func.sum(Transaction.amount_inflow)) \
             .join(Category).join(ParentCategory) \
-            .join(CategoryBudget).join(Budget) \
+            .join(Budget) \
             .filter(Budget.id == self.id,
                     Transaction.receipt_date >= datetime(year, month, 1),
                     Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])
@@ -87,7 +88,7 @@ class Budget(Base):
         outflow = session.query(
             func.sum(Transaction.amount_outflow)) \
             .join(Category).join(ParentCategory) \
-            .join(CategoryBudget).join(Budget) \
+            .join(Budget) \
             .filter(Budget.id == self.id,
                     Transaction.receipt_date >= datetime(year, month, 1),
                     Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])
