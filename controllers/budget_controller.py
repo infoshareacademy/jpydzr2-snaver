@@ -89,11 +89,14 @@ def print_budget(budget: Budget, month, year) -> None:
     table_budget.align = "r"  # align in all columns to the right side
     table_budget.align[" id, CATEGORY"] = "l"  # align in column "CATEGORY" to the left side
     table_budget.float_format = "1.2"  # the way floating point data is printed
+    table_budget.vertical_char = "║"
+    table_budget.horizontal_char = "═"
+    table_budget.junction_char = "╬"
 
     for parent in budget.parent_categories:
-        table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
+        table_budget.add_row([40 * "─", 10 * "─", 10 * "─", 10 * "─"])
         table_budget.add_row(parent.get_prettytable_repr(month, year))
-        table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
+        table_budget.add_row([40 * "─", 10 * "─", 10 * "─", 10 * "─"])
 
         for category in parent.categories:
             table_budget.add_row(category.get_prettytable_repr(month, year))
