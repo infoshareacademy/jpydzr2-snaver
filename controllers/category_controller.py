@@ -28,7 +28,7 @@ def menu_categories() -> str:
 
 
 def add_category() -> Category:
-    category_name = input("The name of the new parent category: ")
+    category_name = input("The name of the new category: ")
     parent_id = int(input("To which parent category does it belong (parent_id): "))
     new_budgeted_amount = float(input("Write budgeted amount: "))
     category = Category(name=category_name, parent_id=parent_id)
