@@ -74,7 +74,7 @@ class ParentCategory(Base):
             .join(Category) \
             .filter(
             Category.parent_id == self.id,
-            Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])
+            Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])
         ).first()[0]
 
         if not activity_this_far:
@@ -100,5 +100,5 @@ class ParentCategory(Base):
     def get_prettytable_repr(self, month, year):
         budgeted_this_month = self.get_budgeted_this_month(month, year)
         outflow_this_month = self.get_outflow_this_month(month, year)
-        available_up_to_this_point = budgeted_this_month - outflow_this_month
-        return [[self.id, self.name.upper()], budgeted_this_month, outflow_this_month, available_up_to_this_point]
+        available_this_month = self.get_available_this_month(month, year)
+        return [[self.id, self.name.upper()], budgeted_this_month, outflow_this_month, available_this_month]
