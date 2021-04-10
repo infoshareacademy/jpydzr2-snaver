@@ -57,7 +57,6 @@ class ParentCategory(Base):
         else:
             return budget_for_the_month
 
-
     def get_available_this_month(self, month, year):
         budgeted_this_far = session.query(
             func.sum(CategoryBudget.budgeted_amount)) \

@@ -100,7 +100,7 @@ for category_instance in session.query(Category).order_by(Category.id):
             amount_inflow=0.00,
             amount_outflow=round(uniform(0.0, 800.0), 2),
             category_id=category_instance.id,
-            receipt_date=date.today() + timedelta(randint(-60,60))
+            receipt_date=date.today() + timedelta(randint(-60, 60))
         ))
 
 session.add_all(transaction_list)

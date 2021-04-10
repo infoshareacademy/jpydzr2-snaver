@@ -32,9 +32,9 @@ class Category(Base):
             func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
             .join(Category) \
             .filter(
-                 Category.id == self.id,
-                 Transaction.receipt_date >= datetime(year, month, 1),
-                 Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])).first()[0]
+            Category.id == self.id,
+            Transaction.receipt_date >= datetime(year, month, 1),
+            Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])).first()[0]
 
         if not activity:
             return 0.00
@@ -42,11 +42,12 @@ class Category(Base):
             return activity
 
     def get_budgeted_this_month(self, month, year):
-        budget_for_the_month = session.query(CategoryBudget)\
+        budget_for_the_month = session.query(CategoryBudget) \
             .filter(
             CategoryBudget.category_id == self.id,
             CategoryBudget.datetime >= datetime(year, month, 1),
-            CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])).first()
+            CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])
+        ).first()
 
         if not budget_for_the_month:
             return 0.00
@@ -54,15 +55,15 @@ class Category(Base):
         else:
             return budget_for_the_month.budgeted_amount
 
-
     def get_outflow_this_month(self, month, year):
         activity = session.query(
             func.sum(Transaction.amount_outflow)) \
             .join(Category) \
             .filter(
-                 Category.id == self.id,
-                 Transaction.receipt_date >= datetime(year, month, 1),
-                 Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])).first()[0]
+            Category.id == self.id,
+            Transaction.receipt_date >= datetime(year, month, 1),
+            Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])
+        ).first()[0]
 
         if not activity:
             return 0.00

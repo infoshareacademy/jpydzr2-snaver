@@ -2,7 +2,6 @@ from controllers.parentcategory_controller import add_parent_category
 from controllers.parentcategory_controller import rename_parent_category
 from models.Budget import Budget
 from models.Category import Category
-from models.CategoryBudget import CategoryBudget
 from prettytable import PrettyTable
 from session import session
 

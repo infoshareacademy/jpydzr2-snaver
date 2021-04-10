@@ -1,8 +1,6 @@
 from controllers.budget_controller import print_budget_bar_chart
 from models.Budget import Budget
 from datetime import datetime
-from models.Transaction import Transaction
-from session import session
 from prettytable import PrettyTable
 
 

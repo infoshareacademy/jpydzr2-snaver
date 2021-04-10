@@ -23,7 +23,6 @@ class Transaction(Base):
     created_date = Column(DateTime, default=datetime.datetime.utcnow)
     receipt_date = Column(Date)
 
-
     def __repr__(self):
         formatted_outflow = "{:.2f} zł".format(self.amount_outflow)
         return f"Transakcja o ID {self.id} na kwotę {formatted_outflow}. ID kategorii: {self.category_id}, " \

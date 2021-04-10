@@ -19,7 +19,7 @@ class CategoryBudget(Base):
     datetime = Column(DateTime)
 
     def __repr__(self):
-        return f"Budżet kategorii {self.category_id} na miesiąć {self.datetime.month} i rok: {self.datetime.year}"
+        return f"Budżet kategorii {self.category_id} na miesiąc {self.datetime.month} i rok: {self.datetime.year}"
 
     @hybrid_property
     def budgeted_amount(self):

@@ -14,7 +14,6 @@ from .Transaction import Transaction
 from .CategoryBudget import CategoryBudget
 
 from datetime import datetime
-from datetime import date
 from calendar import monthrange
 
 
@@ -38,14 +37,13 @@ class Budget(Base):
             ParentCategory.budget_id == self.id,
             CategoryBudget.datetime >= datetime(year, month, 1),
             CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])
-            ).first()[0]
+        ).first()[0]
 
         if not budget_for_the_month:
             return 0.00
 
         else:
             return budget_for_the_month
-
 
     def get_activity_this_month(self, month, year):
         total_activity = session.query(
@@ -56,7 +54,7 @@ class Budget(Base):
             ParentCategory.budget_id == self.id,
             Transaction.receipt_date >= datetime(year, month, 1),
             Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])
-            ).first()[0]
+        ).first()[0]
 
         if total_activity is None:
             total_activity = 0.0
