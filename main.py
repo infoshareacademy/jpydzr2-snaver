@@ -34,7 +34,7 @@ def switch_month():
 
 def menu() -> str:
     print("MENU:")
-    print("1. New transaction (activity)")
+    print("1. New transaction")
     print("2. Edit categories")
     print("3. Edit budgets")
     print("4. Switch the month (the billing period)")
@@ -71,7 +71,7 @@ try:
         choice = menu()
 
         if choice == "1":
-            add_transaction()
+            _ = add_transaction(budget)
         elif choice == "2":
             edit_categories(budget, month, year)
         elif choice == "3":
