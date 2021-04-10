@@ -1,21 +1,51 @@
 from models.Transaction import Transaction
+from models.Budget import Budget
+
 from session import session
 from datetime import datetime
 
 
-def add_transaction():
-    transaction_name = input("Write name of transaction: ")
-    transaction_payee_name = input("Write name of payee/payer: ")
-    transaction_amount_inflow = float(input("Inflow amount: "))
-    transaction_amount_outflow = float(input("Outflow amount: "))
-    transaction_category_id = int(input("Write category id: "))
-    transaction_receipt_date = datetime.strptime(input("Write date of transaction (YYYY-MM-DD): "), '%Y-%m-%d').date()
+def add_transaction(budget: Budget) -> bool:
+    name = input("Name of the transaction: ")
+    try:
+        outflow = float(input("Outflow amount: ") or 0.)
 
-    transaction = Transaction(name=transaction_name,
-                              payee_name=transaction_payee_name,
-                              amount_inflow=transaction_amount_inflow,
-                              amount_outflow=transaction_amount_outflow,
-                              category_id=transaction_category_id,
-                              receipt_date=transaction_receipt_date)
+        if outflow == 0.:
+            inflow = float(input("Inflow amount: "))
+        else:
+            inflow = 0.
+
+        category_id = int(input("Category id: "))
+        valid_ids = []
+        for parent in budget.parent_categories:
+            for category in parent.categories:
+                valid_ids.append(category.id)
+
+        if category_id not in valid_ids:
+            print("Invalid category ID!")
+            return False
+
+        provided_date = input("Date of the transaction (YYYY-MM-DD): ")
+
+        if provided_date:
+            receipt_date = datetime.strptime(provided_date, '%Y-%m-%d').date()
+        else:
+            receipt_date = datetime.today().date()
+
+        payee_name = input("Name of payee/payer: ")
+
+    except ValueError:
+        print("You provided an incorrect value!")
+        return False
+
+    transaction = Transaction(name=name,
+                              payee_name=payee_name,
+                              amount_inflow=inflow,
+                              amount_outflow=outflow,
+                              category_id=category_id,
+                              receipt_date=receipt_date)
     session.add(transaction)
     session.commit()
+    print("The transaction has been added!")
+
+    return True

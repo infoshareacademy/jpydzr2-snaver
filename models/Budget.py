@@ -11,6 +11,10 @@ from .Base import Base
 from .Category import Category
 from .ParentCategory import ParentCategory
 from .Transaction import Transaction
+from .CategoryBudget import CategoryBudget
+
+from datetime import datetime
+from calendar import monthrange
 
 
 class Budget(Base):
@@ -24,26 +28,33 @@ class Budget(Base):
     def __repr__(self):
         return f"Name: {self.name}, Id: {self.id}, Owner id: {self.user_id}"
 
-    @property
-    def total_budgeted(self):
-        total_budgeted = session.query(
-            func.sum(Category.budgeted_amount)) \
+    def get_budgeted_this_month(self, month, year):
+        budget_for_the_month = session.query(
+            func.sum(CategoryBudget.budgeted_amount)) \
+            .join(Category) \
             .join(ParentCategory) \
-            .join(Budget) \
-            .filter(Budget.id == self.id).first()[0]
+            .filter(
+            ParentCategory.budget_id == self.id,
+            CategoryBudget.datetime >= datetime(year, month, 1),
+            CategoryBudget.datetime <= datetime(year, month, monthrange(year, month)[1])
+        ).first()[0]
 
-        if total_budgeted is None:
-            total_budgeted = 0.0
+        if not budget_for_the_month:
+            return 0.00
 
-        return total_budgeted
+        else:
+            return budget_for_the_month
 
-    @property
-    def total_activity(self):
+    def get_activity_this_month(self, month, year):
         total_activity = session.query(
             func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
-            .join(Category).join(ParentCategory) \
-            .join(Budget) \
-            .filter(Budget.id == self.id).first()[0]
+            .join(Category) \
+            .join(ParentCategory) \
+            .filter(
+            ParentCategory.budget_id == self.id,
+            Transaction.receipt_date >= datetime(year, month, 1),
+            Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])
+        ).first()[0]
 
         if total_activity is None:
             total_activity = 0.0
@@ -56,26 +67,30 @@ class Budget(Base):
             .filter(Budget.id == self.id).all()
         return transactions
 
-    @property
-    def total_inflow(self):
+    def total_inflow(self, month, year):
         total_inflow = session.query(
             func.sum(Transaction.amount_inflow)) \
             .join(Category).join(ParentCategory) \
             .join(Budget) \
-            .filter(Budget.id == self.id).first()[0]
+            .filter(Budget.id == self.id,
+                    Transaction.receipt_date >= datetime(year, month, 1),
+                    Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])
+                    ).first()[0]
 
         if total_inflow is None:
             total_inflow = 0.0
 
         return total_inflow
 
-    @property
-    def total_outflow(self):
+    def total_outflow(self, month, year):
         outflow = session.query(
             func.sum(Transaction.amount_outflow)) \
             .join(Category).join(ParentCategory) \
             .join(Budget) \
-            .filter(Budget.id == self.id).first()[0]
+            .filter(Budget.id == self.id,
+                    Transaction.receipt_date >= datetime(year, month, 1),
+                    Transaction.receipt_date <= datetime(year, month, monthrange(year, month)[1])
+                    ).first()[0]
 
         if outflow is None:
             outflow = 0.0
