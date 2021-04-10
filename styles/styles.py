@@ -10,6 +10,7 @@ class style:
     """
     RESET = '\033[0m'
 
+    tBLACK = '\033[30m'
     tRED = '\033[91m'
     tGREEN = '\033[92m'
     tYELLOW = '\033[93m'

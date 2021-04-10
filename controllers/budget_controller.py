@@ -110,11 +110,12 @@ def print_budget(budget: Budget, month, year) -> None:
     available = inflow - outflow
     to_be_budgeted = inflow - budgeted
 
-    print(f"{style.tYELLOW}")
-    print(f"\n{budget.name.upper()}")
-    print("-----------------------------")
-    print(f"MONTH: {month_name[month].upper()} {year}")
-    print("-----------------------------")
+    print(f"\n{style.bYELLOW}{style.fBOLD}{style.fUNDERLINE}{style.tBLACK}", end="")
+    print(f"{budget.name.upper()}{style.RESET}")
+    print(f"{style.bYELLOW}{style.fBOLD}{style.tBLACK}", end="")
+    print(f"MONTH: {month_name[month].upper()} {year}{style.RESET}")
+    # print("-----------------------------")
+    print(f"{style.tYELLOW}", end="")
     print(f"BUDGETED:   {budgeted}                 TO BE BUDGETED:   {to_be_budgeted}")
     print(f"TOTAL INFLOW: {inflow}                 TOTAL OUTFLOW:   {outflow}")
     print(f"AVAILABLE:  {available}")
