@@ -14,7 +14,7 @@ from .CategoryBudget import CategoryBudget
 
 from calendar import monthrange
 from datetime import datetime
-
+from styles.styles import style
 
 class ParentCategory(Base):
     __tablename__ = 'parent_category'
@@ -101,4 +101,16 @@ class ParentCategory(Base):
         budgeted_this_month = self.get_budgeted_this_month(month, year)
         outflow_this_month = self.get_outflow_this_month(month, year)
         available_this_month = self.get_available_this_month(month, year)
-        return [[self.id, self.name.upper()], budgeted_this_month, outflow_this_month, available_this_month]
+
+        if available_this_month == 0:
+            color = style.tBLUE
+        elif available_this_month < 0:
+            color = style.tRED
+        else:
+            color = style.tGREEN
+
+        category_coloured = f"{color}[{self.id}] {self.name.upper()}{style.RESET}"
+        available_coloured = f"{color}%.2f{style.RESET}" % available_this_month
+        # NOTE: Above '%.2f' is made for printing two decimal places including zeros at the end.
+
+        return [category_coloured, budgeted_this_month, outflow_this_month, available_coloured]

@@ -13,7 +13,7 @@ from .CategoryBudget import CategoryBudget
 
 from datetime import datetime
 from calendar import monthrange
-
+from styles.styles import style
 
 class Category(Base):
     __tablename__ = 'category'
@@ -98,4 +98,16 @@ class Category(Base):
         outflow_this_month = self.get_outflow_this_month(month, year)
         available_this_month = self.get_available_this_month(month, year)
         # available_up_to_this_point = budgeted_this_month - outflow_this_month
-        return [(self.id, self.name), budgeted_this_month, outflow_this_month, available_this_month]
+
+        if available_this_month == 0:
+            color = style.tBLUE
+        elif available_this_month < 0:
+            color = style.tRED
+        else:
+            color = style.tGREEN
+
+        category_coloured = f"{color}({self.id}) {self.name}{style.RESET}"
+        available_coloured = f"{color}%.2f{style.RESET}" % available_this_month
+        # NOTE: Above '%.2f' is made for printing two decimal places including zeros at the end.
+
+        return [category_coloured, budgeted_this_month, outflow_this_month, available_coloured]
