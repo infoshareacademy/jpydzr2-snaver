@@ -125,12 +125,25 @@ def print_budget_bar_chart(budget: Budget) -> None:
     bar_chart.align = "l"
     bar_chart.align["ACTIVITY"] = "r"
     bar_chart.float_format = "1.2"
-
+    i_color = 31
     for parent in budget.parent_categories:
         for category in parent.categories:
             activity_amount = sum(activity.amount_outflow for activity in category.transactions)
-            bar = int(round(activity_amount / 100)) * "#"  # Each 100 PLN is a single "#"
+            if activity_amount % 100 > 75:  # % gives the rest of the division
+                bar_ending = "█"
+            elif activity_amount % 100 > 50:
+                bar_ending = "▊"                # also could be "▓"
+            elif activity_amount % 100 > 25:
+                bar_ending = "▌"                # also could be "▒"
+            elif activity_amount % 100 > 0:
+                bar_ending = "▎"                # also could be "░"
+            elif activity_amount % 100 == 0:
+                bar_ending = ""
+            bar = f"\033[{i_color}m{int(activity_amount // 100) * '█'}{bar_ending}{style.RESET}"    # Each 100 PLN is a single "█"
             bar_chart.add_row([(category.id, category.name), activity_amount, bar])
+            i_color += 1
+            if i_color == 38:
+                i_color = 31
     print(bar_chart)
     _ = input("Press ENTER to go back.")
 
