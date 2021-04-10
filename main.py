@@ -9,6 +9,7 @@ from controllers.transaction_controller import add_transaction
 from controllers.user_controller import login
 
 from datetime import datetime
+import db_create_tables
 
 
 def switch_month():
