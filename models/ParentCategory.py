@@ -70,7 +70,7 @@ class ParentCategory(Base):
             budgeted_this_far = 0.00
 
         activity_this_far = session.query(
-            func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
+            func.sum(Transaction.amount_outflow)) \
             .join(Category) \
             .filter(
             Category.parent_id == self.id,

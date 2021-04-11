@@ -67,7 +67,7 @@ class Category(Base):
             budgeted_this_far = 0.00
 
         activity_this_far = session.query(
-            func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
+            func.sum(Transaction.amount_outflow)) \
             .filter(
             Transaction.category_id == self.id,
             Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])
