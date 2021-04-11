@@ -80,7 +80,7 @@ class ParentCategory(Base):
         if not activity_this_far:
             activity_this_far = 0.00
 
-        return budgeted_this_far + activity_this_far
+        return budgeted_this_far - activity_this_far
 
     def get_outflow_this_month(self, month, year):
         activity = session.query(
