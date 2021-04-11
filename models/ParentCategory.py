@@ -69,18 +69,18 @@ class ParentCategory(Base):
         if not budgeted_this_far:
             budgeted_this_far = 0.00
 
-        activity_this_far = session.query(
-            func.sum(Transaction.amount_inflow - Transaction.amount_outflow)) \
+        outflow_this_far = session.query(
+            func.sum(Transaction.amount_outflow)) \
             .join(Category) \
             .filter(
             Category.parent_id == self.id,
             Transaction.created_date <= datetime(year, month, monthrange(year, month)[1])
         ).first()[0]
 
-        if not activity_this_far:
-            activity_this_far = 0.00
+        if not outflow_this_far:
+            outflow_this_far = 0.00
 
-        return budgeted_this_far + activity_this_far
+        return budgeted_this_far + outflow_this_far
 
     def get_outflow_this_month(self, month, year):
         activity = session.query(
