@@ -2,7 +2,7 @@ from models.Budget import Budget
 from models.User import User
 from prettytable import PrettyTable
 from session import session
-
+from styles.styles import style
 from calendar import month_name
 
 
@@ -89,11 +89,14 @@ def print_budget(budget: Budget, month, year) -> None:
     table_budget.align = "r"  # align in all columns to the right side
     table_budget.align[" id, CATEGORY"] = "l"  # align in column "CATEGORY" to the left side
     table_budget.float_format = "1.2"  # the way floating point data is printed
+    table_budget.vertical_char = "║"
+    table_budget.horizontal_char = "═"
+    table_budget.junction_char = "╬"
 
     for parent in budget.parent_categories:
-        table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
+        table_budget.add_row([40 * "─", 10 * "─", 10 * "─", 10 * "─"])
         table_budget.add_row(parent.get_prettytable_repr(month, year))
-        table_budget.add_row([30 * "-", 10 * "-", 10 * "-", 10 * "-"])
+        table_budget.add_row([40 * "─", 10 * "─", 10 * "─", 10 * "─"])
 
         for category in parent.categories:
             table_budget.add_row(category.get_prettytable_repr(month, year))
@@ -107,13 +110,16 @@ def print_budget(budget: Budget, month, year) -> None:
     available = inflow - outflow
     to_be_budgeted = inflow - budgeted
 
-    print(f"\n{budget.name.upper()}")
-    print("-----------------------------")
-    print(f"MONTH: {month_name[month].upper()} {year}")
-    print("-----------------------------")
+    print(f"\n{style.bYELLOW}{style.fBOLD}{style.fUNDERLINE}{style.tBLACK}", end="")
+    print(f"{budget.name.upper()}{style.RESET}")
+    print(f"{style.bYELLOW}{style.fBOLD}{style.tBLACK}", end="")
+    print(f"MONTH: {month_name[month].upper()} {year}{style.RESET}")
+    # print("-----------------------------")
+    print(f"{style.tYELLOW}", end="")
     print(f"BUDGETED:   {budgeted}                 TO BE BUDGETED:   {to_be_budgeted}")
     print(f"TOTAL INFLOW: {inflow}                 TOTAL OUTFLOW:   {outflow}")
     print(f"AVAILABLE:  {available}")
+    print(f"{style.RESET}")
     print(table_budget)
 
 
@@ -123,12 +129,25 @@ def print_budget_bar_chart(budget: Budget) -> None:
     bar_chart.align = "l"
     bar_chart.align["ACTIVITY"] = "r"
     bar_chart.float_format = "1.2"
-
+    i_color = 31
     for parent in budget.parent_categories:
         for category in parent.categories:
             activity_amount = sum(activity.amount_outflow for activity in category.transactions)
-            bar = int(round(activity_amount / 100)) * "#"  # Each 100 PLN is a single "#"
+            if activity_amount % 100 > 75:  # % gives the rest of the division
+                bar_ending = "█"
+            elif activity_amount % 100 > 50:
+                bar_ending = "▊"                # also could be "▓"
+            elif activity_amount % 100 > 25:
+                bar_ending = "▌"                # also could be "▒"
+            elif activity_amount % 100 > 0:
+                bar_ending = "▎"                # also could be "░"
+            elif activity_amount % 100 == 0:
+                bar_ending = ""
+            bar = f"\033[{i_color}m{int(activity_amount // 100) * '█'}{bar_ending}{style.RESET}"    # Each 100 PLN is a single "█"
             bar_chart.add_row([(category.id, category.name), activity_amount, bar])
+            i_color += 1
+            if i_color == 38:
+                i_color = 31
     print(bar_chart)
     _ = input("Press ENTER to go back.")
 
