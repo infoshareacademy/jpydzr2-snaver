@@ -9,7 +9,8 @@ from controllers.transaction_controller import add_transaction
 from controllers.user_controller import login
 from styles.styles import style
 from datetime import datetime
-import db_create_tables
+
+from enum import IntEnum
 
 
 def switch_month():
@@ -31,7 +32,6 @@ def switch_month():
             year = input_year
             break
 
-
 def menu() -> str:
     print("MENU:")
     print("1. New transaction")
@@ -42,7 +42,7 @@ def menu() -> str:
     print("6. Change user")
     print("7. Close the program")
     user_choice = input("## YOUR CHOICE: ")
-    return user_choice
+    return int(user_choice)
 
 
 def reading_ascii(file_name: str) -> None:
@@ -63,6 +63,15 @@ year = datetime.now().year
 reading_ascii('docs/images/ascii_image_2.txt')
 print(welcome_message)
 
+class MainMenuEnums(IntEnum):
+    NEWTRANSACTION = 1
+    EDITCAT = 2
+    EDITBUDGET = 3
+    SWITCHMONTH = 4
+    REPORTS = 5
+    CHANGEUSER = 6
+    CLOSE = 7
+
 try:
     user = login()
     while not user:
@@ -72,24 +81,24 @@ try:
         print_budget(budget, month, year)
         choice = menu()
 
-        if choice == "1":
+        if choice == MainMenuEnums.NEWTRANSACTION:
             _ = add_transaction(budget)
-        elif choice == "2":
+        elif choice == MainMenuEnums.EDITCAT:
             edit_categories(budget, month, year)
-        elif choice == "3":
+        elif choice == MainMenuEnums.EDITBUDGET:
             edited_budget = edit_budget(user)
             if edited_budget:
                 budget = edited_budget
-        elif choice == "4":
+        elif choice == MainMenuEnums.SWITCHMONTH:
             switch_month()
-        elif choice == "5":
+        elif choice == MainMenuEnums.REPORTS:
             reports(budget)
-        elif choice == "6":
+        elif choice == MainMenuEnums.CHANGEUSER:
             new_user = login()
             if new_user:
                 user = new_user
                 budget = select_budget(user)
-        elif choice == "7":
+        elif choice == MainMenuEnums.CLOSE:
             print(farewell_message)
             exit(0)
 

@@ -4,7 +4,7 @@ from prettytable import PrettyTable
 from session import session
 from styles.styles import style
 from calendar import month_name
-
+from enum import IntEnum
 
 def menu_budget():
     print("\nEDIT BUDGET MENU:")
@@ -14,21 +14,27 @@ def menu_budget():
     print("   4. Remove budget")
     print("5. Go back to main menu")
     user_choice = input("## YOUR CHOICE: ")
-    return user_choice
+    return int(user_choice)
 
+class BudgetMenuEnums(IntEnum):
+    CHANGE = 1
+    ADD = 2
+    RENAME = 3
+    REMOVE = 4
+    BACKTOMAINMENU = 5
 
 def edit_budget(user: User) -> Budget:
     choice = menu_budget()
 
-    if choice == "1":
+    if choice == BudgetMenuEnums.CHANGE:
         return change_budget(user)
-    elif choice == "2":
+    elif choice == BudgetMenuEnums.ADD:
         return add_budget(user)
-    elif choice == "3":
+    elif choice == BudgetMenuEnums.RENAME:
         return rename_budget(user)
-    elif choice == "4":
+    elif choice == BudgetMenuEnums.REMOVE:
         pass
-    elif choice == "5":
+    elif choice == BudgetMenuEnums.BACKTOMAINMENU:
         pass
     else:
         print("Wrong choice!")

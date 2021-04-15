@@ -10,6 +10,7 @@ from datetime import datetime
 
 from calendar import monthrange
 
+from enum import IntEnum
 
 def menu_categories() -> str:
     print("\nEDIT CATEGORIES MENU:")
@@ -23,7 +24,7 @@ def menu_categories() -> str:
     print("      6. Rename category")
     print("    7. Go back to the budget")
     user_choice = input("## YOUR CHOICE: ")
-    return user_choice
+    return int(user_choice)
 
 
 def add_category() -> Category:
@@ -41,25 +42,34 @@ def add_category() -> Category:
     session.commit()
     return new_category
 
+class CategoryMenuEnums(IntEnum):
+    PCADD = 1
+    PCREMOVE = 2
+    PCRENAME = 3
+    CADD = 4
+    BUDGETTOCAT = 5
+    CRENAME = 6
+    BACKTOBUDGET = 7
 
 def edit_categories(budget, month, year):
     choice = menu_categories()
 
-    if choice == "1":
+    if choice == CategoryMenuEnums.PCADD:
         _ = add_parent_category(budget)
-    elif choice == "2":
+    elif choice == CategoryMenuEnums.PCREMOVE:
         pass
-    elif choice == "3":
+    elif choice == CategoryMenuEnums.PCRENAME:
         _ = rename_parent_category(budget)
-    elif choice == "4":
+    elif choice == CategoryMenuEnums.CADD:
         _ = add_category()
-    elif choice == "5":
+    elif choice == CategoryMenuEnums.BUDGETTOCAT:
         _ = budget_category(budget, month, year)
-    elif choice == "6":
+    elif choice == CategoryMenuEnums.CRENAME:
         _ = rename_category(budget)
-    elif choice == "7":
+    elif choice == CategoryMenuEnums.BACKTOBUDGET:
         pass
     else:
+        print(choice)
         _ = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
 
 
