@@ -1,5 +1,9 @@
 """File that starts the program"""
 
+from datetime import datetime
+from enum import IntEnum
+
+import db_create_tables
 from controllers.budget_controller import edit_budget
 from controllers.budget_controller import print_budget
 from controllers.budget_controller import select_budget
@@ -8,9 +12,6 @@ from controllers.reports_controller import reports
 from controllers.transaction_controller import add_transaction
 from controllers.user_controller import login
 from styles.styles import style
-from datetime import datetime
-
-from enum import IntEnum
 
 
 def switch_month():
@@ -31,6 +32,7 @@ def switch_month():
             month = input_month
             year = input_year
             break
+
 
 def menu() -> str:
     print("MENU:")
@@ -63,6 +65,7 @@ year = datetime.now().year
 reading_ascii('docs/images/ascii_image_2.txt')
 print(welcome_message)
 
+
 class MainMenuEnums(IntEnum):
     NEWTRANSACTION = 1
     EDITCAT = 2
@@ -71,6 +74,7 @@ class MainMenuEnums(IntEnum):
     REPORTS = 5
     CHANGEUSER = 6
     CLOSE = 7
+
 
 try:
     user = login()
