@@ -1,14 +1,15 @@
+from calendar import monthrange
+from datetime import datetime
+from enum import IntEnum
+
+from prettytable import PrettyTable
+
 from controllers.parentcategory_controller import add_parent_category
 from controllers.parentcategory_controller import rename_parent_category
 from models.Budget import Budget
 from models.Category import Category
-from prettytable import PrettyTable
-from session import session
-
 from models.CategoryBudget import CategoryBudget
-from datetime import datetime
-
-from calendar import monthrange
+from session import session
 
 
 def menu_categories() -> str:
@@ -23,7 +24,7 @@ def menu_categories() -> str:
     print("      6. Rename category")
     print("    7. Go back to the budget")
     user_choice = input("## YOUR CHOICE: ")
-    return user_choice
+    return int(user_choice)
 
 
 def add_category() -> Category:
@@ -42,24 +43,35 @@ def add_category() -> Category:
     return new_category
 
 
+class CategoryMenuEnums(IntEnum):
+    PC_ADD = 1
+    PC_REMOVE = 2
+    PC_RENAME = 3
+    C_ADD = 4
+    C_UPDATE_BUDGETED = 5
+    C_RENAME = 6
+    BACK_TO_BUDGET = 7
+
+
 def edit_categories(budget, month, year):
     choice = menu_categories()
 
-    if choice == "1":
+    if choice == CategoryMenuEnums.PC_ADD:
         _ = add_parent_category(budget)
-    elif choice == "2":
+    elif choice == CategoryMenuEnums.PC_REMOVE:
         pass
-    elif choice == "3":
+    elif choice == CategoryMenuEnums.PC_RENAME:
         _ = rename_parent_category(budget)
-    elif choice == "4":
+    elif choice == CategoryMenuEnums.C_ADD:
         _ = add_category()
-    elif choice == "5":
+    elif choice == CategoryMenuEnums.C_UPDATE_BUDGETED:
         _ = budget_category(budget, month, year)
-    elif choice == "6":
+    elif choice == CategoryMenuEnums.C_RENAME:
         _ = rename_category(budget)
-    elif choice == "7":
+    elif choice == CategoryMenuEnums.BACK_TO_BUDGET:
         pass
     else:
+        print(choice)
         _ = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
 
 

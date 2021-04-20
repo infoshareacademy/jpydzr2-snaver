@@ -2,6 +2,7 @@ from controllers.budget_controller import print_budget_bar_chart
 from models.Budget import Budget
 from datetime import datetime
 from prettytable import PrettyTable
+from enum import IntEnum
 
 
 def menu_reports() -> str:
@@ -11,8 +12,8 @@ def menu_reports() -> str:
     print("3. Export my budget do csv file   [FUNCTION NOT AVAILABLE YET]")
     print("4. Export my budget to json file  [FUNCTION NOT AVAILABLE YET]")
     print("5. Filter transactions by receipt date ")
-    choice = input("## YOUR CHOICE: ")
-    return choice
+    user_choice = input("## YOUR CHOICE: ")
+    return int(user_choice)
 
 
 def filter_by_receipt_date(budget: Budget) -> None:
@@ -38,13 +39,25 @@ def filter_by_receipt_date(budget: Budget) -> None:
     print(transaction_table)
     _ = input("Press ENTER to go back.")
 
+class ReportsMenuEnums(IntEnum):
+    BARCHART = 1
+    ALL = 2
+    CSV = 3
+    JSON = 4
+    RECEIPTDATEFILTER = 5
 
 def reports(budget: Budget) -> None:
     choice = menu_reports()
 
-    if choice == "1":
+    if choice == ReportsMenuEnums.BARCHART:
         print_budget_bar_chart(budget)
-    elif choice == "5":
+    elif choice == ReportsMenuEnums.ALL:
+        pass
+    elif choice == ReportsMenuEnums.CSV:
+        pass
+    elif choice == ReportsMenuEnums.JSON:
+        pass
+    elif choice == ReportsMenuEnums.RECEIPTDATEFILTER:
         filter_by_receipt_date(budget)
     else:
         _ = input("@$@#%^@%@##@$%#^*&^  WORK IN PROGRESS... Press ENTER to go back to your budget.")
